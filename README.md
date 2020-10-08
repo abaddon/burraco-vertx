@@ -41,7 +41,7 @@ cd Engine
 ./gradle shadowJar 
 java -jar build/libs/Engine-1.0-SNAPSHOT-fat.jar
 ```
-### EventStore
+##### EventStore
 ```
 cd Engine
 ./gradle shadowJar 
