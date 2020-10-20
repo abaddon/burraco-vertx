@@ -13,6 +13,7 @@ import kotlinx.serialization.*
 sealed class BurracoGameEvent(): Event() {
     abstract val identity: GameIdentity
     override fun key(): String = identity.convertTo().toString()
+    override val entityName: String = "BurracoGame"
 }
 
 @Serializable

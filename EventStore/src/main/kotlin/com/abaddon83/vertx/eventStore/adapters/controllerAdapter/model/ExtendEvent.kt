@@ -19,6 +19,7 @@ class ExtendEvent(
     constructor(json: JsonObject): this(json.mapTo(ExtendEvent::class.java))
 
      constructor(ev: ExtendEvent): this(ev.name,ev.entityKey, ev.entityName,ev.instant, ev.jsonPayload)
+     constructor(ev: Event): this(ev.name,ev.entityKey, ev.entityName,ev.instant, ev.jsonPayload)
 
     fun toJson(): JsonObject {
         return JsonObject.mapFrom(this)

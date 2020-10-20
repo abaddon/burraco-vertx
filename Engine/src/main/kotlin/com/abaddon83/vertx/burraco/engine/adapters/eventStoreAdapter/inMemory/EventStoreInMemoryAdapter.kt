@@ -1,4 +1,4 @@
-package com.abaddon83.vertx.burraco.engine.adapters.eventStoreInMemories
+package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory
 
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent

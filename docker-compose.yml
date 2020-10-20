@@ -2,9 +2,34 @@ version: "3.8"
 services:
   engine:
     build: ./Engine
-    hostname: engine
     ports:
       - "8080:8080"
+    networks:
+      burracoproject_default:
+        aliases:
+          - engine
   eventstore:
     build: ./EventStore
-    hostname: eventstore
+    depends_on:
+      - db
+    links:
+      - db:mysql
+    networks:
+      burracoproject_default:
+        aliases:
+          - eventstore
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+    restart: always
+    ports:
+      - "3306:3306"
+    networks:
+      burracoproject_default:
+        aliases:
+          - repository
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+networks:
+  burracoproject_default:
+    external: true

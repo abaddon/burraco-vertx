@@ -19,6 +19,7 @@ repositories {
 val kotlinVersion = "1.4.10"
 val vertxVersion = "3.9.3"
 val junitJupiterVersion = "5.6.0"
+val ktormVersion = "3.2.0"
 
 val mainVerticleName = "com.abaddon83.vertx.eventStore.MainVerticle"
 val watchForChange = "src/**/*"
@@ -33,7 +34,10 @@ application {
 
 dependencies {
 
+    implementation("mysql:mysql-connector-java:8.0.21")
+    //compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
 
+    implementation("org.ktorm:ktorm-core:${ktormVersion}")
     implementation("io.vertx:vertx-config:$vertxVersion")
     //implementation("io.vertx:vertx-web-client:$vertxVersion")
     //implementation("io.vertx:vertx-auth-jwt:$vertxVersion")

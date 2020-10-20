@@ -11,6 +11,8 @@ import io.vertx.core.Handler
 interface EventStoreService {
 
     fun persist(event: ExtendEvent, resultHandler: Handler<AsyncResult<Boolean>>);
+
+    fun getEntityEvents(entityName: String, entityKey: String, resultHandler: Handler<AsyncResult<Set<ExtendEvent>>>);
 }
 
 //object EventStoreServiceFactory{

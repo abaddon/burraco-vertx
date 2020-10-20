@@ -8,6 +8,8 @@ plugins {
     kotlin("jvm") version "1.4.10"
     application
     id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.github.mtatheonly.quasar-gradle-plugin") version "0.0.1"
+
 }
 
 group = "com.abaddon83.vertx.burraco.engine"
@@ -36,6 +38,10 @@ application {
 }
 
 dependencies {
+
+//    implementation("io.vertx:vertx-sync:$vertxVersion")
+//    implementation("co.paralleluniverse:quasar-core")
+
     implementation("io.vertx:vertx-config:$vertxVersion")
     implementation("io.vertx:vertx-web-client:$vertxVersion")
     implementation("io.vertx:vertx-auth-jwt:$vertxVersion")
@@ -47,6 +53,8 @@ dependencies {
     implementation("io.vertx:vertx-lang-kotlin:$vertxVersion")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
     implementation("io.vertx:vertx-hazelcast:$vertxVersion")
+
+
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
     implementation("junit:junit:4.12") // JVM dependency
@@ -67,7 +75,9 @@ compileKotlin.kotlinOptions.jvmTarget = "11"
 tasks.withType<ShadowJar> {
     archiveClassifier.set("fat")
     manifest {
-        attributes(mapOf("Main-Verticle" to mainVerticleName))
+        attributes(mapOf(
+            "Main-Verticle" to mainVerticleName
+            ))
     }
     mergeServiceFiles {
         include("META-INF/services/io.vertx.core.spi.VerticleFactory")
@@ -82,7 +92,7 @@ tasks.withType<Test> {
 }
 
 tasks.withType<JavaExec> {
-    args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")
+    args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")//, "-javaagent=./quasar-core-0.8.0.jar")
 }
 
 sourceSets {

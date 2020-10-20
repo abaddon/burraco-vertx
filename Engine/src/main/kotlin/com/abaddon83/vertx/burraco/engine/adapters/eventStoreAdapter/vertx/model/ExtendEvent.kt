@@ -1,8 +1,10 @@
-package com.abaddon83.vertx.burraco.engine.adapters.eventStoreVertx.model
+package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model
 
 import com.abaddon83.utils.es.Event
 import com.fasterxml.jackson.annotation.JsonCreator
 import io.vertx.core.json.JsonObject
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.util.*
 
@@ -17,12 +19,16 @@ data class ExtendEvent(
     constructor(ev: Event) : this(
         ev::class.simpleName!!,
         UUID.fromString(ev.key()),
-        "missing",
+        ev.entityName,
         Instant.now(),
         JsonObject.mapFrom(ev).encodePrettily()
     )
 
     fun toJson(): JsonObject {
         return JsonObject.mapFrom(this)
+    }
+
+    fun toEvent(): Event{
+        return Json.decodeFromString<Event>(jsonPayload)
     }
 }

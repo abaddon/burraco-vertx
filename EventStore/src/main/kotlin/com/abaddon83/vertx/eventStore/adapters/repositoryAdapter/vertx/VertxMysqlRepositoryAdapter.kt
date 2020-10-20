@@ -27,4 +27,8 @@ class VertxMysqlRepositoryAdapter(vertx: Vertx) : RepositoryPort {
 
         TODO("I don't know how return the value without change the interface.. but I don't want to change it..")
     }
+
+    override fun findEvents(entityName: String, entityKey: String): Set<Event> {
+        TODO("Not yet implemented")
+    }
 }

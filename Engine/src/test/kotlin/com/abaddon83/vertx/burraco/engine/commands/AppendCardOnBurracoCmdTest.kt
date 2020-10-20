@@ -15,7 +15,7 @@ import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
 import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
-import com.abaddon83.vertx.burraco.engine.adapters.eventStoreInMemories.EventStoreInMemoryAdapter
+import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
 import org.junit.Before
 import org.junit.Test
 

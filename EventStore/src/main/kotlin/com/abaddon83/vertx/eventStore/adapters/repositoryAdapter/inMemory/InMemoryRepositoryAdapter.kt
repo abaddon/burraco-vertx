@@ -16,4 +16,8 @@ class InMemoryRepositoryAdapter: RepositoryPort {
             else -> Invalid(EventError("Event not saved"))
         }
     }
+
+    override fun findEvents(entityName: String, entityKey: String): Set<Event> {
+        TODO("Not yet implemented")
+    }
 }

@@ -11,4 +11,6 @@ typealias Outcome = Validated<EventError, OutcomeDetail>
 
 interface RepositoryPort {
     fun save(event: Event): Validated<EventError, OutcomeDetail>
+
+    fun findEvents(entityName: String, entityKey: String): Set<Event>
 }

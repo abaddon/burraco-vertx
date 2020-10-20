@@ -185,7 +185,11 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
 
 private fun List<BurracoGameEvent>.fold(): BurracoGame {
     val emptyBurracoGame = EmptyBurracoGame(GameIdentity(UUID.fromString("00000000-0000-0000-0000-000000000000")))
-    return this.fold(emptyBurracoGame) { i: BurracoGame, e: BurracoGameEvent -> i.applyEvent(e) }
+    return  when(this.isEmpty()){
+        true -> emptyBurracoGame
+        false -> this.fold(emptyBurracoGame) { i: BurracoGame, e: BurracoGameEvent -> i.applyEvent(e) }
+    }
+
 }
 
 data class EmptyBurracoGame constructor(override val identity: GameIdentity) : BurracoGame(identity)

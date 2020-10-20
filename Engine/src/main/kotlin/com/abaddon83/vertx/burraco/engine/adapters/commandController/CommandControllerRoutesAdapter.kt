@@ -4,7 +4,7 @@ import com.abaddon83.utils.es.Event
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.burraco.engine.adapters.commandController.models.ErrorMsgModule
-import com.abaddon83.vertx.burraco.engine.adapters.eventStoreVertx.EventStoreVertxAdapter
+import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.EventStoreVertxAdapter
 import com.abaddon83.vertx.burraco.engine.commands.CmdResult
 import com.abaddon83.vertx.burraco.engine.commands.CreateNewBurracoGameCmd
 import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
@@ -39,6 +39,7 @@ class CommandControllerRoutesAdapter(vertx: Vertx) : CommandControllerPort {
         router.route().handler(BodyHandler.create())
 
         router.post("/games/burraco").handler(::createNewBurracoGameHandler)
+        router.post("/games/burraco/{{gameId}}/join").handler(::joinPlayerHandler)
 
         return router
     }
@@ -46,10 +47,9 @@ class CommandControllerRoutesAdapter(vertx: Vertx) : CommandControllerPort {
     private fun createNewBurracoGameHandler(routingContext: RoutingContext) {
 
         val requestJson = routingContext.bodyAsJson
-
-        GlobalScope.launch(vertx.dispatcher()) {
+        //GlobalScope.launch(vertx.dispatcher()) {
             try {
-                var result = awaitResult<Outcome> { resultHandler ->
+                //var result = awaitResult<Outcome> { resultHandler ->
                     val outcome: Outcome = when (requestJson) {
                         null -> Invalid<String>("json missing") as Outcome
                         else -> {
@@ -60,18 +60,18 @@ class CommandControllerRoutesAdapter(vertx: Vertx) : CommandControllerPort {
                             }
                         }
                     }
-                    resultHandler.handle(Future.succeededFuture(outcome))
-                }
+                    //resultHandler.handle(Future.succeededFuture(outcome))
+                //}
 
-                when (result) {
+                when (outcome) {
                     is Valid -> routingContext.response()
                         .putHeader("content-type", "application/json; charset=utf-8")
                         .setStatusCode(200)
-                        .end(Json.encodePrettily(result))
+                        .end(Json.encodePrettily(outcome))
                     is Invalid -> routingContext.response()
                         .putHeader("content-type", "application/json; charset=utf-8")
                         .setStatusCode(400)
-                        .end(Json.encodePrettily(ErrorMsgModule(code = "400", message = result.err.toString())))
+                        .end(Json.encodePrettily(ErrorMsgModule(code = "400", message = outcome.err.toString())))
                 }
             }catch (e: Exception) {
                 routingContext.response().putHeader("Content-Type", "text/plain")
@@ -82,10 +82,14 @@ class CommandControllerRoutesAdapter(vertx: Vertx) : CommandControllerPort {
                     .toString()
                 routingContext.response().end(msg)
             }
-        }
+        //}
+    }
 
+    private fun joinPlayerHandler(routingContext: RoutingContext) {
 
     }
+
+
 
     override fun createNewBurracoGame(gameIdentity: GameIdentity): Outcome {
         val cmdResult = commandHandle.handle(CreateNewBurracoGameCmd(gameIdentity))

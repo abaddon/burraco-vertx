@@ -14,16 +14,19 @@
 * under the License.
 */
 
-package com.abaddon83.vertx.burraco.engine.adapters.eventStoreVertx;
+package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx;
 
-import com.abaddon83.vertx.burraco.engine.adapters.eventStoreVertx.model.ExtendEvent;
+import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.serviceproxy.HelperUtils;
 import io.vertx.serviceproxy.ProxyHandler;
 import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
+
+import java.util.stream.Collectors;
 /*
   Generated Proxy code - DO NOT EDIT
   @author Roger the Robot
@@ -97,6 +100,22 @@ public class EventStoreServiceVertxProxyHandler extends ProxyHandler {
         case "persist": {
           service.persist(json.getJsonObject("event") == null ? null : new ExtendEvent(json.getJsonObject("event")),
                         HelperUtils.createHandler(msg));
+          break;
+        }
+        case "getEntityEvents": {
+          service.getEntityEvents((String)json.getValue("entityName"),
+                        (String)json.getValue("entityKey"),
+                        res -> {
+                        if (res.failed()) {
+                          if (res.cause() instanceof ServiceException) {
+                            msg.reply(res.cause());
+                          } else {
+                            msg.reply(new ServiceException(-1, res.cause().getMessage()));
+                          }
+                        } else {
+                          msg.reply(new JsonArray(res.result().stream().map(r -> r == null ? null : r.toJson()).collect(Collectors.toList())));
+                        }
+                     });
           break;
         }
         default: throw new IllegalStateException("Invalid action: " + action);

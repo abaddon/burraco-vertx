@@ -14,23 +14,28 @@
 * under the License.
 */
 
-package com.abaddon83.vertx.burraco.engine.adapters.eventStoreVertx;
+package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx;
 
-import com.abaddon83.vertx.burraco.engine.adapters.eventStoreVertx.model.ExtendEvent;
+import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 /*
   Generated Proxy code - DO NOT EDIT
   @author Roger the Robot
 */
 
-//@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class EventStoreServiceVertxEBProxy implements EventStoreService {
   private Vertx _vertx;
   private String _address;
@@ -66,6 +71,30 @@ public class EventStoreServiceVertxEBProxy implements EventStoreService {
         resultHandler.handle(Future.failedFuture(res.cause()));
       } else {
         resultHandler.handle(Future.succeededFuture(res.result().body()));
+      }
+    });
+  }
+  @Override
+  public  void getEntityEvents(String entityName, String entityKey, Handler<AsyncResult<Set<ExtendEvent>>> resultHandler){
+    if (closed) {
+      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
+    }
+    JsonObject _json = new JsonObject();
+    _json.put("entityName", entityName);
+    _json.put("entityKey", entityKey);
+
+    DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
+    _deliveryOptions.addHeader("action", "getEntityEvents");
+    _vertx.eventBus().<JsonArray>request(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      } else {
+        resultHandler.handle(Future.succeededFuture(res.result().body().stream()
+          .map(o -> { if (o == null) return null;
+              return o instanceof Map ? new ExtendEvent(new JsonObject((Map) o)) : new ExtendEvent((JsonObject) o);
+            })
+          .collect(Collectors.toSet())));
       }
     });
   }
