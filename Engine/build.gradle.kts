@@ -8,7 +8,6 @@ plugins {
     kotlin("jvm") version "1.4.10"
     application
     id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("com.github.mtatheonly.quasar-gradle-plugin") version "0.0.1"
 
 }
 
@@ -39,8 +38,8 @@ application {
 
 dependencies {
 
-//    implementation("io.vertx:vertx-sync:$vertxVersion")
-//    implementation("co.paralleluniverse:quasar-core")
+    //implementation("io.vertx:vertx-sync:$vertxVersion")
+    //implementation("co.paralleluniverse:quasar-core")
 
     implementation("io.vertx:vertx-config:$vertxVersion")
     implementation("io.vertx:vertx-web-client:$vertxVersion")

@@ -4,14 +4,11 @@ import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent
 import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
-import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 import io.vertx.core.Promise
 import io.vertx.core.Vertx
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.kotlin.coroutines.awaitResult
-import io.vertx.kotlin.coroutines.dispatcher
-import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -43,10 +40,9 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
         }
     }
 
-    override fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
-         val eventSet = runBlocking(vertx.dispatcher()){
-             nonAsyncMethod2(pk,"BurracoGame")
-         }
+    override fun getBurracoGameEvents(pk: String, handler: Handler<List<BurracoGameEvent>>) {
+
+        val eventSet=nonAsyncMethod3("pk","BurracoGame")
 
         log.info(">> ${eventSet.size} events loaded")
         return when {
@@ -97,6 +93,15 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
                 .getEntityEvents(entityName, pk, handler)
         }
     }
+
+    fun nonAsyncMethod3(pk: String, entityName: String): Set<ExtendEvent> {
+        return awaitResult<Set<ExtendEvent>> { handler ->
+            EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
+                .getEntityEvents(entityName, pk, handler)
+        }
+    }
+
+
 
 //    private fun getEvents2(pk: String, entityName: String): Set<ExtendEvent> {
 //        var result: Set<ExtendEvent> = setOf()
