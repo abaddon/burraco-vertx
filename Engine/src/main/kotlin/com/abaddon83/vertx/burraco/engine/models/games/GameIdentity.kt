@@ -8,6 +8,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import java.lang.Exception
 import java.util.*
 
 @Serializable( with = GameIdentityCustomSerializer::class)
@@ -15,9 +16,14 @@ data class GameIdentity constructor(val id: UUID) : UUIDIdentity(id) {
 
     companion object Factory {
         fun create(): GameIdentity = GameIdentity(UUID.randomUUID())
-        fun create(uuidString: String): GameIdentity {
-            val uuid = UUID.fromString(uuidString)
-            return GameIdentity(uuid)
+        fun create(uuidString: String): GameIdentity? {
+            return try{
+                val uuid = UUID.fromString(uuidString)
+                GameIdentity(uuid)
+            } catch (ex: Exception){
+                null
+            }
+
         }
     }
 }
@@ -32,6 +38,6 @@ object GameIdentityCustomSerializer: KSerializer<GameIdentity> {
 
     override fun deserialize(decoder: Decoder): GameIdentity {
         val uuidString = decoder.decodeString()
-        return GameIdentity.create(uuidString)
+        return GameIdentity.create(uuidString)!!
     }
 }

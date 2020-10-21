@@ -4,8 +4,18 @@ import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent
 import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
-import io.vertx.core.*
+import io.vertx.core.AsyncResult
+import io.vertx.core.Handler
+import io.vertx.core.Promise
+import io.vertx.core.Vertx
 import io.vertx.core.logging.LoggerFactory
+import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.coroutines.dispatcher
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+
 
 class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
     private val vertx: Vertx = vertx
@@ -33,16 +43,21 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
         }
     }
 
-
     override fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
-        val result= getEvents(pk,"BurracoGame").future().result()
-        return listOf<BurracoGameEvent>()
-        //result.ifEmpty { return listOf<BurracoGameEvent>() }
+         val eventSet = runBlocking(vertx.dispatcher()){
+             nonAsyncMethod2(pk,"BurracoGame")
+         }
 
-        return result.fold(listOf<BurracoGameEvent>()) { list, extendedEvent ->
-            when (val ev = extendedEvent.toEvent()) {
-                is BurracoGameEvent -> listOf(list, listOf<BurracoGameEvent>(ev)).flatten()
-                else -> list
+        log.info(">> ${eventSet.size} events loaded")
+        return when {
+            eventSet.isEmpty() -> listOf()
+            else -> {
+                eventSet.fold(listOf<BurracoGameEvent>()) { list, extendedEvent ->
+                    when (val ev = extendedEvent.toEvent()) {
+                        is BurracoGameEvent -> listOf(list, listOf<BurracoGameEvent>(ev)).flatten()
+                        else -> list
+                    }
+                }
             }
         }
     }
@@ -52,13 +67,54 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
         EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
             .getEntityEvents(entityName, pk) { ar ->
                 if (ar.succeeded()) {
-                    log.info("future done ${ar.result()}")
+                    log.info("${ar.result().size} events loaded")
                     done.complete(ar.result())
-                }else{
+                } else {
                     log.error("future failed ${ar.cause()}")
                     done.fail("Get event failed")
                 }
             }
         return done
     }
+
+    suspend fun nonAsyncMethod1(pk: String, entityName: String): Set<ExtendEvent> = suspendCoroutine { cont ->
+        EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
+        .getEntityEvents(entityName, pk) { ar ->
+            if (ar.succeeded()) {
+                log.info("${ar.result().size} events loaded")
+                cont.resume(ar.result())
+            } else {
+                log.error("future failed ${ar.cause()}")
+                cont.resumeWithException(ar.cause())
+            }
+        }
+
+    }
+
+    suspend fun nonAsyncMethod2(pk: String, entityName: String): Set<ExtendEvent> {
+        return awaitResult<Set<ExtendEvent>> { handler ->
+            EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
+                .getEntityEvents(entityName, pk, handler)
+        }
+    }
+
+//    private fun getEvents2(pk: String, entityName: String): Set<ExtendEvent> {
+//        var result: Set<ExtendEvent> = setOf()
+//        val waitFor = CoroutineScope(Dispatchers.IO).async {
+//            EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
+//                .getEntityEvents(entityName, pk) { ar ->
+//                    if (ar.succeeded()) {
+//                        log.info("${ar.result().size} events loaded")
+//                        result = ar.result().toSet()
+//                    } else {
+//                        log.error("future failed ${ar.cause()}")
+//                        ar.result().toSet()
+//                    }
+//                }
+//            return@async result
+//        }
+//
+//        return result
+//    }
+
 }

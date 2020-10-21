@@ -2,7 +2,9 @@ package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.mode
 
 import com.abaddon83.utils.es.Event
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.vertx.core.json.JsonObject
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.time.Instant
@@ -12,7 +14,12 @@ data class ExtendEvent(
     val name: String, val entityKey: UUID, val entityName: String, val instant: Instant, val jsonPayload: String
 ) {
     @JsonCreator
-    constructor(json: JsonObject) : this(json.mapTo(ExtendEvent::class.java))
+    constructor(json: JsonObject) : this(
+        name = json.getString("name"),
+        entityKey = UUID.fromString(json.getString("entityKey")),
+        entityName = json.getString("entityName"),
+        instant = json.getInstant("instant"),
+        jsonPayload =json.getString("jsonPayload"))
 
     constructor(ev: ExtendEvent) : this(ev.name, ev.entityKey, ev.entityName, ev.instant, ev.jsonPayload)
 

@@ -92,6 +92,10 @@ public class EventStoreServiceVertxEBProxy implements EventStoreService {
       } else {
         resultHandler.handle(Future.succeededFuture(res.result().body().stream()
           .map(o -> { if (o == null) return null;
+
+            //JsonObject debug = o instanceof Map ? new JsonObject((Map) o) : (JsonObject) o;
+            //System.out.println(">>>> "+debug.toString());
+
               return o instanceof Map ? new ExtendEvent(new JsonObject((Map) o)) : new ExtendEvent((JsonObject) o);
             })
           .collect(Collectors.toSet())));
