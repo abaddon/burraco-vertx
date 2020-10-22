@@ -4,11 +4,20 @@ import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent
 import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
+import io.vertx.core.Future
 import io.vertx.core.Handler
 import io.vertx.core.Promise
 import io.vertx.core.Vertx
 import io.vertx.core.logging.LoggerFactory
+import io.vertx.kotlin.core.onCompleteAwait
 import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.coroutines.dispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import javax.xml.bind.JAXBElement
+import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -40,15 +49,16 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
         }
     }
 
-    override fun getBurracoGameEvents(pk: String, handler: Handler<List<BurracoGameEvent>>) {
+    override fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
+        val promiseEventSet: Promise<Set<ExtendEvent>> = getEvents("pk", "BurracoGame")
+        promiseEventSet.future()
+        val eventSet = listOf<ExtendEvent>()
 
-        val eventSet=nonAsyncMethod3("pk","BurracoGame")
-
-        log.info(">> ${eventSet.size} events loaded")
+        log.info(">> ${eventSet!!.size} events loaded")
         return when {
-            eventSet.isEmpty() -> listOf()
+            eventSet!!.isEmpty() -> listOf()
             else -> {
-                eventSet.fold(listOf<BurracoGameEvent>()) { list, extendedEvent ->
+                eventSet!!.fold(listOf<BurracoGameEvent>()) { list, extendedEvent ->
                     when (val ev = extendedEvent.toEvent()) {
                         is BurracoGameEvent -> listOf(list, listOf<BurracoGameEvent>(ev)).flatten()
                         else -> list
@@ -59,12 +69,12 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
     }
 
     private fun getEvents(pk: String, entityName: String): Promise<Set<ExtendEvent>> {
-        val done = Promise.promise<Set<ExtendEvent>>()
+        val done: Promise<Set<ExtendEvent>> = Promise.promise()
         EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
             .getEntityEvents(entityName, pk) { ar ->
                 if (ar.succeeded()) {
                     log.info("${ar.result().size} events loaded")
-                    done.complete(ar.result())
+                    return@getEntityEvents done.complete(ar.result())
                 } else {
                     log.error("future failed ${ar.cause()}")
                     done.fail("Get event failed")
@@ -75,32 +85,24 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
 
     suspend fun nonAsyncMethod1(pk: String, entityName: String): Set<ExtendEvent> = suspendCoroutine { cont ->
         EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
-        .getEntityEvents(entityName, pk) { ar ->
-            if (ar.succeeded()) {
-                log.info("${ar.result().size} events loaded")
-                cont.resume(ar.result())
-            } else {
-                log.error("future failed ${ar.cause()}")
-                cont.resumeWithException(ar.cause())
+            .getEntityEvents(entityName, pk) { ar ->
+                if (ar.succeeded()) {
+                    log.info("${ar.result().size} events loaded")
+                    cont.resume(ar.result())
+                } else {
+                    log.error("future failed ${ar.cause()}")
+                    cont.resumeWithException(ar.cause())
+                }
             }
-        }
 
     }
 
-    suspend fun nonAsyncMethod2(pk: String, entityName: String): Set<ExtendEvent> {
+    suspend fun nonAsyncMethod3(pk: String, entityName: String): Set<ExtendEvent> {
         return awaitResult<Set<ExtendEvent>> { handler ->
             EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
                 .getEntityEvents(entityName, pk, handler)
         }
     }
-
-    fun nonAsyncMethod3(pk: String, entityName: String): Set<ExtendEvent> {
-        return awaitResult<Set<ExtendEvent>> { handler ->
-            EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
-                .getEntityEvents(entityName, pk, handler)
-        }
-    }
-
 
 
 //    private fun getEvents2(pk: String, entityName: String): Set<ExtendEvent> {
