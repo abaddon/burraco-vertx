@@ -12,6 +12,8 @@ import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
 import com.abaddon83.utils.es.Event
 import com.abaddon83.utils.functionals.*
 import com.abaddon83.utils.logs.WithLog
+import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
+import com.abaddon83.vertx.burraco.engine.models.burracoGameendeds.BurracoGameEnded
 import java.util.*
 
 typealias CmdResult = Validated<DomainError, Iterable<Event>>
@@ -179,17 +181,26 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
-
-
 }
 
 private fun List<BurracoGameEvent>.fold(): BurracoGame {
     val emptyBurracoGame = EmptyBurracoGame(GameIdentity(UUID.fromString("00000000-0000-0000-0000-000000000000")))
     return  when(this.isEmpty()){
         true -> emptyBurracoGame
-        false -> this.fold(emptyBurracoGame) { i: BurracoGame, e: BurracoGameEvent -> i.applyEvent(e) }
+        false -> this.fold(emptyBurracoGame) { i: BurracoGame, e: BurracoGameEvent ->
+//            println("event: ${e.javaClass.simpleName}")
+//            println("burracoGame is BurracoGame: ${i is BurracoGame}")
+//            println("burracoGame is BurracoGameWaitingPlayers: ${i is BurracoGameWaitingPlayers}")
+            when(i){
+                is BurracoGameWaitingPlayers -> i.applyEvent(e)
+                is BurracoGameExecutionTurnBeginning -> i.applyEvent(e)
+                is BurracoGameExecutionTurnExecution -> i.applyEvent(e)
+                is BurracoGameExecutionTurnEnd -> i.applyEvent(e)
+                is BurracoGameEnded -> i.applyEvent(e)
+                else -> i.applyEvent(e)
+            }
+        }
     }
-
 }
 
 data class EmptyBurracoGame constructor(override val identity: GameIdentity) : BurracoGame(identity)

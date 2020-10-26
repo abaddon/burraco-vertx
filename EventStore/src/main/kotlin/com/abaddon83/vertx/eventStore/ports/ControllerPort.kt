@@ -8,9 +8,10 @@ import com.abaddon83.vertx.eventStore.queries.QueryHandler
 interface ControllerPort {
 
     val repository: RepositoryPort
+    val eventStream: EventStreamPort
 
     val commandHandle: CommandHandler
-        get() = CommandHandler(repository)
+        get() = CommandHandler(repository,eventStream)
 
     val queryHandler: QueryHandler
         get() = QueryHandler(repository)

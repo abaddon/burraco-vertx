@@ -23,6 +23,8 @@ class AddPlayerCmdTest {
     fun `Given a command to add a player to the game, when I execute the command, then the player is added`(){
         val command = AddPlayerCmd(gameIdentity = gameIdentity, playerIdentityToAdd = PlayerIdentity.create())
         assert(commandHandler.handle(command) is Valid)
+        val command2 = AddPlayerCmd(gameIdentity = gameIdentity, playerIdentityToAdd = PlayerIdentity.create())
+        assert(commandHandler.handle(command2) is Valid)
     }
 
     @Test

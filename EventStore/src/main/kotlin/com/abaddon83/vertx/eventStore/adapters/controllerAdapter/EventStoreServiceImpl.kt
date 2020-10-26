@@ -3,11 +3,13 @@ package com.abaddon83.vertx.eventStore.adapters.controllerAdapter
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.eventStore.adapters.controllerAdapter.model.ExtendEvent
+import com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter.KafkaEventStreamAdapter
 import com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.mysql.MysqlRepositoryAdapter
 import com.abaddon83.vertx.eventStore.commands.CmdResult
 import com.abaddon83.vertx.eventStore.commands.PersistEventCmd
 import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.ControllerPort
+import com.abaddon83.vertx.eventStore.ports.EventStreamPort
 import com.abaddon83.vertx.eventStore.ports.Outcome
 import com.abaddon83.vertx.eventStore.ports.RepositoryPort
 import com.abaddon83.vertx.eventStore.queries.GetEntityEvents
@@ -19,11 +21,14 @@ import io.vertx.core.Vertx
 
 class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
 
-    //private val vertx: Vertx = vertx
+    private val vertx: Vertx = vertx
     override val repository: RepositoryPort
         //get() = VertxMysqlRepositoryAdapter(vertx) //Vertx Mysql Repository Adapter
         //get() = InMemoryRepositoryAdapter() //In Memory repository Adapter
         get() = MysqlRepositoryAdapter()
+
+    override val eventStream: EventStreamPort
+        get() = KafkaEventStreamAdapter(vertx)
 
     override fun persist(event: ExtendEvent, resultHandler: Handler<AsyncResult<Boolean>>) {
         val result = when (persist(event)) {

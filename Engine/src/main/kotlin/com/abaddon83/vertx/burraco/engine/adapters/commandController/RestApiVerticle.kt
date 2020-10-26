@@ -9,7 +9,7 @@ class RestApiVerticle: AbstractHttpServiceVerticle() {
         private val log = LoggerFactory.getLogger(this::class.qualifiedName)!!
     }
     override suspend fun start() {
-        val commandControllerRoutes = CommandControllerRoutesAdapter(vertx)
+        val commandControllerRoutes = CommandControllerRoutes(vertx)
         val router = commandControllerRoutes.getRouters()
 
         startServer(8080, router)

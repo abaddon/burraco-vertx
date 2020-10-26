@@ -8,7 +8,7 @@ plugins {
     kotlin("jvm") version "1.4.10"
     application
     id("com.github.johnrengelman.shadow") version "5.2.0"
-
+    kotlin("plugin.serialization") version "1.4.10"
 }
 
 group = "com.abaddon83.vertx.burraco.engine"
@@ -55,7 +55,7 @@ dependencies {
 
 
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0-RC2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
     implementation("junit:junit:4.12") // JVM dependency
     //testImplementation("io.vertx:vertx-junit5:$vertxVersion")
     //testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
