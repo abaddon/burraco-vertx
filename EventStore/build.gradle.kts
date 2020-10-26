@@ -44,7 +44,7 @@ dependencies {
     //implementation("io.vertx:vertx-web:$vertxVersion")
 
 
-
+    implementation("io.vertx:vertx-kafka-client:$vertxVersion")
 
     implementation("io.vertx:vertx-service-proxy:$vertxVersion")
     "kapt"("io.vertx:vertx-codegen:$vertxVersion:processor")
@@ -62,8 +62,6 @@ dependencies {
     implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
 
     implementation("io.vertx:vertx-hazelcast:$vertxVersion")
-
-    implementation("io.vertx:vertx-mysql-client:$vertxVersion")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
 

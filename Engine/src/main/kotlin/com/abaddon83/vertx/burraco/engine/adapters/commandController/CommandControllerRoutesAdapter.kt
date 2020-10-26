@@ -84,33 +84,81 @@ class CommandControllerRoutesAdapter(vertx: Vertx) : CommandControllerPort {
     private fun joinPlayerHandler(routingContext: RoutingContext) {
         val requestJson = routingContext.bodyAsJson
         try {
-            val outcome: Outcome =
-                when (val gameIdentity = GameIdentity.create(routingContext.request().getParam("gameId"))) {
-                    is GameIdentity -> when (requestJson) {
-                        null -> Invalid<String>("json missing") as Outcome
-                        else -> {
-                            when (val playerIdentity = PlayerIdentity.create(requestJson.getString("playerIdentity"))) {
-                                is PlayerIdentity -> joinPlayer(gameIdentity, playerIdentity = playerIdentity)
-                                else -> Invalid<String>("playerIdentity ${requestJson.getString("playerIdentity")} is not a valid UUID") as Outcome
+            when (val gameIdentity = GameIdentity.create(routingContext.request().getParam("gameId"))) {
+                is GameIdentity -> when (requestJson) {
+                    null -> Invalid<String>("json missing") as Outcome
+                    else -> {
+                        when (val playerIdentity = PlayerIdentity.create(requestJson.getString("playerIdentity"))) {
+                            is PlayerIdentity -> {
+                                val eventStoreVertxAdapter =(eventStore as EventStoreVertxAdapter)
+                                eventStoreVertxAdapter
+                                    .getEvents(gameIdentity.convertTo().toString(), "BurracoGame")
+                                    .future()
+                                    .onComplete { ar ->
+                                        eventStoreVertxAdapter
+                                            .loadExtendedEvents(gameIdentity.convertTo().toString(), ar.result())
+                                        when (val outcome = joinPlayer(gameIdentity, playerIdentity = playerIdentity)) {
+                                            is Valid -> routingContext.response()
+                                                .putHeader("content-type", "application/json; charset=utf-8")
+                                                .setStatusCode(200)
+                                                .end(Json.encodePrettily(outcome))
+                                            is Invalid -> routingContext.response()
+                                                .putHeader("content-type", "application/json; charset=utf-8")
+                                                .setStatusCode(400)
+                                                .end(
+                                                    Json.encodePrettily(
+                                                        ErrorMsgModule(
+                                                            code = "400",
+                                                            message = outcome.err.toString()
+                                                        )
+                                                    )
+                                                )
+                                        }
+                                    }.onFailure {
+                                        val outcome: Outcome =
+                                            Invalid("playerIdentity ${requestJson.getString("playerIdentity")} is not a valid UUID") as Outcome
+                                        routingContext.response()
+                                            .putHeader("content-type", "application/json; charset=utf-8")
+                                            .setStatusCode(400)
+                                            .end(
+                                                Json.encodePrettily(
+                                                    ErrorMsgModule(
+                                                        code = "400",
+                                                        message = outcome.toString()
+                                                    )
+                                                )
+                                            )
+                                    }
+                            }
+                            else -> {
+                                val outcome =
+                                    Invalid<String>("playerIdentity ${requestJson.getString("playerIdentity")} is not a valid UUID") as Outcome
+                                routingContext.response()
+                                    .putHeader("content-type", "application/json; charset=utf-8")
+                                    .setStatusCode(400)
+                                    .end(
+                                        Json.encodePrettily(
+                                            ErrorMsgModule(
+                                                code = "400",
+                                                message = outcome.toString()
+                                            )
+                                        )
+                                    )
                             }
                         }
                     }
-                    else -> Invalid<String>(
+                }
+                else -> {
+                    val outcome = Invalid<String>(
                         "gameId ${
                             routingContext.request().getParam("gameId")
                         } is not a valid UUID"
                     ) as Outcome
+                    routingContext.response()
+                        .putHeader("content-type", "application/json; charset=utf-8")
+                        .setStatusCode(400)
+                        .end(Json.encodePrettily(ErrorMsgModule(code = "400", message = outcome.toString())))
                 }
-
-            when (outcome) {
-                is Valid -> routingContext.response()
-                    .putHeader("content-type", "application/json; charset=utf-8")
-                    .setStatusCode(200)
-                    .end(Json.encodePrettily(outcome))
-                is Invalid -> routingContext.response()
-                    .putHeader("content-type", "application/json; charset=utf-8")
-                    .setStatusCode(400)
-                    .end(Json.encodePrettily(ErrorMsgModule(code = "400", message = outcome.err.toString())))
             }
         } catch (e: Exception) {
             routingContext.response().putHeader("Content-Type", "text/plain")
@@ -130,7 +178,7 @@ class CommandControllerRoutesAdapter(vertx: Vertx) : CommandControllerPort {
     }
 
     override fun joinPlayer(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
-        val cmdResult = commandHandle.handle(AddPlayerCmd(burracoGameIdentity,playerIdentity ))
+        val cmdResult = commandHandle.handle(AddPlayerCmd(burracoGameIdentity, playerIdentity))
         return CmdResultAdapter.toOutcome(cmdResult = cmdResult)
     }
 
