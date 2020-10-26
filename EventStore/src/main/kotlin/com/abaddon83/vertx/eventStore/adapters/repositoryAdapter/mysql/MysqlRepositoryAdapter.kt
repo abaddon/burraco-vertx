@@ -55,6 +55,7 @@ class MysqlRepositoryAdapter: RepositoryPort {
             .from(EventTable)
             .select()
             .where {(EventTable.entityName eq entityName) and (EventTable.entityKey eq entityKey)  }
+            .orderBy(EventTable.instant.desc())
 
         return query.map { row ->
             Event(

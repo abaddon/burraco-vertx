@@ -61,7 +61,7 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
                     }
                 }
             }
-        }
+        }.sortedBy { e -> e.created }.reversed()
     }
 
     fun loadExtendedEvents(pk: String,events: Set<ExtendEvent>){
