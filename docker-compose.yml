@@ -54,32 +54,6 @@ services:
       - ./KafkaCluster/content/:/var/content/:ro
       - ./KafkaCluster/solutions/:/var/solutions/:ro
       - ./KafkaCluster/shared/:/var/shared/:rw
-#  zk2:
-#    image: zookeeper-node
-#    container_name: zk2
-#    networks:
-#      - burraco-project
-#    tty: true
-#    environment:
-#      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
-#      - MYID=2
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/solutions/:/var/solutions/:ro
-#      - ./KafkaCluster/shared/:/var/shared/:rw
-#  zk3:
-#    image: zookeeper-node
-#    container_name: zk3
-#    networks:
-#      - burraco-project
-#    tty: true
-#    environment:
-#      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
-#      - MYID=3
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/solutions/:/var/solutions/:ro
-#      - ./KafkaCluster/shared/:/var/shared/:rw
 
   kafka1:
     image: kafka-node
@@ -97,34 +71,6 @@ services:
       - ./KafkaCluster/content/:/var/content/:ro
       - ./KafkaCluster/solutions/:/var/solutions/:ro
       - ./KafkaCluster/shared/:/var/shared/:rw
-
-#  kafka2:
-#    image: kafka-node
-#    container_name: kafka2
-#    networks:
-#      - burraco-project
-#    tty: true
-#    environment:
-#      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
-#      - KAFKA_CONFIG=server2.properties
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/solutions/:/var/solutions/:ro
-#      - ./KafkaCluster/shared/:/var/shared/:rw
-#
-#  kafka3:
-#    image: kafka-node
-#    container_name: kafka3
-#    networks:
-#      - burraco-project
-#    tty: true
-#    environment:
-#      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
-#      - KAFKA_CONFIG=server3.properties
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/solutions/:/var/solutions/:ro
-#      - ./KafkaCluster/shared/:/var/shared/:rw
 
   prometheus:
     image: prom/prometheus:v2.19.1
