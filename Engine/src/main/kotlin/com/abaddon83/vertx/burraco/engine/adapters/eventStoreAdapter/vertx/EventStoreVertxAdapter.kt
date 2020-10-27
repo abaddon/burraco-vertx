@@ -4,16 +4,9 @@ import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent
 import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
-import io.vertx.core.Handler
 import io.vertx.core.Promise
 import io.vertx.core.Vertx
 import io.vertx.core.logging.LoggerFactory
-import io.vertx.kotlin.coroutines.awaitResult
-import io.vertx.kotlin.coroutines.dispatcher
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 
 class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
@@ -24,11 +17,6 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
         const val SERVICE_ADDRESS = "eventstore-bus-service-address"
         private val log = LoggerFactory.getLogger(this::class.qualifiedName)!!
     }
-
-//    private inline fun <reified T> getService(clazz: Class<T>): T {
-//        val builder = ServiceProxyBuilder(vertx).setAddress(SERVICE_ADDRESS)
-//        return builder.build(T::class.java)
-//    }
 
     override fun save(events: Iterable<Event>) {
         events.forEach { event ->

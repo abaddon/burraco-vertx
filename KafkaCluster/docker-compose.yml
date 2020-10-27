@@ -1,0 +1,165 @@
+version: '3.3'
+
+networks:
+  kafka-training:
+    external:
+      name: kafka-training 
+
+services:
+  zk1:
+    image: zookeeper-node
+    container_name: zk1
+    networks:
+        - kafka-training
+    tty: true
+    environment:
+      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
+      - MYID=1
+    ports:
+        - "2181:2181"
+    volumes:
+      - ./content/:/var/content/:ro
+      - ./solutions/:/var/solutions/:ro
+      - ./shared/:/var/shared/:rw
+
+  zk2:
+    image: zookeeper-node
+    container_name: zk2
+    networks:
+        - kafka-training
+    tty: true
+    environment:
+      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
+      - MYID=2
+    # ports:
+    #     - "2181:2181"
+    volumes:
+      - ./content/:/var/content/:ro
+      - ./solutions/:/var/solutions/:ro
+      - ./shared/:/var/shared/:rw
+
+  zk3:
+    image: zookeeper-node
+    container_name: zk3
+    networks:
+        - kafka-training
+    tty: true
+    environment:
+      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
+      - MYID=3
+    # ports:
+    #     - "2181:2181"
+    volumes:
+      - ./content/:/var/content/:ro
+      - ./solutions/:/var/solutions/:ro
+      - ./shared/:/var/shared/:rw
+
+  kafka1:
+    image: kafka-node
+    container_name: kafka1
+    networks:
+      - kafka-training
+    tty: true
+    environment:
+      #- KAFKA_OPTS=-Djava.security.auth.login.config=/var/content/kafka1_jaas.conf -Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+      - KAFKA_CONFIG=server1.properties
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - ./content/:/var/content/:ro
+      - ./solutions/:/var/solutions/:ro
+      - ./shared/:/var/shared/:rw
+
+  kafka2:
+    image: kafka-node
+    container_name: kafka2
+    networks:
+      - kafka-training
+    tty: true
+    environment:
+      #- KAFKA_OPTS=-Djava.security.auth.login.config=/var/content/kafka2_jaas.conf -Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+      - KAFKA_CONFIG=server2.properties
+    volumes:
+      - ./content/:/var/content/:ro
+      - ./solutions/:/var/solutions/:ro
+      - ./shared/:/var/shared/:rw
+
+  kafka3:
+    image: kafka-node
+    container_name: kafka3
+    networks:
+      - kafka-training
+    tty: true
+    environment:
+      #- KAFKA_OPTS=-Djava.security.auth.login.config=/var/content/kafka3_jaas.conf -Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+      - KAFKA_CONFIG=server3.properties
+    volumes:
+      - ./content/:/var/content/:ro
+      - ./solutions/:/var/solutions/:ro
+      - ./shared/:/var/shared/:rw
+
+  # kafka4:
+  #   image: kafka-node
+  #   container_name: kafka4
+  #   networks:
+  #     - kafka-training
+  #   tty: true
+  #   environment:
+  #     #- KAFKA_OPTS=-Djava.security.auth.login.config=/var/content/kafka4_jaas.conf -Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+  #     - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+  #     - KAFKA_CONFIG=server4.properties
+  #   volumes:
+  #     - ./content/:/var/content/:ro
+  #     - ./solutions/:/var/solutions/:ro
+  #     - ./shared/:/var/shared/:rw
+
+  prometheus:
+    image: prom/prometheus:v2.19.1
+    container_name: kafka-prometheus
+    networks:
+      - kafka-training
+    volumes:
+      - ./prometheus/prometheusConfig.yml:/etc/prometheus/prometheus.yml
+      - ./shared/:/var/shared/:rw
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:7.0.3
+    container_name: kafka-grafana
+    networks:
+      - kafka-training
+    volumes:
+      - ./prometheus/grafanaDatasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./shared/:/var/shared/:rw
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  # krb-server:
+  #   image: kafka
+  #   container_name: kafka-krb-server
+  #   networks:
+  #     - kafka-training
+  #   tty: true
+  #   volumes:
+  #     - ./content/:/var/content/:ro
+  #     - ./solutions/:/var/solutions/:ro
+  #     - ./shared/:/var/shared/:rw
+
+
+  kafka-toolbox:
+    image: kafka
+    container_name: kafka-toolbox
+    networks:
+      - kafka-training
+    tty: true
+    volumes:
+      - ./content/:/var/content/:ro
+      - ./solutions/:/var/solutions/:ro
+      - ./shared/:/var/shared/:rw

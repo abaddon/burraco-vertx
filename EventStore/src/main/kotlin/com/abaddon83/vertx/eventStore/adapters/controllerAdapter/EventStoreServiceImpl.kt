@@ -6,7 +6,7 @@ import com.abaddon83.vertx.eventStore.adapters.controllerAdapter.model.ExtendEve
 import com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter.KafkaEventStreamAdapter
 import com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.mysql.MysqlRepositoryAdapter
 import com.abaddon83.vertx.eventStore.commands.CmdResult
-import com.abaddon83.vertx.eventStore.commands.PersistEventCmd
+import com.abaddon83.vertx.eventStore.commands.PersistAndPublishEventCmd
 import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.ControllerPort
 import com.abaddon83.vertx.eventStore.ports.EventStreamPort
@@ -51,7 +51,8 @@ class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
     }
 
     override fun persist(event: Event): Outcome {
-        val cmd= PersistEventCmd(event)
+        //val cmd= PersistEventCmd(event)
+        val cmd= PersistAndPublishEventCmd(event)
         val cmdResult = commandHandle.handle(cmd)
         return CmdResultAdapter.toOutcome(cmdResult = cmdResult);
     }
