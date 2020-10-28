@@ -6,7 +6,7 @@ import java.util.*
 interface AggregateType
 
 
-abstract class AggregateRoot<T>(className: String): Entity<T>(className) {
+abstract class AggregateRoot<T>(className: String): Entity<T>() {
 
     abstract fun aggregateType(): AggregateType
 

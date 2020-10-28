@@ -203,19 +203,19 @@ class BurracoTrisTest {
         }
     }
 
-    @Test
-    fun `given a tris when I serialise it, then I should have the same tris deserialized`() {
-        val burracoTrisRank = Ranks.Five
-        val burracoTrisSize = 3
-
-        val burracoTris = createABurracoTrisWith(burracoTrisRank, burracoTrisSize)
-
-        val jsonString = Json.encodeToString(BurracoTrisCustomSerializer,burracoTris);
-        val deserializedTris = Json.decodeFromString<BurracoTris>(BurracoTrisCustomSerializer,jsonString)
-        assertEquals(burracoTris.identity(),deserializedTris.identity())
-        assertEquals(burracoTris.showCards(),deserializedTris.showCards())
-        assertEquals(burracoTris.showRank(),deserializedTris.showRank())
-    }
+//    @Test
+//    fun `given a tris when I serialise it, then I should have the same tris deserialized`() {
+//        val burracoTrisRank = Ranks.Five
+//        val burracoTrisSize = 3
+//
+//        val burracoTris = createABurracoTrisWith(burracoTrisRank, burracoTrisSize)
+//
+//        val jsonString = Json.encodeToString(BurracoTrisCustomSerializer,burracoTris);
+//        val deserializedTris = Json.decodeFromString<BurracoTris>(BurracoTrisCustomSerializer,jsonString)
+//        assertEquals(burracoTris.identity(),deserializedTris.identity())
+//        assertEquals(burracoTris.showCards(),deserializedTris.showCards())
+//        assertEquals(burracoTris.showRank(),deserializedTris.showRank())
+//    }
 
     //TODO missing test related to the definition of a Burraco
 

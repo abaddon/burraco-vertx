@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.ports
 
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
+import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.utils.es.Event
 
 

@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx
 
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
+import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
 import io.vertx.core.Promise
 import io.vertx.core.Vertx

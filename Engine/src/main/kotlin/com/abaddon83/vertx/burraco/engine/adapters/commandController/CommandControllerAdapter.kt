@@ -7,9 +7,9 @@ import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.Event
 import com.abaddon83.vertx.burraco.engine.commands.AddPlayerCmd
 import com.abaddon83.vertx.burraco.engine.commands.CmdResult
 import com.abaddon83.vertx.burraco.engine.commands.CreateNewBurracoGameCmd
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
-import com.abaddon83.vertx.burraco.engine.events.GameStarted
-import com.abaddon83.vertx.burraco.engine.events.PlayerAdded
+import com.abaddon83.burraco.common.events.BurracoGameCreated
+import com.abaddon83.burraco.common.events.GameStarted
+import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity

@@ -1,8 +1,8 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.events.GameStarted
-import com.abaddon83.vertx.burraco.engine.events.PlayerAdded
+import com.abaddon83.burraco.common.events.GameStarted
+import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.vertx.burraco.engine.models.*
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame

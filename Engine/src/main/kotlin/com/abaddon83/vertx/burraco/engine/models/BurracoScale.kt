@@ -2,11 +2,7 @@ package com.abaddon83.vertx.burraco.engine.models
 
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
 import com.abaddon83.burraco.common.models.identities.BurracoIdentityCustomSerializer
-import com.abaddon83.vertx.burraco.engine.models.burracos.Scale
-import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.common.models.valueObjects.CardCustomSerializer
-import com.abaddon83.burraco.common.models.valueObjects.Ranks
-import com.abaddon83.burraco.common.models.valueObjects.Suits
+import com.abaddon83.burraco.common.models.valueObjects.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -18,19 +14,21 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 import kotlin.math.min
 
-@Serializable(with = BurracoScaleCustomSerializer::class)
-data class BurracoScale(
-    override val identity: BurracoIdentity,
-    override val suit: Suits.Suit,
-    override val cards: List<Card>
-): Scale("BurracoScale") {
 
-    override fun addCards(cardsToAdd: List<Card>): BurracoScale = this.copy(
-                cards = validateNewCards(cardsToAdd)
+data class BurracoScale(
+    val bIdentity: BurracoIdentity,
+    val bSuit: Suits.Suit,
+    val bCards: List<Card>
+): Scale(bIdentity,bSuit,bCards) {
+
+    constructor(scale: Scale): this(scale.identity(),scale.suit,scale.showCards())
+
+    fun addCards(cardsToAdd: List<Card>): BurracoScale = this.copy(
+        bCards = validateNewCards(cardsToAdd)
         )
     
 
-    override fun validateNewCards(cardsToValidate: List<Card>): List<Card> {
+    private fun validateNewCards(cardsToValidate: List<Card>): List<Card> {
         check(cardsToValidate.find {c -> c.suit!= suit && c.suit!= Suits.Jolly} == null){warnMsg("The scale have multiple suites.")}
         return validateSequence(cards.plus(cardsToValidate), suit)
     }
@@ -40,7 +38,7 @@ data class BurracoScale(
             check(cards.size >= 3) {"A Scale is composed by 3 or more cards"}
             val scalaSuit = calculateScaleSuit(cards)
             val scalaCards = validateSequence(cards, scalaSuit)
-            return BurracoScale(identity = BurracoIdentity.create(), cards = scalaCards, suit = scalaSuit)
+            return BurracoScale(bIdentity = BurracoIdentity.create(), bCards = scalaCards, bSuit = scalaSuit)
         }
 
         private fun calculateScaleSuit(cards: List<Card>): Suits.Suit {
@@ -128,39 +126,5 @@ data class BurracoScale(
             return jollies
         }
 
-    }
-}
-
-
-object BurracoScaleCustomSerializer : KSerializer<BurracoScale> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BurracoScale", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: BurracoScale) {
-        val scaleString = Json.encodeToJsonElement(value.let { scale ->
-            mapOf(
-                    "identity" to Json.encodeToJsonElement(BurracoIdentityCustomSerializer,scale.identity()),
-                    "cards" to JsonArray(scale.showCards().map { card ->
-                        Json.encodeToJsonElement(CardCustomSerializer,card)
-                    }),
-                    "suit" to Json.encodeToJsonElement(scale.showSuit() .javaClass.simpleName),
-
-                    )
-        })
-        encoder.encodeString(scaleString.toString())
-    }
-
-    override fun deserialize(decoder: Decoder): BurracoScale {
-        val scaleJson = Json.decodeFromString<JsonElement>(decoder.decodeString())
-        return scaleJson.let { scale ->
-            val identity = Json.decodeFromJsonElement<BurracoIdentity>(BurracoIdentityCustomSerializer,scale.jsonObject.getValue("identity"))
-
-            val cards = (scale.jsonObject.getValue("cards").jsonArray.map { jsonElement ->
-                Json.decodeFromJsonElement<Card>(CardCustomSerializer,jsonElement)
-            }).toList()
-
-            val suit = Suits.valueOf(Json.decodeFromJsonElement<String>(scale.jsonObject.getValue("suit")))
-
-            BurracoScale(identity, suit, cards)
-        }
     }
 }

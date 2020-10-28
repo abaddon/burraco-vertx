@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.commands
 
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
+import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
@@ -12,7 +12,7 @@ import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.es.Event
 import com.abaddon83.utils.functionals.*
 import com.abaddon83.utils.logs.WithLog
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
+import com.abaddon83.burraco.common.events.BurracoGameCreated
 import com.abaddon83.vertx.burraco.engine.models.burracoGameendeds.BurracoGameEnded
 import java.util.*
 

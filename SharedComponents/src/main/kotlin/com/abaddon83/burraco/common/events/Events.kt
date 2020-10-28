@@ -1,11 +1,12 @@
-package com.abaddon83.vertx.burraco.engine.events
+package com.abaddon83.burraco.common.events
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.models.*
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Scale
+import com.abaddon83.burraco.common.models.valueObjects.Tris
 import kotlinx.serialization.*
 
 
@@ -36,9 +37,9 @@ data class CardsPickedFromDiscardPile(override val identity: GameIdentity, val p
 @Serializable
 data class CardDroppedIntoDiscardPile(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card) : BurracoGameEvent()
 @Serializable
-data class TrisDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val tris: BurracoTris) : BurracoGameEvent()
+data class TrisDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val tris: Tris) : BurracoGameEvent()
 @Serializable
-data class ScaleDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val scale: BurracoScale) : BurracoGameEvent()
+data class ScaleDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val scale: Scale) : BurracoGameEvent()
 @Serializable
 data class CardAddedOnBurraco(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val burracoIdentity: BurracoIdentity, val cardsToAppend: List<Card>): BurracoGameEvent()
 @Serializable

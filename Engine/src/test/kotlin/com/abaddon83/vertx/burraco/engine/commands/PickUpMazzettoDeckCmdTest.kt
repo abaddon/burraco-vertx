@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.engine.commands
 
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
-import com.abaddon83.vertx.burraco.engine.events.*
+import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
@@ -57,9 +57,9 @@ class PickUpMazzettoDeckCmdTest {
             .shuffled()
 
     val burracoTris = BurracoTris(
-            identity = BurracoIdentity.create(),
-            rank = Ranks.Five,
-            cards = listOf(Card(Suits.Tile, rank = Ranks.Five), Card(Suits.Heart, rank = Ranks.Five), Card(Suits.Tile, rank = Ranks.Five)))
+            BurracoIdentity.create(),
+            Ranks.Five,
+            listOf(Card(Suits.Tile, rank = Ranks.Five), Card(Suits.Heart, rank = Ranks.Five), Card(Suits.Tile, rank = Ranks.Five)))
 
     val cardsPlayer1 = Pair(playerIdentity1, burracoTris.showCards())
     val cardsPlayer2 = Pair(playerIdentity2, allCards.take(11))
@@ -87,8 +87,7 @@ class PickUpMazzettoDeckCmdTest {
                     playerTurn = playerIdentity1
             ),
             CardsPickedFromDiscardPile(identity = gameIdentity, playerIdentity = playerIdentity1, cards = discardPileCards),
-            TrisDropped(identity = gameIdentity, playerIdentity = playerIdentity1, tris = burracoTris.copy(cards = burracoTris.showCards().plus(discardPileCards)))
-            //CardDroppedIntoDiscardPile(gameIdentity = gameIdentity, player = playerIdentity1, cardDropped = discardPileCards.first())
+            TrisDropped(identity = gameIdentity, playerIdentity = playerIdentity1, tris = burracoTris.copy(bCards = burracoTris.showCards().plus(discardPileCards)))
 
     )
 }

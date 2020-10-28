@@ -1,8 +1,8 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.events.CardPickedFromDeck
-import com.abaddon83.vertx.burraco.engine.events.CardsPickedFromDiscardPile
+import com.abaddon83.burraco.common.events.CardPickedFromDeck
+import com.abaddon83.burraco.common.events.CardsPickedFromDiscardPile
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.DiscardPile

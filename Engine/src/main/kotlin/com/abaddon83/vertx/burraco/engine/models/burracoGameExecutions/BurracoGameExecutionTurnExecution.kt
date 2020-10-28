@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.events.*
+import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.*
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
@@ -108,14 +108,14 @@ data class BurracoGameExecutionTurnExecution private constructor(
     private fun apply(event: TrisDropped): BurracoGameExecutionTurnExecution {
         val player = players.find { p -> p.identity() == event.playerIdentity }!!
         return copy(
-                players = UpdatePlayers(player.dropATris(event.tris))
+                players = UpdatePlayers(player.dropATris(BurracoTris(event.tris)))
         )
     }
 
     private fun apply(event: ScaleDropped): BurracoGameExecutionTurnExecution {
         val player = players.find { p -> p.identity() == event.playerIdentity }!!
         return copy(
-                players = UpdatePlayers(player.dropAScale(event.scale))
+                players = UpdatePlayers(player.dropAScale(BurracoScale(event.scale)))
         )
     }
 

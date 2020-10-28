@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter
 
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
+import com.abaddon83.burraco.common.events.BurracoGameCreated
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.valueObjects.Ranks
 import com.abaddon83.burraco.common.models.valueObjects.Suits

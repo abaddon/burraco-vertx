@@ -4,7 +4,7 @@ import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
 import com.abaddon83.vertx.burraco.engine.models.MazzettoDeck
-import com.abaddon83.vertx.burraco.engine.models.burracos.Burraco
+import com.abaddon83.burraco.common.models.valueObjects.Burraco
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity

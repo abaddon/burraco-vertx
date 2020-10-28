@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.commands
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
+import com.abaddon83.burraco.common.events.BurracoGameCreated
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.burraco.common.models.identities.GameIdentity

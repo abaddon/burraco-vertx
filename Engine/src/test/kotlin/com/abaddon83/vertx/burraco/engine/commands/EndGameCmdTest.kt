@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.engine.commands
 
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
-import com.abaddon83.vertx.burraco.engine.events.*
+import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
@@ -49,9 +49,9 @@ class EndGameCmdTest {
             .plus(ListCardsBuilder.allRanksWithJollyCards())
             .shuffled()
     val burracoScale = BurracoScale(
-            identity = BurracoIdentity.create(),
-            suit = Suits.Tile,
-            cards = listOf(
+            BurracoIdentity.create(),
+            Suits.Tile,
+            listOf(
                     Card(Suits.Tile,rank = Ranks.Three),
                     Card(Suits.Tile,rank = Ranks.Four),
                     Card(Suits.Tile,rank = Ranks.Five),
@@ -69,9 +69,9 @@ class EndGameCmdTest {
     )
 
     val burracoScale2 = BurracoScale(
-            identity = BurracoIdentity.create(),
-            suit = Suits.Tile,
-            cards = listOf(
+            BurracoIdentity.create(),
+            Suits.Tile,
+            listOf(
                     Card(Suits.Pike,rank = Ranks.Three),
                     Card(Suits.Pike,rank = Ranks.Four),
                     Card(Suits.Pike,rank = Ranks.Five),

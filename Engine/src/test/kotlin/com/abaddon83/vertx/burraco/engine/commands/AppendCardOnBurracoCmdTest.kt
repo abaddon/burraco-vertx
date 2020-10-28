@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.engine.commands
 
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.events.*
+import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
@@ -58,9 +58,9 @@ class AppendCardOnBurracoCmdTest {
             .shuffled()
 
     val burracoTris = BurracoTris(
-            identity = BurracoIdentity.create(),
-            rank = Ranks.Five,
-            cards = listOf(Card(Suits.Tile, rank = Ranks.Five), Card(Suits.Heart, rank = Ranks.Five), Card(Suits.Tile, rank = Ranks.Five)))
+            BurracoIdentity.create(),
+            Ranks.Five,
+            listOf(Card(Suits.Tile, rank = Ranks.Five), Card(Suits.Heart, rank = Ranks.Five), Card(Suits.Tile, rank = Ranks.Five)))
 
     val cardToAppend = Card(Suits.Clover, rank = Ranks.Five)
 

@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameEvent
+import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
 
 //Test Purpose

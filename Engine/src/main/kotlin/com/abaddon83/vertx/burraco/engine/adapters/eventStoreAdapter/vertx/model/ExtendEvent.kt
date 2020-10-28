@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model
 
 import com.abaddon83.utils.es.Event
-import com.abaddon83.vertx.burraco.engine.events.*
+import com.abaddon83.burraco.common.events.*
 import com.fasterxml.jackson.annotation.JsonCreator
 import io.vertx.core.json.JsonObject
 import kotlinx.serialization.decodeFromString

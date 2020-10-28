@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.engine.commands
 
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
-import com.abaddon83.vertx.burraco.engine.events.*
+import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.burraco.common.models.valueObjects.Card

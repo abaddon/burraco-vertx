@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.models
 
-import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
+import com.abaddon83.burraco.common.events.BurracoGameCreated
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
 import com.abaddon83.vertx.burraco.engine.models.games.Game
