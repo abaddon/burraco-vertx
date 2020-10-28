@@ -8,7 +8,7 @@ import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGa
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.es.Event
 import com.abaddon83.utils.functionals.*
 import com.abaddon83.utils.logs.WithLog

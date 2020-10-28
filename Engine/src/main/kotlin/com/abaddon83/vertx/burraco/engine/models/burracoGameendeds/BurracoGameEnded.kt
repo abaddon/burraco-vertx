@@ -5,8 +5,8 @@ import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.models.MazzettoDecks
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.es.UnsupportedEventException
 
 data class BurracoGameEnded(

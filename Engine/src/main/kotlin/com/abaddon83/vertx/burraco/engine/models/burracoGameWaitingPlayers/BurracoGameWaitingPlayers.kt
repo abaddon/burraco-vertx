@@ -6,8 +6,8 @@ import com.abaddon83.vertx.burraco.engine.events.PlayerAdded
 import com.abaddon83.vertx.burraco.engine.models.*
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.es.UnsupportedEventException
 
 

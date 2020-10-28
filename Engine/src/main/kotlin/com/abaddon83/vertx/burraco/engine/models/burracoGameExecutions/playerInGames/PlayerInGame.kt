@@ -5,15 +5,15 @@ import com.abaddon83.vertx.burraco.engine.models.BurracoScale
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
 import com.abaddon83.vertx.burraco.engine.models.MazzettoDeck
 import com.abaddon83.vertx.burraco.engine.models.burracos.Burraco
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 
 data class PlayerInGame constructor(
-        override val identity: PlayerIdentity,
-        private val cards: List<Card>,
-        private val cardsOnTable: BurracoCardsOnTable,
-        private val mazzettoTaken: Boolean = false
+    override val identity: PlayerIdentity,
+    private val cards: List<Card>,
+    private val cardsOnTable: BurracoCardsOnTable,
+    private val mazzettoTaken: Boolean = false
 
 ) : BurracoPlayer("PlayerInGame") {
 

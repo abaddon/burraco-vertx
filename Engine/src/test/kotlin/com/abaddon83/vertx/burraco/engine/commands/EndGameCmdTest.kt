@@ -6,13 +6,13 @@ import com.abaddon83.vertx.burraco.engine.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.engine.models.decks.ListCardsBuilder
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
-import com.abaddon83.vertx.burraco.engine.models.decks.Suits
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
+import com.abaddon83.burraco.common.models.valueObjects.Suits
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import org.junit.Before
@@ -88,7 +88,7 @@ class EndGameCmdTest {
     val cardsPlayer1 = Pair(playerIdentity1,burracoScale.showCards().take(11))
     val cardsPlayer2 = Pair(playerIdentity2,allCards.take(11))
 
-    val mazzettoDeck1Cards = burracoScale2.showCards().plus(Card(Suits.Clover,Ranks.Five))
+    val mazzettoDeck1Cards = burracoScale2.showCards().plus(Card(Suits.Clover, Ranks.Five))
     val mazzettoDeck2Cards = allCards.take(11)
 
     val discardPileCards = burracoScale.showCards().takeLast(1)
@@ -114,7 +114,10 @@ class EndGameCmdTest {
             ScaleDropped(identity= gameIdentity, playerIdentity = playerIdentity1, scale = burracoScale),
             MazzettoPickedUp(identity = gameIdentity, playerIdentity = playerIdentity1, mazzettoDeck = mazzettoDeck1Cards),
             ScaleDropped(identity= gameIdentity, playerIdentity = playerIdentity1, scale = burracoScale2),
-            CardDroppedIntoDiscardPile(identity= gameIdentity, playerIdentity = playerIdentity1, card = Card(Suits.Clover,Ranks.Five))
+            CardDroppedIntoDiscardPile(identity= gameIdentity, playerIdentity = playerIdentity1, card = Card(
+                Suits.Clover,
+                Ranks.Five)
+            )
     )
 
 }

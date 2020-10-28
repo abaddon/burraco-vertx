@@ -1,6 +1,5 @@
-package com.abaddon83.vertx.burraco.engine.models.decks
+package com.abaddon83.burraco.common.models.valueObjects
 
-import com.abaddon83.vertx.burraco.engine.models.BurracoTris
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -16,9 +15,9 @@ import java.lang.Exception
 data class Card(val suit: Suits.Suit, val rank: Ranks.Rank) : Comparable<Card> {
 
     companion object Factory{
-        fun fromLabel(label: String): Card{
+        fun fromLabel(label: String): Card {
             val elements = label.split("-")
-            return Card(Suits.valueOf(elements[0]),Ranks.valueOf(elements[1]))
+            return Card(Suits.valueOf(elements[0]), Ranks.valueOf(elements[1]))
         }
     }
 
@@ -69,7 +68,7 @@ object Ranks {
     val noFiguresRanks: List<Rank> = listOf(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)
     val fullRanks: List<Rank> = listOf(noFiguresRanks, listOf(Jack, Queen, King)).flatten()
 
-    fun valueOf(value: String): Ranks.Rank =
+    fun valueOf(value: String): Rank =
             when (val rank = fullRanks.plus(Jolly).find { it.javaClass.simpleName.toLowerCase() == value.toLowerCase() }) {
                 is Rank -> rank
                 else -> throw Exception("$value is not a valid Rank")
@@ -155,7 +154,7 @@ object Suits {
     val allSuit: List<Suit> = listOf(Heart, Tile, Clover, Pike)
 
     fun valueOf(value: String): Suit =
-            when (val suit = Suits.allSuit.plus(Jolly).find { it.javaClass.simpleName.toLowerCase() == value.toLowerCase() }) {
+            when (val suit = allSuit.plus(Jolly).find { it.javaClass.simpleName.toLowerCase() == value.toLowerCase() }) {
                 is Suit -> suit
                 else -> throw Exception("$value is not a valid Suit")
             }

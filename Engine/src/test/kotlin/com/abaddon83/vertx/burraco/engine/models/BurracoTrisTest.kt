@@ -1,13 +1,9 @@
 package com.abaddon83.vertx.burraco.engine.models
 
-import com.abaddon83.vertx.burraco.engine.models.BurracoTris
-import com.abaddon83.vertx.burraco.engine.models.BurracoTrisCustomSerializer
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
+import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.engine.models.decks.ListCardsBuilder
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
-import com.abaddon83.vertx.burraco.engine.models.decks.Suits
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
+import com.abaddon83.burraco.common.models.valueObjects.Suits
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -231,14 +227,18 @@ class BurracoTrisTest {
 
     private fun createABurracoTrisWithAJollyAnd(rank: Ranks.Rank, numCards: Int): BurracoTris =
         BurracoTris.create(
-                cards = ListCardsBuilder.allRanksWithJollyCards().filter{ c -> c . rank == rank}.take(numCards - 1).plus(Card(suit = Suits.Jolly, rank = Ranks.Jolly))
+                cards = ListCardsBuilder.allRanksWithJollyCards().filter{ c -> c . rank == rank}.take(numCards - 1).plus(
+                    Card(suit = Suits.Jolly, rank = Ranks.Jolly)
+                )
         )
 
 
     private fun createABurracoTrisWithATwoAnd(rank: Ranks.Rank, numCards: Int): BurracoTris =
 
         BurracoTris.create(
-                cards = ListCardsBuilder.allRanksWithJollyCards().filter{ c -> c . rank == rank}.take(numCards - 1).plus(Card(suit = Suits.Heart, rank = Ranks.Two))
+                cards = ListCardsBuilder.allRanksWithJollyCards().filter{ c -> c . rank == rank}.take(numCards - 1).plus(
+                    Card(suit = Suits.Heart, rank = Ranks.Two)
+                )
         )
 
 }

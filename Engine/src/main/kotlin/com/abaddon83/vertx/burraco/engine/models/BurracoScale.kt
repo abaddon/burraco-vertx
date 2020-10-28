@@ -1,15 +1,14 @@
 package com.abaddon83.vertx.burraco.engine.models
 
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentityCustomSerializer
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.identities.BurracoIdentityCustomSerializer
 import com.abaddon83.vertx.burraco.engine.models.burracos.Scale
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.decks.CardCustomSerializer
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
-import com.abaddon83.vertx.burraco.engine.models.decks.Suits
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.valueObjects.CardCustomSerializer
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
+import com.abaddon83.burraco.common.models.valueObjects.Suits
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -21,9 +20,9 @@ import kotlin.math.min
 
 @Serializable(with = BurracoScaleCustomSerializer::class)
 data class BurracoScale(
-        override val identity: BurracoIdentity,
-        override val suit: Suits.Suit,
-        override val cards: List<Card>
+    override val identity: BurracoIdentity,
+    override val suit: Suits.Suit,
+    override val cards: List<Card>
 ): Scale("BurracoScale") {
 
     override fun addCards(cardsToAdd: List<Card>): BurracoScale = this.copy(
@@ -32,7 +31,7 @@ data class BurracoScale(
     
 
     override fun validateNewCards(cardsToValidate: List<Card>): List<Card> {
-        check(cardsToValidate.find {c -> c.suit!= suit && c.suit!=Suits.Jolly} == null){warnMsg("The scale have multiple suites.")}
+        check(cardsToValidate.find {c -> c.suit!= suit && c.suit!= Suits.Jolly} == null){warnMsg("The scale have multiple suites.")}
         return validateSequence(cards.plus(cardsToValidate), suit)
     }
 

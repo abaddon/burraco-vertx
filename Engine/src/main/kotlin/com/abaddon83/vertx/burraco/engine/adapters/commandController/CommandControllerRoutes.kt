@@ -6,8 +6,8 @@ import com.abaddon83.vertx.burraco.engine.adapters.commandController.bodyRequest
 import com.abaddon83.vertx.burraco.engine.adapters.commandController.bodyRequests.JoinGameRequest
 import com.abaddon83.vertx.burraco.engine.adapters.commandController.models.ErrorMsgModule
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.EventStoreVertxAdapter
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.vertx.burraco.engine.ports.CommandControllerPort
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
 import com.abaddon83.vertx.burraco.engine.ports.Outcome

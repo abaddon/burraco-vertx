@@ -3,8 +3,8 @@ package com.abaddon83.vertx.burraco.engine.testUtils
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 
 data class PlayerInGameTestFactory(val playerInGame: PlayerInGame) {
 

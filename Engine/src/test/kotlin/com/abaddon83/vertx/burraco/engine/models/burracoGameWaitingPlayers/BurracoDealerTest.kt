@@ -2,8 +2,8 @@ package com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers
 
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.PlayerNotAssigned
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import org.junit.Test
 
 class BurracoDealerTest {

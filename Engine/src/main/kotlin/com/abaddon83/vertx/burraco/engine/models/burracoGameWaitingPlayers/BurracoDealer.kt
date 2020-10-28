@@ -1,8 +1,8 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers
 
 import com.abaddon83.vertx.burraco.engine.models.*
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 
 class BurracoDealer(val burracoDeck: BurracoDeck, private val burracoPlayers: List<BurracoPlayer>) {
 

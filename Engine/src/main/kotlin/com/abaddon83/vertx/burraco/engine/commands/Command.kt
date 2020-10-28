@@ -2,10 +2,10 @@ package com.abaddon83.vertx.burraco.engine.commands
 
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import java.sql.Timestamp
 import java.util.*
 

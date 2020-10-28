@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.engine.commands
 
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.functionals.Valid
 import org.junit.Before
 import org.junit.Test

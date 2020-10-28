@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.models
 
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
+import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.engine.models.decks.Deck
 import com.abaddon83.utils.logs.WithLog
 

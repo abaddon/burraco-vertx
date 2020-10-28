@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.adapters.commandController.models
 
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
 
 data class GameIdentityModule(val code: String, val type: String) {
 

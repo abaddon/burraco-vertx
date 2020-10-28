@@ -4,10 +4,10 @@ import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.events.*
 import com.abaddon83.vertx.burraco.engine.models.*
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.es.UnsupportedEventException
 
 data class BurracoGameExecutionTurnExecution private constructor(

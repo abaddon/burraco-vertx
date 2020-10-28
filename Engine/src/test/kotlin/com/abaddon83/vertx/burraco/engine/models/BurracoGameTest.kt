@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.models
 
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
 import org.junit.Test
 
 class BurracoGameTest {

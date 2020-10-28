@@ -1,5 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.models.games
 
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentityCustomSerializer
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import java.util.*

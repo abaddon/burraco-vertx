@@ -2,10 +2,10 @@ package com.abaddon83.vertx.burraco.engine.events
 
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.models.*
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import kotlinx.serialization.*
 
 
@@ -22,13 +22,13 @@ data class BurracoGameCreated(override val identity: GameIdentity, val deck: Lis
 data class PlayerAdded(override val identity: GameIdentity, val playerIdentity: PlayerIdentity) : BurracoGameEvent()
 @Serializable
 data class GameStarted(
-        override val identity: GameIdentity,
-        val deck: List<Card>,
-        val players: Map<PlayerIdentity,List<Card>>,
-        val mazzettoDeck1: List<Card>,
-        val mazzettoDeck2: List<Card>,
-        val discardPileCards: List<Card>,
-        val playerTurn: PlayerIdentity)  : BurracoGameEvent()
+    override val identity: GameIdentity,
+    val deck: List<Card>,
+    val players: Map<PlayerIdentity,List<Card>>,
+    val mazzettoDeck1: List<Card>,
+    val mazzettoDeck2: List<Card>,
+    val discardPileCards: List<Card>,
+    val playerTurn: PlayerIdentity)  : BurracoGameEvent()
 @Serializable
 data class CardPickedFromDeck(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card) : BurracoGameEvent()
 @Serializable

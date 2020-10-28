@@ -9,10 +9,10 @@ import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGa
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
+import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.engine.models.decks.ListCardsBuilder
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 
 data class BurracoGameInitTurnTestFactory(
         private val gameIdentity: GameIdentity,

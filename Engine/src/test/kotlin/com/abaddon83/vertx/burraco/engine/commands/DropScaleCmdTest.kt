@@ -6,13 +6,13 @@ import com.abaddon83.vertx.burraco.engine.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.engine.models.decks.ListCardsBuilder
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
-import com.abaddon83.vertx.burraco.engine.models.decks.Suits
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
+import com.abaddon83.burraco.common.models.valueObjects.Suits
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import org.junit.Before
@@ -28,7 +28,11 @@ class DropScaleCmdTest {
     val burracoScale = BurracoScale(
             identity = BurracoIdentity.create(),
             suit = Suits.Tile,
-            cards = listOf(Card(Suits.Tile,rank = Ranks.Three),Card(Suits.Tile,rank = Ranks.Four),Card(Suits.Tile,rank = Ranks.Five)))
+            cards = listOf(
+                Card(Suits.Tile,rank = Ranks.Three),
+                Card(Suits.Tile,rank = Ranks.Four),
+                Card(Suits.Tile,rank = Ranks.Five)
+            ))
 
     @Test
     fun ` Given a command to drop a scale, when I execute the command, then the scale is dropped`(){

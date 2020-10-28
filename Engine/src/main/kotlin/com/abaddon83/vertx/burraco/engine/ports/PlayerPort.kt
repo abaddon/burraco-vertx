@@ -3,7 +3,7 @@ package com.abaddon83.vertx.burraco.engine.ports
 import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.models.PlayerNotAssigned
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 
 interface PlayerPort {
         fun findPlayerNotAssignedBy(playerIdentity: PlayerIdentity): PlayerNotAssigned

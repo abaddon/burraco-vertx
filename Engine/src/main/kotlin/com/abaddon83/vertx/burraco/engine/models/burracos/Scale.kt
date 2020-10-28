@@ -1,8 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.models.burracos
 
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
-import com.abaddon83.vertx.burraco.engine.models.decks.Suits
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.valueObjects.Suits
 
 abstract class Scale(className:String): Burraco(className) {
 

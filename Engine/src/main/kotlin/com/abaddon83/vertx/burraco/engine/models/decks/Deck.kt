@@ -1,5 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.models.decks
 
+import com.abaddon83.burraco.common.models.valueObjects.Card
+
 
 interface Deck{
     val cards: MutableList<Card>

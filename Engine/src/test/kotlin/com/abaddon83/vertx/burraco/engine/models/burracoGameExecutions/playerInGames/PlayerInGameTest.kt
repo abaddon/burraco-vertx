@@ -3,10 +3,10 @@ package com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerIn
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
 import com.abaddon83.vertx.burraco.engine.models.MazzettoDeck
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
+import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.engine.models.decks.ListCardsBuilder
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
-import com.abaddon83.vertx.burraco.engine.models.decks.Suits
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
+import com.abaddon83.burraco.common.models.valueObjects.Suits
 import com.abaddon83.vertx.burraco.engine.testUtils.PlayerInGameTestFactory
 import org.junit.Test
 import kotlin.test.assertFailsWith

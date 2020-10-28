@@ -3,9 +3,6 @@ package com.abaddon83.vertx.burraco.engine.adapters.commandController
 import com.abaddon83.utils.es.Event
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
-import com.abaddon83.vertx.burraco.engine.adapters.commandController.bodyRequests.CreateGameRequest
-import com.abaddon83.vertx.burraco.engine.adapters.commandController.bodyRequests.JoinGameRequest
-import com.abaddon83.vertx.burraco.engine.adapters.commandController.models.ErrorMsgModule
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.EventStoreVertxAdapter
 import com.abaddon83.vertx.burraco.engine.commands.AddPlayerCmd
 import com.abaddon83.vertx.burraco.engine.commands.CmdResult
@@ -13,18 +10,13 @@ import com.abaddon83.vertx.burraco.engine.commands.CreateNewBurracoGameCmd
 import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
 import com.abaddon83.vertx.burraco.engine.events.GameStarted
 import com.abaddon83.vertx.burraco.engine.events.PlayerAdded
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.vertx.burraco.engine.ports.CommandControllerPort
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
 import com.abaddon83.vertx.burraco.engine.ports.Outcome
 import io.vertx.core.Vertx
-import io.vertx.core.json.Json
-import io.vertx.ext.web.Router
-import io.vertx.ext.web.RoutingContext
-import io.vertx.ext.web.api.validation.ValidationException
-import io.vertx.ext.web.handler.BodyHandler
 
 
 class CommandControllerAdapter(vertx: Vertx) : CommandControllerPort {

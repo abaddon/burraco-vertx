@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.models.burracos
 
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
 
 abstract class Tris(className:String) :Burraco(className){
     protected abstract val rank: Ranks.Rank

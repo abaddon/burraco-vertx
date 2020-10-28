@@ -1,29 +1,26 @@
 package com.abaddon83.vertx.burraco.engine.models
 
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentityCustomSerializer
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.identities.BurracoIdentityCustomSerializer
 import com.abaddon83.vertx.burraco.engine.models.burracos.Tris
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.decks.CardCustomSerializer
-import com.abaddon83.vertx.burraco.engine.models.decks.Ranks
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentityCustomSerializer
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.valueObjects.CardCustomSerializer
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 
 @Serializable(with = BurracoTrisCustomSerializer::class)
 data class BurracoTris constructor(
-        override val identity: BurracoIdentity,
-        override val rank: Ranks.Rank,
-        override val cards: List<Card>
+    override val identity: BurracoIdentity,
+    override val rank: Ranks.Rank,
+    override val cards: List<Card>
 ) : Tris("BurracoTris") {
 
     override fun addCards(cardsToAdd: List<Card>): BurracoTris {

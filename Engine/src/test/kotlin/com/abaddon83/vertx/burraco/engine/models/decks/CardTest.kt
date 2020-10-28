@@ -1,5 +1,9 @@
 package com.abaddon83.vertx.burraco.engine.models.decks
 
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.valueObjects.CardCustomSerializer
+import com.abaddon83.burraco.common.models.valueObjects.Ranks
+import com.abaddon83.burraco.common.models.valueObjects.Suits
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.assertEquals

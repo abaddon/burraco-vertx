@@ -4,7 +4,7 @@ import com.abaddon83.vertx.burraco.engine.events.BurracoGameCreated
 import com.abaddon83.utils.es.Event
 import com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
 import com.abaddon83.vertx.burraco.engine.models.games.Game
-import com.abaddon83.vertx.burraco.engine.models.games.GameIdentity
+import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.es.AggregateRoot
 import com.abaddon83.utils.es.AggregateType
 import com.abaddon83.utils.es.UnsupportedEventException

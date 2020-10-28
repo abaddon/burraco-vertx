@@ -37,6 +37,7 @@ application {
 }
 
 dependencies {
+    implementation(project(":SharedComponents","default"))
 
     //implementation("io.vertx:vertx-sync:$vertxVersion")
     //implementation("co.paralleluniverse:quasar-core")

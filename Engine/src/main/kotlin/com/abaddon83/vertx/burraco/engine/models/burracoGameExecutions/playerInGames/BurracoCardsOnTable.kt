@@ -3,8 +3,8 @@ package com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerIn
 import com.abaddon83.vertx.burraco.engine.models.BurracoScale
 import com.abaddon83.vertx.burraco.engine.models.BurracoTris
 import com.abaddon83.vertx.burraco.engine.models.burracos.Burraco
-import com.abaddon83.vertx.burraco.engine.models.burracos.BurracoIdentity
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
+import com.abaddon83.burraco.common.models.identities.BurracoIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
 
 data class BurracoCardsOnTable(
         private val listOfTris: List<BurracoTris>,

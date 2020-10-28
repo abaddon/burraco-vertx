@@ -3,8 +3,8 @@ package com.abaddon83.vertx.burraco.engine.models.burracoGameendeds
 import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.vertx.burraco.engine.models.burracos.Burraco
-import com.abaddon83.vertx.burraco.engine.models.decks.Card
-import com.abaddon83.vertx.burraco.engine.models.players.PlayerIdentity
+import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 
 data class PlayerScore private constructor(
         override val identity: PlayerIdentity,
