@@ -3,6 +3,7 @@ package com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter
 
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.utils.functionals.Validated
+import com.abaddon83.utils.kafka.models.KafkaEvent
 import com.abaddon83.vertx.eventStore.commands.EventError
 import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.EventStreamPort
@@ -36,8 +37,15 @@ class KafkaEventStreamAdapter(vertx: Vertx) : EventStreamPort {
 
     override fun publish(event: Event): Validated<EventError, OutcomeDetail> {
 
+            val kafkaEvent = KafkaEvent(
+                name = event.name,
+                entityKey = event.entityKey,
+                entityName =event.entityName ,
+                instant = event.instant ,
+                jsonPayload = event.jsonPayload)
+
             var producer = KafkaProducer.create<UUID, String>(vertx, kafkaProps.invoke())
-            var record = KafkaProducerRecord.create<UUID, String>(TOPIC_NAME,event.entityKey, Json.encodeToString(event))
+            var record = KafkaProducerRecord.create<UUID, String>(TOPIC_NAME,event.entityKey, Json.encodeToString(kafkaEvent))
             producer
                 .write(record){ar ->
                     if(ar.succeeded()){

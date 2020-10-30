@@ -12,7 +12,9 @@ import java.lang.Exception
 import java.util.*
 
 @Serializable( with = GameIdentityCustomSerializer::class)
-data class GameIdentity constructor(val id: UUID) : UUIDIdentity(id) {
+data class GameIdentity(val id: UUID) : UUIDIdentity(id) {
+
+    constructor(): this(UUIDIdentity.emptyValue)
 
     companion object Factory {
         fun create(): GameIdentity = GameIdentity(UUID.randomUUID())
@@ -26,6 +28,7 @@ data class GameIdentity constructor(val id: UUID) : UUIDIdentity(id) {
 
         }
     }
+
 }
 
 object GameIdentityCustomSerializer: KSerializer<GameIdentity> {

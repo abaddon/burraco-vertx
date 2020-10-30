@@ -17,7 +17,7 @@ class MysqlRepositoryAdapter: RepositoryPort {
     companion object {
         private const val username = "root"
         private const val password = "root"
-        private const val host = "repository"
+        private const val host = "event.repository"
         private const val port = "3306"
         private const val database = "eventstore"
 

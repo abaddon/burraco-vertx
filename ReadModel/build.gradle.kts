@@ -22,6 +22,7 @@ repositories {
 val kotlinVersion = "1.4.10"
 val vertxVersion = "3.9.3"
 val junitJupiterVersion = "5.6.0"
+val ktormVersion = "3.2.0"
 
 val mainVerticleName = "com.abaddon83.burraco.readModel.MainVerticle"
 val watchForChange = "src/**/*"
@@ -33,6 +34,8 @@ application {
 }
 
 dependencies {
+    implementation(project(":SharedComponents","default"))
+    implementation("org.slf4j:slf4j-api:1.7.25")
     implementation("io.vertx:vertx-config:$vertxVersion")
     implementation("io.vertx:vertx-web:$vertxVersion")
     implementation("io.vertx:vertx-service-discovery:$vertxVersion")
@@ -44,6 +47,13 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
     implementation("junit:junit:4.12") // JVM dependency
+
+    implementation("io.vertx:vertx-kafka-client:$vertxVersion")
+
+    implementation("org.ktorm:ktorm-core:${ktormVersion}")
+    implementation("org.ktorm:ktorm-support-mysql:${ktormVersion}")
+    implementation("mysql:mysql-connector-java:8.0.21")
+
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")

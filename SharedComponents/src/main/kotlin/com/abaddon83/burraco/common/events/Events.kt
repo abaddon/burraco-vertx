@@ -8,6 +8,7 @@ import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Scale
 import com.abaddon83.burraco.common.models.valueObjects.Tris
 import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
 
 
 @Serializable
@@ -15,6 +16,20 @@ sealed class BurracoGameEvent(): Event() {
     abstract val identity: GameIdentity
     override fun key(): String = identity.convertTo().toString()
     override val entityName: String = "BurracoGame"
+
+    companion object{
+        fun jsonToEvent(eventClass: String, json: String): BurracoGameEvent?{
+            return when(eventClass){
+                "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(json)
+                "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(json)
+                "GameStarted" -> Json.decodeFromString<GameStarted>(json)
+                "CardPickedFromDeck" -> Json.decodeFromString<CardPickedFromDeck>(json)
+                "CardsPickedFromDiscardPile" -> Json.decodeFromString<CardsPickedFromDiscardPile>(json)
+                else -> null
+            }
+        }
+    }
+
 }
 
 @Serializable

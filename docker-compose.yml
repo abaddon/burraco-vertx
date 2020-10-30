@@ -5,8 +5,24 @@ networks:
     external: true
 
 services:
+  db:
+    build: ./MysqlContainer
+    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+    restart: always
+    ports:
+      - "3306:3306"
+    networks:
+      burraco-project:
+        aliases:
+          - event.repository
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+  #      MYSQL_DATABASE: eventstore
+
   engine:
     build: ./Engine
+    depends_on:
+      - eventstore
     ports:
       - "8080:8080"
     networks:
@@ -25,19 +41,32 @@ services:
         aliases:
           - eventstore
 
-  db:
-    build: ./MysqlContainer
-    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
-    restart: always
-    ports:
-      - "3306:3306"
+  projection:
+    build: ./ReadModel
+    depends_on:
+      - db
+    links:
+      - db:mysql
     networks:
       burraco-project:
         aliases:
-          - repository
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: eventstore
+          - projection
+
+#  dbprojection:
+#    build: ./MysqlContainer
+#    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+#    restart: always
+#    ports:
+#      - "3307:3306"
+#    networks:
+#      burraco-project:
+#        aliases:
+#          - projection.repository
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: game
+  #    volumes:
+  #      - ./MysqlContainer/database:/var/lib/mysql
 
   zk1:
     image: zookeeper-node
@@ -58,6 +87,8 @@ services:
   kafka1:
     image: kafka-node
     container_name: kafka1
+    depends_on:
+      - zk1
     networks:
       - burraco-project
     tty: true

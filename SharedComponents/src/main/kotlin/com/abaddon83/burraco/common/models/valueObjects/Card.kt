@@ -54,8 +54,11 @@ object CardCustomSerializer : KSerializer<Card> {
     }
 
     override fun deserialize(decoder: Decoder): Card {
-        val cardJson = Json.decodeFromString<JsonElement>(decoder.decodeString())
-        val cardMap = Json.decodeFromJsonElement<Map<String,String>>(cardJson)
+
+//        val cardJson = Json.decodeFromString<JsonElement>(decoder.decodeString())
+//        val cardMap = Json.decodeFromJsonElement<Map<String,String>>(cardJson)
+
+        val cardMap = Json.decodeFromString<Map<String,String>>(decoder.decodeString())
 
         return Card(
                 suit = Suits.valueOf(cardMap.getValue("suit")),

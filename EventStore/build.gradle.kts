@@ -34,7 +34,7 @@ application {
 }
 
 dependencies {
-
+    implementation(project(":SharedComponents","default"))
     implementation("mysql:mysql-connector-java:8.0.21")
     //compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
 

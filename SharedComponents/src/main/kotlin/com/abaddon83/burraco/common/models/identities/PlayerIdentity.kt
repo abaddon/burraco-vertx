@@ -15,6 +15,8 @@ import java.util.*
 @Serializable(with = PlayerIdentityCustomSerializer::class)
 data class PlayerIdentity constructor(val id: UUID) : UUIDIdentity(id) {
 
+    constructor(): this(UUIDIdentity.emptyValue)
+
     companion object Factory {
         fun create(): PlayerIdentity = PlayerIdentity(UUID.randomUUID())
         fun create(uuidString: String): PlayerIdentity? {

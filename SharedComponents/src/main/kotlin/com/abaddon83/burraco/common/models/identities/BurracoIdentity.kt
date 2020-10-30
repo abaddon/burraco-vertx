@@ -13,6 +13,8 @@ import java.util.*
 @Serializable( with = BurracoIdentityCustomSerializer::class)
 data class BurracoIdentity private constructor(private val id: UUID) : UUIDIdentity(id) {
 
+    constructor(): this(UUIDIdentity.emptyValue)
+
     companion object Factory {
         fun create(): BurracoIdentity = BurracoIdentity(UUID.randomUUID())
         fun create(uuidString: String): BurracoIdentity {
