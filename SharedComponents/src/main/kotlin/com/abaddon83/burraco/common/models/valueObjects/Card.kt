@@ -11,8 +11,11 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 import java.lang.Exception
 
-@Serializable( with = CardCustomSerializer::class)
-data class Card(val suit: Suits.Suit, val rank: Ranks.Rank) : Comparable<Card> {
+@Serializable
+data class Card(
+    val suit: Suits.Suit,
+    val rank: Ranks.Rank
+) : Comparable<Card> {
 
     companion object Factory{
         fun fromLabel(label: String): Card {
@@ -67,6 +70,26 @@ object CardCustomSerializer : KSerializer<Card> {
     }
 }
 
+object RankCustomSerializer : KSerializer<Ranks.Rank> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Rank", PrimitiveKind.STRING)
+    override fun serialize(encoder: Encoder, value: Ranks.Rank) {
+        encoder.encodeString(value.javaClass.simpleName)
+    }
+    override fun deserialize(decoder: Decoder): Ranks.Rank {
+        return Ranks.valueOf(decoder.decodeString())
+    }
+}
+
+object SuitCustomSerializer : KSerializer<Suits.Suit> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Rank", PrimitiveKind.STRING)
+    override fun serialize(encoder: Encoder, value: Suits.Suit) {
+        encoder.encodeString(value.javaClass.simpleName)
+    }
+    override fun deserialize(decoder: Decoder): Suits.Suit {
+        return Suits.valueOf(decoder.decodeString())
+    }
+}
+
 object Ranks {
     val noFiguresRanks: List<Rank> = listOf(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)
     val fullRanks: List<Rank> = listOf(noFiguresRanks, listOf(Jack, Queen, King)).flatten()
@@ -76,7 +99,7 @@ object Ranks {
                 is Rank -> rank
                 else -> throw Exception("$value is not a valid Rank")
             }
-
+    @Serializable( with = RankCustomSerializer::class)
     interface Rank {
         val label: String
         val position: Int
@@ -164,6 +187,7 @@ object Suits {
 
     enum class Color{RED,BLACK}
 
+    @Serializable( with = SuitCustomSerializer::class)
     interface Suit {
         val icon: Char;
         val color: Color

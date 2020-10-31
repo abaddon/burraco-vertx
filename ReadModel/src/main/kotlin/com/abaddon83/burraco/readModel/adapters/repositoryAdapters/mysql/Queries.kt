@@ -17,16 +17,16 @@ object Queries {
     fun insertOrUpdate(mysql: Database, entity: BurracoGame): Boolean {
         try {
             val effectedRow = mysql.insertOrUpdate(GameTable) {
-                set(it.identity, entity.identity.toString())
+                set(it.identity, entity.identity.convertTo().toString())
                 set(it.status, entity.status.toString())
                 set(it.deck, Json.encodeToString(entity.deck))
-                set(it.playerTurn, entity.playerTurn?.toString())
+                set(it.playerTurn, entity.playerTurn?.convertTo().toString())
                 set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
                 set(it.discardPile, Json.encodeToString(entity.discardPile))
                 onDuplicateKey {
                     set(it.status, entity.status.toString())
                     set(it.deck, Json.encodeToString(entity.deck))
-                    set(it.playerTurn, entity.playerTurn?.toString())
+                    set(it.playerTurn, entity.playerTurn?.convertTo().toString())
                     set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
                     set(it.discardPile, Json.encodeToString(entity.discardPile))
                 }
@@ -45,10 +45,10 @@ object Queries {
     fun insert(mysql: Database, entity: BurracoGame): Boolean {
         try {
             val effectedRow = mysql.insert(GameTable) {
-                set(it.identity, entity.identity.toString())
+                set(it.identity, entity.identity.convertTo().toString())
                 set(it.status, entity.status.toString())
                 set(it.deck, Json.encodeToString(entity.deck))
-                set(it.playerTurn, entity.playerTurn?.toString())
+                set(it.playerTurn, entity.playerTurn?.convertTo().toString())
                 set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
                 set(it.discardPile, Json.encodeToString(entity.discardPile))
             }
@@ -67,11 +67,11 @@ object Queries {
             val effectedRow = mysql.update(GameTable) {
                 set(it.status, entity.status.toString())
                 set(it.deck, Json.encodeToString(entity.deck))
-                set(it.playerTurn, entity.playerTurn?.toString())
+                set(it.playerTurn, entity.playerTurn?.convertTo().toString())
                 set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
                 set(it.discardPile, Json.encodeToString(entity.discardPile))
                 where {
-                    it.identity eq entity.identity.toString()
+                    it.identity eq entity.identity.convertTo().toString()
                 }
             }
             return when (effectedRow) {
@@ -88,7 +88,7 @@ object Queries {
         val query = mysql
             .from(GameTable)
             .select()
-            .where { GameTable.identity eq identity.toString() }
+            .where { GameTable.identity eq identity.convertTo().toString() }
             .limit(0, 1)
         return query.map { row ->
             BurracoGame(
