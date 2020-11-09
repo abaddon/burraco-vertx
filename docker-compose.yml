@@ -103,6 +103,36 @@ services:
       - ./KafkaCluster/solutions/:/var/solutions/:ro
       - ./KafkaCluster/shared/:/var/shared/:rw
 
+  kafka-worker1:
+    image: kafka-worker
+    container_name: kworker1
+    depends_on:
+      - kafka1
+    networks:
+      - burraco-project
+    tty: true
+    environment:
+      #- KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+      - KAFKA_WORKER_CONFIG=connect-distributed1.properties
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./KafkaCluster/content/:/var/content/:ro
+      - ./KafkaCluster/connectors/:/connectors/:ro
+
+  kafka-connect-ui:
+    image: landoop/kafka-connect-ui
+    container_name: kconnectui
+    depends_on:
+      - kafka-worker1
+    networks:
+      - burraco-project
+    tty: true
+    environment:
+      - CONNECT_URL=http://kworker1
+    ports:
+      - "8000:8000"
+
   prometheus:
     image: prom/prometheus:v2.19.1
     container_name: kafka-prometheus
