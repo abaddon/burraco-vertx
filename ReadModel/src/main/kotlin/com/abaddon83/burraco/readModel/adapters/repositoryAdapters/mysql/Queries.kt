@@ -8,6 +8,7 @@ import com.abaddon83.burraco.readModel.projections.GameStatus
 import com.abaddon83.burraco.readModel.projections.toJson
 import io.vertx.core.logging.LoggerFactory
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -23,18 +24,18 @@ object Queries {
             val effectedRow = mysql.insertOrUpdate(GameTable) {
                 set(it.identity, entity.identity.convertTo().toString())
                 set(it.status, entity.status.toJson())
-                set(it.deck, entity.deck.toJson())
-                set(it.players, entity.players.toJson())
+                set(it.deck, Json.encodeToString(entity.deck))
+                set(it.players, Json.encodeToString(entity.players))
                 set(it.playerTurn, entity.playerTurn?.toJson())
                 set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
-                set(it.discardPile, entity.discardPile.toJson())
+                set(it.discardPile, Json.encodeToString(entity.discardPile))
                 onDuplicateKey {
                     set(it.status, entity.status.toJson())
-                    set(it.deck, entity.deck.toJson())
-                    set(it.players, entity.players.toJson())
+                    set(it.deck, Json.encodeToString(entity.deck))
+                    set(it.players, Json.encodeToString(entity.players))
                     set(it.playerTurn, entity.playerTurn?.toJson())
                     set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
-                    set(it.discardPile, entity.discardPile.toJson())
+                    set(it.discardPile, Json.encodeToString(entity.discardPile))
                 }
             }
             return when (effectedRow) {
@@ -53,11 +54,11 @@ object Queries {
             val effectedRow = mysql.insert(GameTable) {
                 set(it.identity, entity.identity.convertTo().toString())
                 set(it.status, entity.status.toJson())
-                set(it.deck, entity.deck.toJson())
-                set(it.players, entity.players.toJson())
+                set(it.deck, Json.encodeToString(entity.deck))
+                set(it.players, Json.encodeToString(entity.players))
                 set(it.playerTurn, entity.playerTurn?.toJson())
                 set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
-                set(it.discardPile, entity.discardPile.toJson())
+                set(it.discardPile, Json.encodeToString(entity.discardPile))
             }
             return when (effectedRow) {
                 1 -> true
@@ -73,11 +74,11 @@ object Queries {
         try {
             val effectedRow = mysql.update(GameTable) {
                 set(it.status, entity.status.toJson())
-                set(it.deck, entity.deck.toJson())
-                set(it.players, entity.players.toJson())
+                set(it.deck, Json.encodeToString(entity.deck))
+                set(it.players, Json.encodeToString(entity.players))
                 set(it.playerTurn, entity.playerTurn?.toJson())
                 set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
-                set(it.discardPile, entity.discardPile.toJson())
+                set(it.discardPile, Json.encodeToString(entity.discardPile))
                 where {
                     it.identity eq entity.identity.convertTo().toString()
                 }
@@ -135,13 +136,13 @@ object Queries {
             val effectedRow = mysql.insertOrUpdate(GamePlayerTable) {
                 set(it.identity, entity.identity.convertTo().toString())
                 set(it.gameIdentity, entity.gameIdentity.convertTo().toString())
-                set(it.handCards, entity.handCards.toJson())
-                set(it.tris, entity.tris.toJson())
-                set(it.scale, entity.scale.toJson())
+                set(it.handCards, Json.encodeToString(entity.handCards))
+                set(it.tris, Json.encodeToString(entity.tris))
+                set(it.scale, Json.encodeToString(entity.scale))
                 onDuplicateKey {
-                    set(it.handCards, entity.handCards.toJson())
-                    set(it.tris, entity.tris.toJson())
-                    set(it.scale, entity.scale.toJson())
+                    set(it.handCards, Json.encodeToString(entity.handCards))
+                    set(it.tris, Json.encodeToString(entity.tris))
+                    set(it.scale, Json.encodeToString(entity.scale))
                 }
             }
             return when (effectedRow) {

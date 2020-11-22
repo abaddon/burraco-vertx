@@ -9,17 +9,18 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 
-inline fun kotlin.collections.List<*>.toJson(): String {
-    if(this.isEmpty())  return ""
-
-    return when(this.first()){
-        is Card -> Json.encodeToString(this as List<Card>)
-        is PlayerIdentity -> Json.encodeToString(this as List<PlayerIdentity>)
-        is Tris -> Json.encodeToString(this as List<Tris>)
-        is Scale -> Json.encodeToString(this as List<Scale>)
-        else -> throw NotImplementedError("toJson() method not supported for this class: ${this.javaClass.simpleName} ")
-    }
-}
+//inline fun List<*>.toJson(): String {
+//    if(this.isEmpty()){
+//        return Json.encodeToString(listOf<String>())
+//    }
+//    return when(val firstElement =this.first()){
+//        firstElement is Card -> Json.encodeToString(this as List<Card>)
+//        firstElement is PlayerIdentity -> Json.encodeToString(this as List<PlayerIdentity>)
+//        firstElement is Tris -> Json.encodeToString(this as List<Tris>)
+//        firstElement is Scale -> Json.encodeToString(this as List<Scale>)
+//        else -> throw NotImplementedError("toJson() method not supported for this class: ${this.javaClass.simpleName} ")
+//    }
+//}
 
 inline fun GameIdentity.toJson(): String = Json.encodeToString(this)
 
