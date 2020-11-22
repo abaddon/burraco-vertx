@@ -61,8 +61,8 @@ docker-compose up -d
 ```
 cd script
 ./startTestTerminal.sh
-[root@5cff4f27237c /]# kafka-topics.sh --zookeeper zk1:2181/kafka --create --topic burracogame_event --partitions 1 --replication-factor 1 --config cleanup.policy=delete --config retention.ms=180000 --config segment.ms=180000
-[root@5cff4f27237c /]# kafka-topics.sh --zookeeper zk1:2181/kafka  --list
+[root@5cff4f27237c /]# kafka-topics.sh --zookeeper zookeeper:2181/kafka --create --topic burracogame_event --partitions 1 --replication-factor 1 --config cleanup.policy=delete --config retention.ms=180000 --config segment.ms=180000
+[root@5cff4f27237c /]# kafka-topics.sh --zookeeper zookeeper:2181/kafka  --list
 burracogame_event
 ```
 The environment is now ready. 
