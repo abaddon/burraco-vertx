@@ -86,23 +86,23 @@ services:
       burraco-project:
         aliases:
           - kafka1
-#  control-center:
-#    image: confluentinc/cp-enterprise-control-center:5.4.0
-#    depends_on:
-#      - zookeeper
-#      - kafka1
-##      - schema-registry
-#    ports:
-#      - "9021:9021"
-#    environment:
-#      CONTROL_CENTER_BOOTSTRAP_SERVERS: "kafka1:9092"
-#      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
-#      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
-#      CONTROL_CENTER_REPLICATION_FACTOR: 1
-#    networks:
-#      burraco-project:
-#        aliases:
-#          - control-center
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.4.0
+    depends_on:
+      - zookeeper
+      - kafka1
+#      - schema-registry
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: "kafka1:9092"
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+    networks:
+      burraco-project:
+        aliases:
+          - control-center
 
   projection:
     build: ./ReadModel
