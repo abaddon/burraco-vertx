@@ -3,10 +3,10 @@ package com.abaddon83.vertx.eventStore.adapters.controllerAdapter
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.eventStore.adapters.controllerAdapter.model.ExtendEvent
+import com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter.FakeEventStreamAdapter
 import com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter.KafkaEventStreamAdapter
 import com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.mysql.MysqlRepositoryAdapter
-import com.abaddon83.vertx.eventStore.commands.CmdResult
-import com.abaddon83.vertx.eventStore.commands.PersistAndPublishEventCmd
+import com.abaddon83.vertx.eventStore.commands.*
 import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.ControllerPort
 import com.abaddon83.vertx.eventStore.ports.EventStreamPort
@@ -17,6 +17,7 @@ import io.vertx.core.AsyncResult
 import io.vertx.core.Future
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
+import java.util.*
 
 
 class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
@@ -28,6 +29,7 @@ class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
         get() = MysqlRepositoryAdapter()
 
     override val eventStream: EventStreamPort
+        //get() = FakeEventStreamAdapter()
         get() = KafkaEventStreamAdapter(vertx)
 
     override fun persist(event: ExtendEvent, resultHandler: Handler<AsyncResult<Boolean>>) {
@@ -51,10 +53,14 @@ class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
     }
 
     override fun persist(event: Event): Outcome {
-        //val cmd= PersistEventCmd(event)
-        val cmd= PersistAndPublishEventCmd(event)
-        val cmdResult = commandHandle.handle(cmd)
-        return CmdResultAdapter.toOutcome(cmdResult = cmdResult);
+        val cmd= PersistEventCmd(event)
+        return when (val cmdResult = commandHandle.handle(cmd)){
+            is Invalid -> cmdResult
+            is Valid -> {
+                commandHandle.handle(PublishEventCmd(event))
+                cmdResult
+            }
+        }
     }
 
     override fun getEntityEvents(entityName: String, entityKey: String): Set<Event> {
@@ -64,12 +70,12 @@ class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
     }
 }
 
-object CmdResultAdapter {
-    fun toOutcome(cmdResult: CmdResult): Outcome {
-        return when (cmdResult) {
-            is Valid -> Valid(cmdResult.value)
-            is Invalid -> Invalid(cmdResult.err)
-        }
-    }
-
-}
+//object CmdResultAdapter {
+//    fun toOutcome(cmdResult: CmdResult): Outcome {
+//        return when (cmdResult) {
+//            is Valid -> Valid(cmdResult.value)
+//            is Invalid -> Invalid(cmdResult.err)
+//        }
+//    }
+//
+//}

@@ -1,38 +1,41 @@
 package com.abaddon83.burraco.readModel.events
 
+import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import com.abaddon83.burraco.readModel.projections.BurracoGame
 import com.abaddon83.utils.es.Event
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
-import kotlin.coroutines.CoroutineContext
 
-
-class GameEventHandler(override val repository: RepositoryPort) : EventHandlerJob<BurracoGame>() {
+class GameEventHandler(override val repository: RepositoryPort, override val e: BurracoGameEvent) : EventHandlerJob<BurracoGame>() {
     companion object {
         private val log = LoggerFactory.getLogger(this::class.qualifiedName)
     }
 
-    override fun processEvent(e: Event) {
+    init {
+        log.info("Loading event ${e.javaClass.simpleName} in the Game projection")
         launch {
             try {
-                log.info("Event ${e.javaClass.simpleName} loaded in the read model")
-                val burracoGame = getProjection(e.key()).applyEvent(e)
-                if (!burracoGame.identity.isEmpty()) {
-                    repository.persist(burracoGame)
-                }
-                //throw Exception()
+                processEvent(e)
             }catch (e: Exception){
                 throw e
             }finally {
+                log.info("Event ${e.javaClass.simpleName} loaded in Game projection")
                 job.cancel()
             }
-
         }
     }
 
-    override fun getProjection(key: String) = repository.findGame(GameIdentity.create(key)!!)
+    override fun processEvent(e: Event) {
+        val burracoGame: BurracoGame = getProjection(e.key())
+            .applyEvent(e)
+        if (!burracoGame.identity.isEmpty()) {
+            repository.persist(burracoGame)
+        }
+    }
+
+    override fun getProjection(key: String): BurracoGame = repository.findGame(GameIdentity.create(key)!!)
 
 
 

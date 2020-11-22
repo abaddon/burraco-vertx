@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS game.game (
   `id` varchar(50) NOT NULL,
   `status` varchar(50) NOT NULL,
   `deck` text,
+  `players` text,
   `player_turn` varchar(50) NULL DEFAULT NULL,
   `num_mazzetto_available` text,
   `discard_pile` text,

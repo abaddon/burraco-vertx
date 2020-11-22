@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.readModel.adapters.repositoryAdapters.mysql
 
 import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import com.abaddon83.burraco.readModel.projections.BurracoGame
 import com.abaddon83.burraco.readModel.projections.GamePlayer
@@ -37,9 +38,9 @@ class MysqlRepositoryAdapter: RepositoryPort {
 
     override fun persist(entity: BurracoGame) {
         if(Queries.insertOrUpdate(getConnection(),entity)){
-            log.info("record persisted")
+            log.info("${entity.javaClass.simpleName} persisted")
         }else{
-            log.error("record not persisted")
+            log.error("${entity.javaClass.simpleName} not persisted")
         }
     }
 
@@ -51,13 +52,17 @@ class MysqlRepositoryAdapter: RepositoryPort {
         return Queries.selectAllGame(getConnection())
     }
 
-    //TODO
-    override fun persist(entity: GamePlayer) {
 
+    override fun persist(entity: GamePlayer) {
+        if(Queries.insertOrUpdate(getConnection(),entity)){
+            log.info("${entity.javaClass.simpleName} persisted")
+        }else{
+            log.error("${entity.javaClass.simpleName} not persisted")
+        }
     }
 
-    //TODO
+    //TODO I'm using only the player id but we should use it + Game id
     override fun findGamePlayer(key: UUIDIdentity): GamePlayer {
-        return GamePlayer()
+        return Queries.selectGamePlayer(getConnection(), PlayerIdentity(key.convertTo()))
     }
 }

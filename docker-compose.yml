@@ -41,6 +41,69 @@ services:
         aliases:
           - eventstore
 
+#  kafka-cluster:
+#    image: lensesio/fast-data-dev
+#    container_name: kafka1
+#    environment:
+#      ADV_HOST: 127.0.0.1
+#      RUNTESTS: 0
+#    networks:
+#      burraco-project:
+#        aliases:
+#          - eventstore
+#    ports:
+#      - 2181:2181 #zookeeper
+#      - 3030:3030 #Landoop UI
+#      - 8081-8083:8081-8083 #REST proxy, Schema registry, Kafka Connect ports
+#      - 9581-9585:9581-9585 #JMX ports
+#      - 9092:9092 # Broker
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      zk_id: "1"
+    ports:
+      - "2181:2181"
+    networks:
+      burraco-project:
+        aliases:
+          - zookeeper
+  kafka1:
+    hostname: kafka1
+    image: confluentinc/cp-enterprise-kafka:5.4.0
+    links:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://:9092"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    networks:
+      burraco-project:
+        aliases:
+          - kafka1
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.4.0
+    depends_on:
+      - zookeeper
+      - kafka1
+#      - schema-registry
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: "kafka1:9092"
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+    networks:
+      burraco-project:
+        aliases:
+          - control-center
+
   projection:
     build: ./ReadModel
     depends_on:
@@ -68,102 +131,89 @@ services:
   #    volumes:
   #      - ./MysqlContainer/database:/var/lib/mysql
 
-  zk1:
-    image: zookeeper-node
-    container_name: zk1
-    networks:
-      - burraco-project
-    tty: true
-    environment:
-      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
-      - MYID=1
-    ports:
-      - "2181:2181"
-    volumes:
-      - ./KafkaCluster/content/:/var/content/:ro
-      - ./KafkaCluster/solutions/:/var/solutions/:ro
-      - ./KafkaCluster/shared/:/var/shared/:rw
+#  zk1:
+#    image: zookeeper-node
+#    container_name: zk1
+#    networks:
+#      - burraco-project
+#    tty: true
+#    environment:
+#      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
+#      - MYID=1
+#    ports:
+#      - "2181:2181"
+#    volumes:
+#      - ./KafkaCluster/content/:/var/content/:ro
+#      - ./KafkaCluster/solutions/:/var/solutions/:ro
+#      - ./KafkaCluster/shared/:/var/shared/:rw
+#
+#  kafka1:
+#    image: kafka-node
+#    container_name: kafka1
+#    depends_on:
+#      - zk1
+#    networks:
+#      - burraco-project
+#    tty: true
+#    environment:
+#      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+#      - KAFKA_CONFIG=server1.properties
+#    ports:
+#      - "9092:9092"
+#      - "9093:9093"
+#    volumes:
+#      - ./KafkaCluster/content/:/var/content/:ro
+#      - ./KafkaCluster/solutions/:/var/solutions/:ro
+#      - ./KafkaCluster/shared/:/var/shared/:rw
+#
+#  kafka-worker1:
+#    image: kafka-worker
+#    container_name: kworker1
+#    depends_on:
+#      - kafka1
+#    networks:
+#      - burraco-project
+#    tty: true
+#    environment:
+#      #- KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
+#      - KAFKA_WORKER_CONFIG=connect-distributed1.properties
+#    ports:
+#      - "8083:8083"
+#    volumes:
+#      - ./KafkaCluster/content/:/var/content/:ro
+#      - ./KafkaCluster/connectors/:/connectors/:ro
 
-  kafka1:
-    image: kafka-node
-    container_name: kafka1
-    depends_on:
-      - zk1
-    networks:
-      - burraco-project
-    tty: true
-    environment:
-      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
-      - KAFKA_CONFIG=server1.properties
-    ports:
-      - "9092:9092"
-      - "9093:9093"
-    volumes:
-      - ./KafkaCluster/content/:/var/content/:ro
-      - ./KafkaCluster/solutions/:/var/solutions/:ro
-      - ./KafkaCluster/shared/:/var/shared/:rw
-
-  kafka-worker1:
-    image: kafka-worker
-    container_name: kworker1
-    depends_on:
-      - kafka1
-    networks:
-      - burraco-project
-    tty: true
-    environment:
-      #- KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
-      - KAFKA_WORKER_CONFIG=connect-distributed1.properties
-    ports:
-      - "8083:8083"
-    volumes:
-      - ./KafkaCluster/content/:/var/content/:ro
-      - ./KafkaCluster/connectors/:/connectors/:ro
-
-  kafka-connect-ui:
-    image: landoop/kafka-connect-ui
-    container_name: kconnectui
-    depends_on:
-      - kafka-worker1
-    networks:
-      - burraco-project
-    tty: true
-    environment:
-      - CONNECT_URL=http://kworker1
-    ports:
-      - "8000:8000"
-
-  prometheus:
-    image: prom/prometheus:v2.19.1
-    container_name: kafka-prometheus
-    networks:
-      - burraco-project
-    volumes:
-      - ./KafkaCluster/prometheus/prometheusConfig.yml:/etc/prometheus/prometheus.yml
-      - ./KafkaCluster/shared/:/var/shared/:rw
-    ports:
-      - "9090:9090"
-    restart: unless-stopped
-
-  grafana:
-    image: grafana/grafana:7.0.3
-    container_name: kafka-grafana
-    networks:
-      - burraco-project
-    volumes:
-      - ./KafkaCluster/prometheus/grafanaDatasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-      - ./KafkaCluster/shared/:/var/shared/:rw
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
-
-  kafka-toolbox:
-    image: kafka
-    container_name: kafka-toolbox
-    networks:
-      - burraco-project
-    tty: true
-    volumes:
-      - ./KafkaCluster/content/:/var/content/:ro
-      - ./KafkaCluster/solutions/:/var/solutions/:ro
-      - ./KafkaCluster/shared/:/var/shared/:rw
+#  prometheus:
+#    image: prom/prometheus:v2.19.1
+#    container_name: kafka-prometheus
+#    networks:
+#      - burraco-project
+#    volumes:
+#      - ./KafkaCluster/prometheus/prometheusConfig.yml:/etc/prometheus/prometheus.yml
+#      - ./KafkaCluster/shared/:/var/shared/:rw
+#    ports:
+#      - "9090:9090"
+#    restart: unless-stopped
+#
+#  grafana:
+#    image: grafana/grafana:7.0.3
+#    container_name: kafka-grafana
+#    networks:
+#      - burraco-project
+#    volumes:
+#      - ./KafkaCluster/prometheus/grafanaDatasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+#      - ./KafkaCluster/shared/:/var/shared/:rw
+#    ports:
+#      - "3000:3000"
+#    restart: unless-stopped
+#
+#  kafka-toolbox:
+#    image: kafka
+#    container_name: kafka-toolbox
+#    networks:
+#      - burraco-project
+#    tty: true
+#    volumes:
+#      - ./KafkaCluster/content/:/var/content/:ro
+#      - ./KafkaCluster/solutions/:/var/solutions/:ro
+#      - ./KafkaCluster/shared/:/var/shared/:rw

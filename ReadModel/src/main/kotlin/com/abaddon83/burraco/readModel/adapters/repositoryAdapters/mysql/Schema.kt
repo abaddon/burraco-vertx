@@ -10,6 +10,7 @@ object GameTable : Table<Nothing>("game") {
     val playerTurn = varchar("player_turn")
     val numMazzettoAvailable = int("num_mazzetto_available")
     val discardPile= text("discard_pile")
+    val players=text("players")
 }
 
 object GamePlayerTable : Table<Nothing>("game_player") {

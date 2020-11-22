@@ -1,18 +1,16 @@
 package com.abaddon83.burraco.common.models.identities
 
 import com.abaddon83.utils.ddd.UUIDIdentity
-import kotlinx.serialization.KSerializer
+import com.abaddon83.utils.serializations.UUIDSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import java.lang.Exception
 import java.util.*
 
-@Serializable( with = GameIdentityCustomSerializer::class)
-data class GameIdentity(val id: UUID) : UUIDIdentity(id) {
+@Serializable
+data class GameIdentity(
+    @Serializable(UUIDSerializer::class)
+    override val id: UUID
+) : UUIDIdentity() {
 
     constructor(): this(UUIDIdentity.emptyValue)
 
@@ -31,16 +29,5 @@ data class GameIdentity(val id: UUID) : UUIDIdentity(id) {
 
 }
 
-object GameIdentityCustomSerializer: KSerializer<GameIdentity> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("GameIdentity", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: GameIdentity) {
-        val string = value.convertTo().toString()
-        encoder.encodeString(string)
-    }
 
-    override fun deserialize(decoder: Decoder): GameIdentity {
-        val uuidString = decoder.decodeString()
-        return GameIdentity.create(uuidString)!!
-    }
-}

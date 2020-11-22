@@ -24,10 +24,10 @@ data class BurracoGame(
         status= GameStatus.Waiting
     )
 
-    override fun applyEvent(e: Event): BurracoGame{
-        return when(e){
-            is BurracoGameCreated -> apply(e)
-            is PlayerAdded -> apply(e)
+    override fun applyEvent(event: Event): BurracoGame{
+        return when(event){
+            is BurracoGameCreated -> apply(event)
+            is PlayerAdded -> apply(event)
             else -> this
         }
     }
@@ -42,7 +42,6 @@ data class BurracoGame(
         return copy(players = players.plus(e.playerIdentity))
     }
 
-
 }
 
 enum class GameStatus{
@@ -50,3 +49,6 @@ enum class GameStatus{
     Execution,
     Ended
 }
+inline fun GameStatus.toJson(): String = this.toString()
+
+

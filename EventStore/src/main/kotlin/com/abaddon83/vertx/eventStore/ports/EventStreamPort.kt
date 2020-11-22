@@ -6,5 +6,5 @@ import com.abaddon83.vertx.eventStore.models.Event
 
 interface EventStreamPort {
 
-    fun publish(event: Event): Validated<EventError, OutcomeDetail>
+    fun publish(event: Event)
 }

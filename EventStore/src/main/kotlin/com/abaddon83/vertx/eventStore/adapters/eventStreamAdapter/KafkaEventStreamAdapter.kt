@@ -35,7 +35,7 @@ class KafkaEventStreamAdapter(vertx: Vertx) : EventStreamPort {
         props
     }
 
-    override fun publish(event: Event): Validated<EventError, OutcomeDetail> {
+    override fun publish(event: Event) {
 
             val kafkaEvent = KafkaEvent(
                 name = event.name,
@@ -47,7 +47,7 @@ class KafkaEventStreamAdapter(vertx: Vertx) : EventStreamPort {
             var producer = KafkaProducer.create<UUID, String>(vertx, kafkaProps.invoke())
             var record = KafkaProducerRecord.create<UUID, String>(TOPIC_NAME,event.entityKey, Json.encodeToString(kafkaEvent))
             producer
-                .write(record){ar ->
+                .send(record){ar ->
                     if(ar.succeeded()){
                         log.info("Record with key ${record.key()} published!")
                     }else{
@@ -56,6 +56,5 @@ class KafkaEventStreamAdapter(vertx: Vertx) : EventStreamPort {
                     }
                     producer.close()
                 }
-        return Valid(mapOf("key" to record.key().toString()))
     }
 }

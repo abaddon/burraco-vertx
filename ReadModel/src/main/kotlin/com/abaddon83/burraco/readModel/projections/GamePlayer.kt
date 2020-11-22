@@ -23,9 +23,9 @@ data class GamePlayer(
         gameIdentity= GameIdentity()
     )
 
-    override fun applyEvent(e: Event): GamePlayer{
-        return when(e){
-            is PlayerAdded -> apply(e)
+    override fun applyEvent(event: Event): GamePlayer{
+        return when(event){
+            is PlayerAdded -> apply(event)
             else -> this
         }
     }
@@ -33,6 +33,8 @@ data class GamePlayer(
     private fun apply(e: PlayerAdded): GamePlayer{
         check(this.identity.isEmpty())
         check(this.gameIdentity.isEmpty())
+        System.out.println("e.playerIdentity: $e.playerIdentity")
+        System.out.println("e.identity: $e.identity")
 
         return GamePlayer(identity = e.playerIdentity, gameIdentity = e.identity)
     }

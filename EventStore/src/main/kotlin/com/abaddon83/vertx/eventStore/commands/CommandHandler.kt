@@ -38,7 +38,6 @@ class CommandHandler(
         return when (c) {
             is PersistEventCmd -> execute(c)
             is PublishEventCmd -> execute(c)
-            is PersistAndPublishEventCmd -> execute(c)
             //add the other commands to execute here
             else -> TODO()
         }
@@ -51,19 +50,7 @@ class CommandHandler(
 
     private fun execute(c: PublishEventCmd): CmdResult {
         val eventTopPublish = c.event
-        return eventStream.publish(eventTopPublish)
-    }
-
-    private fun execute(c: PersistAndPublishEventCmd): CmdResult {
-        val persistEventCmd = PersistEventCmd(c.event)
-        val publishEventCmd = PublishEventCmd(c.event)
-        return when (val r1=handle(persistEventCmd)){
-            is Invalid -> r1
-            is Valid ->  when (val r2=handle(publishEventCmd)){
-                is Invalid -> Invalid(EventError("Event saved but not published!"))
-                is Valid ->   r1.copy(value = r1.value.plus(r2.value))
-            }
-        }
-
+        eventStream.publish(eventTopPublish)
+        return Valid(mapOf("msg" to "event pushed"))
     }
 }

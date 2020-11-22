@@ -1,5 +1,8 @@
 package com.abaddon83.burraco.common.models.identities
 
+
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import java.util.*
@@ -31,8 +34,12 @@ class GameIdentityTest {
         val expectedUUID = UUID.randomUUID()
         val identity = GameIdentity.create(expectedUUID.toString())!!
 
-        val jsonString = Json.encodeToString(GameIdentityCustomSerializer,identity);
-        val deserializedTris = Json.decodeFromString<GameIdentity>(GameIdentityCustomSerializer,jsonString)
+        val jsonString = Json.encodeToString(identity);
+        val deserializedTris = Json.decodeFromString<GameIdentity>(jsonString)
+
+
+//        val jsonString = Json.encodeToString(identity);
+//        val deserializedTris = Json.decodeFromString<GameIdentity>(jsonString)
         assertEquals(identity.id,deserializedTris.id)
 
     }

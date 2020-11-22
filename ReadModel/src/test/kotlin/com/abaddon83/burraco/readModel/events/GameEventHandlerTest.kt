@@ -20,8 +20,7 @@ class GameEventHandlerTest {
     fun `given x y z`() {
         val event = BurracoGameCreated(GameIdentity.create(), listOf())
 
-        val handler = GameEventHandler(repository)
-        handler.processEvent(event)
+        val handler = GameEventHandler(repository,event)
         runBlockingTest{
             handler.join()
         }

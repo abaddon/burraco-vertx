@@ -4,20 +4,19 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.InetAddress.getByName
 
 plugins {
-    `java-library`
-    kotlin("jvm") version "1.4.10"
     application
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    kotlin("jvm") version "1.4.10"
     kotlin("plugin.serialization") version "1.4.10"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 group = "com.abaddon83.burraco.readModel"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-    jcenter()
-}
+//repositories {
+//    mavenCentral()
+//    jcenter()
+//}
 
 val kotlinVersion = "1.4.10"
 val vertxVersion = "3.9.3"
@@ -34,8 +33,9 @@ application {
 }
 
 dependencies {
-    implementation(project(":SharedComponents","default"))
-    implementation("org.slf4j:slf4j-api:1.7.25")
+    api(project(":SharedComponents","default"))
+
+    //Vertx
     implementation("io.vertx:vertx-config:$vertxVersion")
     implementation("io.vertx:vertx-web:$vertxVersion")
     implementation("io.vertx:vertx-service-discovery:$vertxVersion")
@@ -43,23 +43,30 @@ dependencies {
     implementation("io.vertx:vertx-lang-kotlin:$vertxVersion")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion")
     implementation("io.vertx:vertx-hazelcast:$vertxVersion")
-
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
-    implementation("junit:junit:4.12") // JVM dependency
-
     implementation("io.vertx:vertx-kafka-client:$vertxVersion")
 
+    //Ktorm
     implementation("org.ktorm:ktorm-core:${ktormVersion}")
     implementation("org.ktorm:ktorm-support-mysql:${ktormVersion}")
+
+    //Mysql
     implementation("mysql:mysql-connector-java:8.0.21")
 
+    //Kotlin
+//    implementation(kotlin("stdlib-jdk8"))
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
+    //Log
+//    implementation("org.slf4j:slf4j-api:1.7.25")
+//    implementation("org.slf4j:slf4j-log4j12:1.7.25")
 
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    //Use the Kotlin JUnit integration.
+    testImplementation("io.vertx:vertx-junit5:$vertxVersion")
+//    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+//    testImplementation("junit:junit:4.12") // JVM dependency
+//    testImplementation("org.jetbrains.kotlin:kotlin-test")
+//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
 }
 
 val compileKotlin: KotlinCompile by tasks
