@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.CardPickedFromDeck
 import com.abaddon83.burraco.common.events.CardsPickedFromDiscardPile
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
@@ -10,7 +10,7 @@ import com.abaddon83.vertx.burraco.engine.models.MazzettoDecks
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.utils.es.UnsupportedEventException
+import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 
 data class BurracoGameExecutionTurnBeginning private constructor(
         override val identity: GameIdentity,
@@ -34,6 +34,7 @@ data class BurracoGameExecutionTurnBeginning private constructor(
             game.testInvariants()
             return game
         }
+
     }
 
     //When the turn start the player can pickUp a card from the Deck

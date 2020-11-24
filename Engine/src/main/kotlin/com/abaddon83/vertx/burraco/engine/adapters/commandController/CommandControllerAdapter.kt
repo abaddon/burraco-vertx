@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.adapters.commandController
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.EventStoreVertxAdapter
@@ -13,6 +13,7 @@ import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
+import com.abaddon83.vertx.burraco.engine.commands.StartGameCmd
 import com.abaddon83.vertx.burraco.engine.ports.CommandControllerPort
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
 import com.abaddon83.vertx.burraco.engine.ports.Outcome
@@ -36,7 +37,16 @@ class CommandControllerAdapter(vertx: Vertx) : CommandControllerPort {
     }
 
     override fun startGame(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
-        TODO("Not yet implemented")
+        val cmdResult = commandHandle.handle(StartGameCmd(burracoGameIdentity))
+        return when (cmdResult) {
+            is Valid -> Valid(
+                mapOf(
+                    "gameIdentity" to burracoGameIdentity.convertTo().toString(),
+                    "status" to "started"
+                )
+            )
+            is Invalid -> cmdResult
+        }
     }
 
     override fun pickUpCardFromDeck(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
@@ -56,7 +66,7 @@ object CmdResultAdapter {
     fun toOutcome(cmdResult: CmdResult): Outcome {
         return when (cmdResult) {
             is Valid -> Valid(convertEvent(cmdResult.value))
-            is Invalid -> Invalid(cmdResult.err)
+            is Invalid -> cmdResult
         }
     }
 

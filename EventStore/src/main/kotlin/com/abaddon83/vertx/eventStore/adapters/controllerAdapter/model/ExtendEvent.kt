@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.eventStore.adapters.controllerAdapter.model
 
-import com.abaddon83.vertx.eventStore.models.Event
+import com.abaddon83.utils.eventStore.model.Event
 import io.vertx.codegen.annotations.DataObject
 import io.vertx.core.json.JsonObject
 import java.time.Instant

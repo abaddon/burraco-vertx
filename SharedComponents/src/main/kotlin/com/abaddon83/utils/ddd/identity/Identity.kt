@@ -1,6 +1,4 @@
-package com.abaddon83.utils.ddd
-
-import java.util.*
+package com.abaddon83.utils.ddd.identity
 
 
 abstract class Identity<T>(){

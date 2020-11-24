@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.commands
 
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
@@ -82,7 +82,9 @@ class AppendCardOnBurracoCmdTest {
             BurracoGameCreated(identity = gameIdentity, deck = deck.cards),
             PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity1),
             PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity2),
-            GameStarted(identity = gameIdentity, players = playersCards, deck = burracoDeckCards, mazzettoDeck1 = mazzettoDeck1Cards, mazzettoDeck2 = mazzettoDeck2Cards, discardPileCards = discardPileCards, playerTurn = playerIdentity1),
+            CardsDealtToPlayer(identity = gameIdentity,player = playerIdentity1,cards = playersCards[playerIdentity1] ?: error("playerIdentity1 not found")),
+            CardsDealtToPlayer(identity = gameIdentity,player = playerIdentity2,cards = playersCards[playerIdentity2] ?: error("playerIdentity2 not found")),
+            GameStarted(identity = gameIdentity, deck = burracoDeckCards, mazzettoDeck1 = mazzettoDeck1Cards, mazzettoDeck2 = mazzettoDeck2Cards, discardPileCards = discardPileCards, playerTurn = playerIdentity1),
             CardPickedFromDeck(identity = gameIdentity, playerIdentity = playerIdentity1, card = burracoDeckCards[0]),
             TrisDropped(identity = gameIdentity, playerIdentity = playerIdentity1, tris = burracoTris)
     )

@@ -1,10 +1,10 @@
 package com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.mysql
 
+import com.abaddon83.utils.eventStore.model.Event
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.utils.functionals.Validated
 import com.abaddon83.vertx.eventStore.commands.EventError
-import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.OutcomeDetail
 import com.abaddon83.vertx.eventStore.ports.RepositoryPort
 import io.vertx.core.logging.LoggerFactory
@@ -50,7 +50,7 @@ class MysqlRepositoryAdapter: RepositoryPort {
 
     }
 
-    override fun findEvents(entityName: String, entityKey: String): Set<Event> {
+    override fun findEvents(entityName: String, entityKey: String): List<Event> {
         val query = mysql
             .from(EventTable)
             .select()
@@ -65,6 +65,6 @@ class MysqlRepositoryAdapter: RepositoryPort {
                 instant = row[EventTable.instant]!!,
                 jsonPayload = row[EventTable.jsonPayload]!!
             )
-        }.toSet()
+        }
     }
 }

@@ -12,7 +12,7 @@ interface EventStoreService {
 
     fun persist(event: ExtendEvent, resultHandler: Handler<AsyncResult<Boolean>>);
 
-    fun getEntityEvents(entityName: String, entityKey: String, resultHandler: Handler<AsyncResult<Set<ExtendEvent>>>);
+    fun getEntityEvents(entityName: String, entityKey: String, resultHandler: Handler<AsyncResult<List<ExtendEvent>>>);
 }
 
 //object EventStoreServiceFactory{

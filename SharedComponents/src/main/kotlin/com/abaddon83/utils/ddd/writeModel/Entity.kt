@@ -1,4 +1,4 @@
-package com.abaddon83.utils.ddd
+package com.abaddon83.utils.ddd.writeModel
 
 import com.abaddon83.utils.logs.WithLog
 

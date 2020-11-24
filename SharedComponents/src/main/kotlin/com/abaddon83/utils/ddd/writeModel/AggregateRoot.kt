@@ -1,6 +1,6 @@
-package com.abaddon83.utils.es
+package com.abaddon83.utils.ddd.writeModel
 
-import com.abaddon83.utils.ddd.Entity
+import com.abaddon83.utils.ddd.Event
 import java.util.*
 
 interface AggregateType
@@ -18,6 +18,7 @@ abstract class AggregateRoot<T>(className: String): Entity<T>() {
         log.debug("Marking all changes as committed")
         uncommittedChanges.clear()
     }
+
 
     fun <A: AggregateRoot<T>> applyAndQueueEvent(event: Event): A {
         log.debug("Applying {}", event)

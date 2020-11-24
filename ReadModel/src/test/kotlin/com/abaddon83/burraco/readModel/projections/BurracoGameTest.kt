@@ -15,8 +15,10 @@ class BurracoGameTest {
 
     @Test
     fun serialiseBurracoGame(){
+        val gameIdentity = GameIdentity.create()
          val burracoGame = BurracoGame(
-             identity = GameIdentity.create(),
+             key = BurracoGameKey(gameIdentity),
+             identity = gameIdentity,
              status = GameStatus.Waiting,
              deck = listOf(Card(suit = Suits.Heart,rank = Ranks.Ace),Card(suit = Suits.Clover,rank = Ranks.Two)),
              players = listOf(PlayerIdentity.create(), PlayerIdentity.create()),

@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.common.models.valueObjects
 
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
-import com.abaddon83.utils.ddd.Entity
+import com.abaddon83.utils.ddd.writeModel.Entity
 
 
 abstract class Burraco() : Entity<BurracoIdentity>() {

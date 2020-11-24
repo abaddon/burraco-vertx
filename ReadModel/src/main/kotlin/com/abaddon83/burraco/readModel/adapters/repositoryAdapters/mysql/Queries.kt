@@ -2,10 +2,7 @@ package com.abaddon83.burraco.readModel.adapters.repositoryAdapters.mysql
 
 import com.abaddon83.burraco.common.models.identities.*
 import com.abaddon83.burraco.common.serializations.toJson
-import com.abaddon83.burraco.readModel.projections.BurracoGame
-import com.abaddon83.burraco.readModel.projections.GamePlayer
-import com.abaddon83.burraco.readModel.projections.GameStatus
-import com.abaddon83.burraco.readModel.projections.toJson
+import com.abaddon83.burraco.readModel.projections.*
 import io.vertx.core.logging.LoggerFactory
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -100,14 +97,17 @@ object Queries {
             .where { GameTable.identity eq identity.convertTo().toString() }
             .limit(0, 1)
         return query.map { row ->
+            val gameIdentity = GameIdentity.create(row[GameTable.identity]!!)!!
             BurracoGame(
-                identity = GameIdentity.create(row[GameTable.identity]!!)!!,
+                key = BurracoGameKey(gameIdentity),
+                identity = gameIdentity,
                 status = GameStatus.valueOf(row[GameTable.status]!!),
                 deck = Json.decodeFromString(row[GameTable.deck]!!),
                 players = Json.decodeFromString(row[GameTable.players]!!),
                 playerTurn = if (row[GameTable.playerTurn].isNullOrEmpty()) null else PlayerIdentity.create(row[GameTable.playerTurn]!!),
                 numMazzettoAvailable = row[GameTable.numMazzettoAvailable]!!,
-                discardPile = Json.decodeFromString(row[GameTable.discardPile]!!
+                discardPile = Json.decodeFromString(
+                    row[GameTable.discardPile]!!
                 )
             )
         }.getOrElse(0) { _ -> BurracoGame() }
@@ -119,8 +119,10 @@ object Queries {
             .select()
             .limit(0, 1)
         return query.map { row ->
+            val gameIdentity = GameIdentity.create(row[GameTable.identity]!!)!!
             BurracoGame(
-                GameIdentity.create(row[GameTable.identity]!!)!!,
+                key = BurracoGameKey(gameIdentity),
+                identity = gameIdentity,
                 status = GameStatus.valueOf(row[GameTable.status]!!),
                 deck = Json.decodeFromString(row[GameTable.deck]!!),
                 playerTurn = if (row[GameTable.playerTurn].isNullOrEmpty()) null else PlayerIdentity.create(row[GameTable.playerTurn]!!),
@@ -156,16 +158,22 @@ object Queries {
         }
     }
 
-    fun selectGamePlayer(mysql: Database, identity: PlayerIdentity): GamePlayer {
+    fun selectGamePlayer(mysql: Database, playerIdentity: PlayerIdentity, gameIdentity: GameIdentity): GamePlayer {
         val query = mysql
             .from(GamePlayerTable)
             .select()
-            .where { GamePlayerTable.identity eq identity.convertTo().toString() }
+            .where {
+                (GamePlayerTable.identity eq playerIdentity.convertTo().toString()) and
+                        (GamePlayerTable.gameIdentity eq gameIdentity.convertTo().toString())
+            }
             .limit(0, 1)
         return query.map { row ->
+            val playerIdentity = PlayerIdentity.create(row[GamePlayerTable.identity]!!)!!
+            val gameIdentity = GameIdentity.create(row[GamePlayerTable.gameIdentity]!!)!!
             GamePlayer(
-                PlayerIdentity.create(row[GamePlayerTable.identity]!!)!!,
-                GameIdentity.create(row[GamePlayerTable.gameIdentity]!!)!!,
+                key = GamePlayerKey(playerIdentity,gameIdentity),
+                identity = playerIdentity,
+                gameIdentity = gameIdentity,
                 handCards = Json.decodeFromString(row[GamePlayerTable.handCards]!!),
                 tris = Json.decodeFromString(row[GamePlayerTable.tris]!!),
                 scale = Json.decodeFromString(row[GamePlayerTable.scale]!!)

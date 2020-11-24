@@ -6,13 +6,12 @@ import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnEnd
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
-import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
 import com.abaddon83.burraco.common.models.identities.GameIdentity
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.functionals.*
 import com.abaddon83.utils.logs.WithLog
-import com.abaddon83.burraco.common.events.BurracoGameCreated
+import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.models.burracoGameendeds.BurracoGameEnded
 import java.util.*
 
@@ -78,9 +77,15 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     }
 
     private fun execute(c: AddPlayerCmd): EsScope = {
-        val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
-        when (burracoGame) {
-            is BurracoGameWaitingPlayers -> Valid(burracoGame.addPlayer(PlayerInGame.create(c.playerIdentityToAdd, listOf())).getUncommittedChanges())
+        when (val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()) {
+            is BurracoGameWaitingPlayers -> {
+                try{
+                    Valid(burracoGame.addPlayer(BurracoPlayer(c.playerIdentityToAdd)).getUncommittedChanges())
+                }catch (e: IllegalStateException){
+                    Invalid(BurracoGameError(e.message?:"GameIdentity ${c.gameIdentity}. unknown error", burracoGame))
+                }
+
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }

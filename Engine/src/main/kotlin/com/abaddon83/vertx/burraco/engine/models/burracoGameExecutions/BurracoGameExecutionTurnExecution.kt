@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.*
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
@@ -8,7 +8,7 @@ import com.abaddon83.burraco.common.models.identities.BurracoIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.utils.es.UnsupportedEventException
+import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 
 data class BurracoGameExecutionTurnExecution private constructor(
         override val players: List<PlayerInGame>,

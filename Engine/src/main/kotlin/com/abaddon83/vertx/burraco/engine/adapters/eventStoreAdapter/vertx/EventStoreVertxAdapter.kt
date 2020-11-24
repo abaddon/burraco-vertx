@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model.ExtendEvent
 import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.engine.ports.EventStorePort
@@ -52,12 +52,12 @@ class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
         }.sortedBy { e -> e.created }.reversed()
     }
 
-    fun loadExtendedEvents(pk: String,events: Set<ExtendEvent>){
+    fun loadExtendedEvents(pk: String,events: List<ExtendEvent>){
         EventsCache.persist(pk,events)
     }
 
-    fun getEvents(pk: String, entityName: String): Promise<Set<ExtendEvent>> {
-            val done: Promise<Set<ExtendEvent>> = Promise.promise()
+    fun getEvents(pk: String, entityName: String): Promise<List<ExtendEvent>> {
+            val done: Promise<List<ExtendEvent>> = Promise.promise()
             EventStoreServiceVertxEBProxy(vertx, SERVICE_ADDRESS)
                 .getEntityEvents(entityName, pk) { ar ->
                     if (ar.succeeded()) {

@@ -1,40 +1,57 @@
 package com.abaddon83.burraco.readModel.events
 
-import com.abaddon83.burraco.common.models.identities.PlayerIdentity
+import com.abaddon83.burraco.common.events.CardsDealtToPlayer
+import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import com.abaddon83.burraco.readModel.projections.GamePlayer
-import com.abaddon83.utils.es.Event
-import kotlinx.coroutines.launch
+import com.abaddon83.burraco.readModel.projections.GamePlayerKey
+import com.abaddon83.utils.ddd.Event
+import com.abaddon83.utils.ddd.readModel.ProjectionKey
 import org.slf4j.LoggerFactory
 
-class GamePlayerEventHandler(override val repository: RepositoryPort, override val e: Event) : EventHandlerJob<GamePlayer>() {
+class GamePlayerEventHandler(override val repository: RepositoryPort, event: Event) : EventHandlerJob<GamePlayer>(event) {
     companion object {
         private val log = LoggerFactory.getLogger(this::class.qualifiedName)
     }
 
-    init {
-        log.info("Loading event ${e.javaClass.simpleName} in GamePlayer projection")
-        launch {
-            try {
-                processEvent(e)
-            } catch (e: Exception) {
-                throw e
-            } finally {
-                log.info("Event ${e.javaClass.simpleName} loaded in GamePlayer projection")
-                job.cancel()
-            }
-        }
-    }
+//    init {
+//        log.info("Received event ${e.javaClass.simpleName} in ${this::class.qualifiedName}")
+//        launch {
+//            try {
+//                val key = getKey(e)
+//                if(key != null){
+//                    processEvent(key,e)
+//                }
+//            } catch (e: Exception) {
+//                throw e
+//            } finally {
+//                job.cancel()
+//            }
+//        }
+//    }
 
-    override fun processEvent(e: Event) {
-        val gamePlayer: GamePlayer = getProjection(e.key())
+    override fun processEvent(projectionKey: ProjectionKey, e: Event) {
+        log.info("Loading event ${e.javaClass.simpleName} in GamePlayer projection")
+        val gamePlayer: GamePlayer = getProjection(projectionKey)  //Create a class Key with other class that extend it
             .applyEvent(e)
         if (!gamePlayer.identity.isEmpty()) {
             repository.persist(gamePlayer)
         }
     }
 
-    override fun getProjection(key: String): GamePlayer = repository.findGamePlayer(PlayerIdentity.create(key)!!)
+    override fun getProjection(projectionKey: ProjectionKey): GamePlayer {
+        check(projectionKey is GamePlayerKey)
+
+        return repository.findGamePlayer(projectionKey.identity,projectionKey.gameIdentity)
+    }
+
+    override fun getKey(e: Event): GamePlayerKey?{
+        return when(e){
+            is PlayerAdded -> GamePlayerKey(e.playerIdentity,e.identity)
+            is CardsDealtToPlayer -> GamePlayerKey(e.player,e.identity)
+            else -> null
+        }
+    }
 
 
 }

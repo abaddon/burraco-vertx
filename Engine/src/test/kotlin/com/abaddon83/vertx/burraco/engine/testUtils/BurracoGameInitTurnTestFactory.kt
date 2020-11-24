@@ -1,9 +1,5 @@
 package com.abaddon83.vertx.burraco.engine.testUtils
 
-import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
-import com.abaddon83.vertx.burraco.engine.models.DiscardPile
-import com.abaddon83.vertx.burraco.engine.models.MazzettoDeck
-import com.abaddon83.vertx.burraco.engine.models.MazzettoDecks
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnEnd
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
@@ -13,6 +9,7 @@ import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.engine.models.decks.ListCardsBuilder
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
+import com.abaddon83.vertx.burraco.engine.models.*
 
 data class BurracoGameInitTurnTestFactory(
         private val gameIdentity: GameIdentity,
@@ -58,8 +55,8 @@ data class BurracoGameInitTurnTestFactory(
             BurracoGameWaitingPlayers(
                     identity = gameIdentity,
                     players = when (singlePlayer) {
-                        true -> listOf(player1)
-                        false -> listOf(player1, player2)
+                        true -> listOf(BurracoPlayer(player1.identity()) )
+                        false -> listOf(BurracoPlayer(player1.identity()), BurracoPlayer(player2.identity()))
                     }, burracoDeck = burracoDeckBuild()
             )
 

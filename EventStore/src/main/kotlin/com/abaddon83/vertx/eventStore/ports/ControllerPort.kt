@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.eventStore.ports
 
+import com.abaddon83.utils.eventStore.model.Event
 import com.abaddon83.vertx.eventStore.commands.CommandHandler
-import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.queries.QueryHandler
 
 
@@ -16,7 +16,7 @@ interface ControllerPort {
     val queryHandler: QueryHandler
         get() = QueryHandler(repository)
 
-    fun persist(event:Event): Outcome
+    fun persist(event: Event): Outcome
 
-    fun getEntityEvents(entityName: String, entityKey: String ): Set<Event>
+    fun getEntityEvents(entityName: String, entityKey: String ): List<Event>
 }

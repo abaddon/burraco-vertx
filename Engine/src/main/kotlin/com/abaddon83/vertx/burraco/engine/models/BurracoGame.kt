@@ -1,20 +1,21 @@
 package com.abaddon83.vertx.burraco.engine.models
 
 import com.abaddon83.burraco.common.events.BurracoGameCreated
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
 import com.abaddon83.vertx.burraco.engine.models.games.Game
 import com.abaddon83.burraco.common.models.identities.GameIdentity
-import com.abaddon83.utils.es.AggregateRoot
-import com.abaddon83.utils.es.AggregateType
-import com.abaddon83.utils.es.UnsupportedEventException
+import com.abaddon83.utils.ddd.writeModel.AggregateRoot
+import com.abaddon83.utils.ddd.writeModel.AggregateType
+import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
+import com.abaddon83.vertx.burraco.engine.models.players.Player
 
 open class BurracoGame(override val identity: GameIdentity, className:String) : Game, AggregateRoot<GameIdentity>(className) {
     constructor(identity: GameIdentity): this(identity,"BurracoGame")
     override val maxPlayers: Int = 4
     override val minPlayers: Int = 2
     override val totalCardsRequired: Int = 108
-    override val players: List<BurracoPlayer> =listOf()
+    override val players: List<Player> =listOf()
     override val deck: BurracoDeck = BurracoDeck.create(listOf())
 
     object TYPE : AggregateType {
@@ -22,7 +23,7 @@ open class BurracoGame(override val identity: GameIdentity, className:String) : 
     }
     override fun aggregateType(): AggregateType = TYPE
 
-    override fun listOfPlayers(): List<BurracoPlayer> = players
+    override fun listOfPlayers(): List<Player> = players
 
     companion object Factory {
         fun create(gameIdentity: GameIdentity): BurracoGameWaitingPlayers {

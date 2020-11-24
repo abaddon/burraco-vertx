@@ -4,6 +4,7 @@ import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.PlayerNotAssigned
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
+import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.testUtils.BurracoGameInitTurnTestFactory
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -14,7 +15,7 @@ class BurracoGameWaitingPlayersTest {
 
         val game = BurracoGameInitTurnTestFactory.create().buildWaitingPlayer()
 
-        val newGame = game.addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+        val newGame = game.addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
         assert(newGame.identity() == game.identity())
         assert(newGame.numPlayers() == game.numPlayers() + 1)
@@ -22,7 +23,7 @@ class BurracoGameWaitingPlayersTest {
     @Test
     fun `Given a burraco game, when I add a player 2 times, then I receive an error`(){
         val game = BurracoGameInitTurnTestFactory.create().buildWaitingPlayer()
-        val player1 = PlayerNotAssigned(PlayerIdentity.create())
+        val player1 = BurracoPlayer(PlayerIdentity.create())
         val newGame = game.addPlayer(player1)
         assertFailsWith(IllegalStateException::class){
             newGame.addPlayer(player1)
@@ -34,25 +35,25 @@ class BurracoGameWaitingPlayersTest {
     @Test
     fun `Given a burraco game with 3 players, when I add the fourth player, then I have a game with 4 players`(){
         val game = BurracoGameInitTurnTestFactory.create().buildWaitingPlayer()
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
-        val actualGame = game.addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+        val actualGame = game.addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
         assert(actualGame.numPlayers() == 4)
     }
     @Test
     fun `Given a burraco game with 4 players, when I add the fifth player, then I receive an error`(){
         val game = BurracoGameInitTurnTestFactory.create().buildWaitingPlayer()
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
         assertFailsWith(IllegalStateException::class){
-            game.addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+            game.addPlayer(BurracoPlayer(PlayerIdentity.create()))
         }
     }
     @Test
     fun `Given a burraco game with 3 players, when I check if a player is in the game, then I receive a positive feedback`(){
-        val player1 = PlayerNotAssigned(PlayerIdentity.create())
+        val player1 = BurracoPlayer(PlayerIdentity.create())
         val game = BurracoGameInitTurnTestFactory.create().buildWaitingPlayer().addPlayer(player1)
 
         val expectedResult = true
@@ -86,8 +87,8 @@ class BurracoGameWaitingPlayersTest {
         val totalCardsInGameExpected = 108
 
         val game = BurracoGame.create(GameIdentity.create())
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
         val burracoDealer = BurracoDealer.create(game.deck, game.players)
 

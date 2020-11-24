@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.commands
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
 import com.abaddon83.burraco.common.events.*
 import com.abaddon83.vertx.burraco.engine.models.BurracoDeck
@@ -17,26 +17,26 @@ import org.junit.Test
 class EndPlayerTurnCmdTest {
 
     @Before
-    fun loadEvents(){
+    fun loadEvents() {
         eventStore.save(events)
     }
 
     @Test
-    fun `Given a command to end player turn, when I execute the command, then the player turn is ended`(){
-        val command = EndPlayerTurnCmd(gameIdentity = gameIdentity,playerIdentity = playerIdentity1)
+    fun `Given a command to end player turn, when I execute the command, then the player turn is ended`() {
+        val command = EndPlayerTurnCmd(gameIdentity = gameIdentity, playerIdentity = playerIdentity1)
         assert(commandHandler.handle(command) is Valid)
     }
 
     @Test
-    fun `Given a command to end player turn that is already ended, when I execute the command, then I receive an error`(){
-        val command = EndPlayerTurnCmd(gameIdentity = gameIdentity,playerIdentity = playerIdentity1)
+    fun `Given a command to end player turn that is already ended, when I execute the command, then I receive an error`() {
+        val command = EndPlayerTurnCmd(gameIdentity = gameIdentity, playerIdentity = playerIdentity1)
         assert(commandHandler.handle(command) is Valid)
         assert(commandHandler.handle(command) is Invalid)
     }
 
     @Test
-    fun `Given a command to execute on a burraco game that doesn't exist, when I execute the command, then I receive an error`(){
-        val command = EndPlayerTurnCmd(gameIdentity = GameIdentity.create(),playerIdentity = playerIdentity1)
+    fun `Given a command to execute on a burraco game that doesn't exist, when I execute the command, then I receive an error`() {
+        val command = EndPlayerTurnCmd(gameIdentity = GameIdentity.create(), playerIdentity = playerIdentity1)
         assert(commandHandler.handle(command) is Invalid)
     }
 
@@ -49,34 +49,47 @@ class EndPlayerTurnCmdTest {
     val playerIdentity2 = PlayerIdentity.create()
 
     val allCards = ListCardsBuilder.allRanksWithJollyCards()
-            .plus(ListCardsBuilder.allRanksWithJollyCards())
-            .shuffled()
-    val cardsPlayer1 = Pair(playerIdentity1,allCards.take(11))
-    val cardsPlayer2 = Pair(playerIdentity2,allCards.take(11))
+        .plus(ListCardsBuilder.allRanksWithJollyCards())
+        .shuffled()
+    val cardsPlayer1 = Pair(playerIdentity1, allCards.take(11))
+    val cardsPlayer2 = Pair(playerIdentity2, allCards.take(11))
 
     val mazzettoDeck1Cards = allCards.take(11)
     val mazzettoDeck2Cards = allCards.take(11)
 
     val discardPileCards = allCards.take(1)
 
-    val burracoDeckCards = allCards.take(108-1-11-11-11-11)
+    val burracoDeckCards = allCards.take(108 - 1 - 11 - 11 - 11 - 11)
 
-    val playersCards = mapOf<PlayerIdentity,List<Card>>(cardsPlayer1,cardsPlayer2)
+    val playersCards = mapOf<PlayerIdentity, List<Card>>(cardsPlayer1, cardsPlayer2)
 
     val events = listOf<Event>(
-            BurracoGameCreated(identity = gameIdentity,deck = deck.cards),
-            PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity1),
-            PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity2),
-            GameStarted(
-                    identity = gameIdentity,
-                    players = playersCards,
-                    deck = burracoDeckCards,
-                    mazzettoDeck1 = mazzettoDeck1Cards,
-                    mazzettoDeck2 = mazzettoDeck2Cards,
-                    discardPileCards = discardPileCards,
-                    playerTurn = playerIdentity1
-            ),
-            CardPickedFromDeck(identity = gameIdentity, playerIdentity = playerIdentity1, card = burracoDeckCards[0]),
-            CardDroppedIntoDiscardPile(identity = gameIdentity, playerIdentity = playerIdentity1, card = burracoDeckCards[0])
+        BurracoGameCreated(identity = gameIdentity, deck = deck.cards),
+        PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity1),
+        PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity2),
+        CardsDealtToPlayer(
+            identity = gameIdentity,
+            player = playerIdentity1,
+            cards = playersCards[playerIdentity1] ?: error("playerIdentity1 not found")
+        ),
+        CardsDealtToPlayer(
+            identity = gameIdentity,
+            player = playerIdentity2,
+            cards = playersCards[playerIdentity2] ?: error("playerIdentity2 not found")
+        ),
+        GameStarted(
+            identity = gameIdentity,
+            deck = burracoDeckCards,
+            mazzettoDeck1 = mazzettoDeck1Cards,
+            mazzettoDeck2 = mazzettoDeck2Cards,
+            discardPileCards = discardPileCards,
+            playerTurn = playerIdentity1
+        ),
+        CardPickedFromDeck(identity = gameIdentity, playerIdentity = playerIdentity1, card = burracoDeckCards[0]),
+        CardDroppedIntoDiscardPile(
+            identity = gameIdentity,
+            playerIdentity = playerIdentity1,
+            card = burracoDeckCards[0]
+        )
     )
 }

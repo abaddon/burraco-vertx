@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.commands
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
 import com.abaddon83.burraco.common.events.BurracoGameCreated
 import com.abaddon83.burraco.common.events.PlayerAdded

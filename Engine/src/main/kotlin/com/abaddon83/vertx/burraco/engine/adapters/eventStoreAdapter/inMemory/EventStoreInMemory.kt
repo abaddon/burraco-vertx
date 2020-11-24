@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.inMemory
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.logs.WithLog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel

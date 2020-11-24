@@ -1,4 +1,4 @@
-package com.abaddon83.utils.ddd
+package com.abaddon83.utils.ddd.identity
 
 import java.util.*
 
@@ -10,7 +10,7 @@ abstract class UUIDIdentity() : Identity<UUID>() {
     }
 
     override fun isEmpty(): Boolean {
-        return convertTo() == UUIDIdentity.emptyValue
+        return convertTo() == emptyValue
     }
 
 }

@@ -1,6 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameWaitingPlayers
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.burraco.common.events.CardsDealtToPlayer
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.GameStarted
 import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.vertx.burraco.engine.models.*
@@ -8,7 +9,7 @@ import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.BurracoGa
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.utils.es.UnsupportedEventException
+import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 
 
 data class BurracoGameWaitingPlayers constructor(
@@ -35,15 +36,22 @@ data class BurracoGameWaitingPlayers constructor(
             warnMsg("Not enough players to initiate the game, ( Min: ${minPlayers})")
         }
         val burracoDealer = BurracoDealer.create(deck, players)
-        return applyAndQueueEvent(GameStarted(
+
+        val eventsToApply: MutableList<Event> =burracoDealer.dealCardsToPlayers.map { (player,cards) ->
+            CardsDealtToPlayer(identity = identity(), player = player, cards = cards)
+        }.toMutableList()
+
+        eventsToApply.add(GameStarted(
                 identity = identity(),
                 deck = burracoDealer.burracoDeck.cards,
-                players = burracoDealer.dealCardsToPlayers,
+                //players = burracoDealer.dealCardsToPlayers.map { (player,cards) -> Player(player,cards) },
                 mazzettoDeck1 = burracoDealer.dealCardsToFirstMazzetto.getCardList(),
                 mazzettoDeck2 = burracoDealer.dealCardsToSecondMazzetto.getCardList(),
                 discardPileCards = burracoDealer.dealCardToDiscardPile.showCards(),
                 playerTurn = players[0].identity())
         )
+
+        return applyAndQueueEvents(eventsToApply)
     }
 
     override fun applyEvent(event: Event): BurracoGame {
@@ -51,25 +59,36 @@ data class BurracoGameWaitingPlayers constructor(
         return when (event) {
             is GameStarted -> apply(event)
             is PlayerAdded -> apply(event)
+            is CardsDealtToPlayer -> apply(event)
             else -> throw UnsupportedEventException(event::class.java)
         }
     }
 
 
     private fun apply(event: PlayerAdded): BurracoGameWaitingPlayers {
-        return copy(players = players.plus(PlayerInGame.create(event.playerIdentity, listOf())))
+        return copy(players = players.plus(BurracoPlayer(event.playerIdentity)))
     }
 
-    private fun apply(event: GameStarted): BurracoGameExecutionTurnBeginning {
-        val burracoPlayersInGame = event.players.map { (player, cards) ->
-            PlayerInGame.create(
-                    playerIdentity = player,
-                    cards = cards
-            )
+    private fun apply(event: CardsDealtToPlayer): BurracoGameWaitingPlayers {
+        check(event.identity == identity){ "Game Identity mismatch" }
+        val updatedPlayers = players.map { player ->
+            when (player.identity()) {
+                event.player -> player.copy(cards = event.cards)
+                else -> player
+            }
         }
+        check(updatedPlayers != players)
+        return copy(players = updatedPlayers)
+    }
+
+
+    private fun apply(event: GameStarted): BurracoGameExecutionTurnBeginning {
+        check(players.filter{ burracoPlayer -> burracoPlayer.cards.isEmpty() }.count() == 0) { "All players have to have their cards" }
+        check(event.identity == identity){ "Game Identity mismatch" }
+
         val gameUpdated = BurracoGameExecutionTurnBeginning.create(
                 identity = identity(),
-                players = burracoPlayersInGame,
+                players = players.map { p -> PlayerInGame.create(p.identity(),p.cards) },
                 burracoDeck = BurracoDeck.create(event.deck),
                 mazzettoDecks = MazzettoDecks.create(listOf(
                         MazzettoDeck.create(event.mazzettoDeck1),

@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.burraco.engine.ports
 
 import com.abaddon83.burraco.common.events.BurracoGameEvent
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 
 
 abstract class EventStorePort {

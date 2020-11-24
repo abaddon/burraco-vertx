@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.common.events
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.GameIdentity
@@ -12,57 +12,100 @@ import kotlinx.serialization.json.Json
 
 
 @Serializable
-sealed class BurracoGameEvent(): Event() {
+sealed class BurracoGameEvent() : Event() {
     abstract val identity: GameIdentity
     override fun key(): String = identity.convertTo().toString()
     override val entityName: String = "BurracoGame"
 
-    companion object{
-        fun jsonToEvent(eventClass: String, json: String): BurracoGameEvent?{
-            return when(eventClass){
+    companion object {
+        //        inline fun <reified T> jsonToEvent(json: String): T {
+//            try{
+//                return Json.decodeFromString<T>(json)
+//            }catch (e: Exception){
+//                throw e
+//            }
+//        }
+        fun jsonToEvent(eventClass: String, json: String): BurracoGameEvent? {
+            return when (eventClass) {
                 "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(json)
                 "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(json)
+                "CardsDealtToPlayer" -> Json.decodeFromString<CardsDealtToPlayer>(json)
                 "GameStarted" -> Json.decodeFromString<GameStarted>(json)
                 "CardPickedFromDeck" -> Json.decodeFromString<CardPickedFromDeck>(json)
                 "CardsPickedFromDiscardPile" -> Json.decodeFromString<CardsPickedFromDiscardPile>(json)
-                else -> null
+                else -> throw NotImplementedError("error jsonToEvent(..), ${eventClass.javaClass.simpleName} not managed")
             }
         }
     }
-
 }
 
 @Serializable
-data class BurracoGameCreated(override val identity: GameIdentity, val deck: List<Card>): BurracoGameEvent()
+data class BurracoGameCreated(override val identity: GameIdentity, val deck: List<Card>) : BurracoGameEvent()
+
 @Serializable
 data class PlayerAdded(override val identity: GameIdentity, val playerIdentity: PlayerIdentity) : BurracoGameEvent()
+
+@Serializable
+data class CardsDealtToPlayer(override val identity: GameIdentity, val player: PlayerIdentity, val cards: List<Card>) :
+    BurracoGameEvent()
+
 @Serializable
 data class GameStarted(
     override val identity: GameIdentity,
     val deck: List<Card>,
-    val players: Map<PlayerIdentity,List<Card>>,
     val mazzettoDeck1: List<Card>,
     val mazzettoDeck2: List<Card>,
     val discardPileCards: List<Card>,
-    val playerTurn: PlayerIdentity)  : BurracoGameEvent()
-@Serializable
-data class CardPickedFromDeck(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card) : BurracoGameEvent()
-@Serializable
-data class CardsPickedFromDiscardPile(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val cards: List<Card>) : BurracoGameEvent()
-@Serializable
-data class CardDroppedIntoDiscardPile(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card) : BurracoGameEvent()
-@Serializable
-data class TrisDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val tris: Tris) : BurracoGameEvent()
-@Serializable
-data class ScaleDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val scale: Scale) : BurracoGameEvent()
-@Serializable
-data class CardAddedOnBurraco(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val burracoIdentity: BurracoIdentity, val cardsToAppend: List<Card>): BurracoGameEvent()
-@Serializable
-data class MazzettoPickedUp(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val mazzettoDeck: List<Card>): BurracoGameEvent()
-@Serializable
-data class TurnEnded(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val nextPlayerTurn: PlayerIdentity): BurracoGameEvent()
+    val playerTurn: PlayerIdentity
+) : BurracoGameEvent()
 
+@Serializable
+data class CardPickedFromDeck(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card) :
+    BurracoGameEvent()
 
+@Serializable
+data class CardsPickedFromDiscardPile(
+    override val identity: GameIdentity,
+    val playerIdentity: PlayerIdentity,
+    val cards: List<Card>
+) : BurracoGameEvent()
+
+@Serializable
+data class CardDroppedIntoDiscardPile(
+    override val identity: GameIdentity,
+    val playerIdentity: PlayerIdentity,
+    val card: Card
+) : BurracoGameEvent()
+
+@Serializable
+data class TrisDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val tris: Tris) :
+    BurracoGameEvent()
+
+@Serializable
+data class ScaleDropped(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val scale: Scale) :
+    BurracoGameEvent()
+
+@Serializable
+data class CardAddedOnBurraco(
+    override val identity: GameIdentity,
+    val playerIdentity: PlayerIdentity,
+    val burracoIdentity: BurracoIdentity,
+    val cardsToAppend: List<Card>
+) : BurracoGameEvent()
+
+@Serializable
+data class MazzettoPickedUp(
+    override val identity: GameIdentity,
+    val playerIdentity: PlayerIdentity,
+    val mazzettoDeck: List<Card>
+) : BurracoGameEvent()
+
+@Serializable
+data class TurnEnded(
+    override val identity: GameIdentity,
+    val playerIdentity: PlayerIdentity,
+    val nextPlayerTurn: PlayerIdentity
+) : BurracoGameEvent()
 
 /*object EventsAdapters  {
     fun fillEventPlayerAddedEvent(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): PlayerAdded =

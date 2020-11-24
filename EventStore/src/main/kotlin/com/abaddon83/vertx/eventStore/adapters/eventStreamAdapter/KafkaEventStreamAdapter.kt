@@ -1,13 +1,9 @@
 package com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter
 
 
-import com.abaddon83.utils.functionals.Valid
-import com.abaddon83.utils.functionals.Validated
+import com.abaddon83.utils.eventStore.model.Event
 import com.abaddon83.utils.kafka.models.KafkaEvent
-import com.abaddon83.vertx.eventStore.commands.EventError
-import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.EventStreamPort
-import com.abaddon83.vertx.eventStore.ports.OutcomeDetail
 import io.vertx.core.Vertx
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.kafka.client.producer.KafkaProducer

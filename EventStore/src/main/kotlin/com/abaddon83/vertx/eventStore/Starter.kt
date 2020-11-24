@@ -38,6 +38,7 @@ class Starter : VertxCommandLauncher(), VertxLifecycleHooks {
     companion object {
         @JvmStatic
         fun main(vararg args: String) {
+            System.setProperty("vertx.logger-delegate-factory-class-name","io.vertx.core.logging.Log4jLogDelegateFactory")
             Starter().dispatch(args)
         }
 

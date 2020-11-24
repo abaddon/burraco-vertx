@@ -4,6 +4,7 @@ import com.abaddon83.vertx.burraco.engine.models.BurracoGame
 import com.abaddon83.vertx.burraco.engine.models.PlayerNotAssigned
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
+import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import org.junit.Test
 
 class BurracoDealerTest {
@@ -17,8 +18,8 @@ class BurracoDealerTest {
         val expectedPlayers = 2
 
         val game = BurracoGame.create(GameIdentity.create())
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
         val burracoDealer = BurracoDealer.create(game.deck, game.players)
 
@@ -43,9 +44,9 @@ class BurracoDealerTest {
         val expectedPlayers = 3
 
         val game = BurracoGame.create(GameIdentity.create())
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
         val burracoDealer = BurracoDealer.create(game.deck, game.players)
 
@@ -70,10 +71,10 @@ class BurracoDealerTest {
         val expectedPlayers = 4
 
         val game = BurracoGame.create(GameIdentity.create())
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
-                .addPlayer(PlayerNotAssigned(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
+                .addPlayer(BurracoPlayer(PlayerIdentity.create()))
 
         val burracoDealer = BurracoDealer.create(game.deck, game.players)
 

@@ -1,13 +1,12 @@
 package com.abaddon83.vertx.eventStore.adapters.controllerAdapter
 
+import com.abaddon83.utils.eventStore.model.Event
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.eventStore.adapters.controllerAdapter.model.ExtendEvent
-import com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter.FakeEventStreamAdapter
 import com.abaddon83.vertx.eventStore.adapters.eventStreamAdapter.KafkaEventStreamAdapter
 import com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.mysql.MysqlRepositoryAdapter
 import com.abaddon83.vertx.eventStore.commands.*
-import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.ControllerPort
 import com.abaddon83.vertx.eventStore.ports.EventStreamPort
 import com.abaddon83.vertx.eventStore.ports.Outcome
@@ -43,12 +42,11 @@ class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
     override fun getEntityEvents(
         entityName: String,
         entityKey: String,
-        resultHandler: Handler<AsyncResult<Set<ExtendEvent>>>
+        resultHandler: Handler<AsyncResult<List<ExtendEvent>>>
     ) {
-        //val events = setOf<ExtendEvent>()
         val events = getEntityEvents(entityName,entityKey).map { ev ->
             ExtendEvent(ev)
-        }.toSet()
+        }
         return resultHandler.handle(Future.succeededFuture(events))
     }
 
@@ -63,7 +61,7 @@ class EventStoreServiceImpl(vertx: Vertx) : EventStoreService, ControllerPort {
         }
     }
 
-    override fun getEntityEvents(entityName: String, entityKey: String): Set<Event> {
+    override fun getEntityEvents(entityName: String, entityKey: String): List<Event> {
         val query = GetEntityEvents(entityName = entityName, identity = entityKey)
         val queryResult = queryHandler.handle(query)
         return queryResult.response

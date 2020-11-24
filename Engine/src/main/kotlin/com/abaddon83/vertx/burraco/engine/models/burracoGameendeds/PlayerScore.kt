@@ -1,17 +1,17 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameendeds
 
-import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.valueObjects.Burraco
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
+import com.abaddon83.vertx.burraco.engine.models.players.Player
 
 data class PlayerScore private constructor(
         override val identity: PlayerIdentity,
         val winner: Boolean,
         val burracoList: List<BurracoPoint>,
         val remainedCards: List<Card>
-): BurracoPlayer("PlayerScore") {
+): Player() {
 
     companion object Factory{
         fun create(player: PlayerInGame, winner: Boolean): PlayerScore =

@@ -1,17 +1,16 @@
 package com.abaddon83.vertx.burraco.engine.models.burracoGameendeds
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.engine.models.BurracoGame
-import com.abaddon83.vertx.burraco.engine.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.engine.models.MazzettoDecks
 import com.abaddon83.vertx.burraco.engine.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.utils.es.UnsupportedEventException
+import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 
 data class BurracoGameEnded(
         override val identity: GameIdentity,
-        override val players: List<BurracoPlayer>,
+        override val players: List<PlayerScore>,
         val mazzettoMissed: Boolean) : BurracoGame(identity,"BurracoGameEnded") {
 
     override fun applyEvent(event: Event): BurracoGameEnded {

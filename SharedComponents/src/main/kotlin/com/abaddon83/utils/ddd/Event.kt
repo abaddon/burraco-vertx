@@ -1,4 +1,4 @@
-package com.abaddon83.utils.es
+package com.abaddon83.utils.ddd
 
 import java.time.Instant
 

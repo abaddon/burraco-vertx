@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.inMemory
 
-import com.abaddon83.vertx.eventStore.models.Event
+import com.abaddon83.utils.eventStore.model.Event
 import io.vertx.core.logging.LoggerFactory
 
 object InMemoryDB {

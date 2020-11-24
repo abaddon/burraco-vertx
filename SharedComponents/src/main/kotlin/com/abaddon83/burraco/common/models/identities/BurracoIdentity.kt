@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.common.models.identities
 
-import com.abaddon83.utils.ddd.UUIDIdentity
+import com.abaddon83.utils.ddd.identity.UUIDIdentity
 import com.abaddon83.utils.serializations.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.*

@@ -1,7 +1,6 @@
 package com.abaddon83.vertx.eventStore.commands
 
 import com.abaddon83.utils.functionals.*
-import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.EventStreamPort
 import com.abaddon83.vertx.eventStore.ports.OutcomeDetail
 import com.abaddon83.vertx.eventStore.ports.RepositoryPort

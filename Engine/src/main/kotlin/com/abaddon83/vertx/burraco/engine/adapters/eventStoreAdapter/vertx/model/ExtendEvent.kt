@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.engine.adapters.eventStoreAdapter.vertx.model
 
-import com.abaddon83.utils.es.Event
+import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.*
 import com.fasterxml.jackson.annotation.JsonCreator
 import io.vertx.core.json.JsonObject
@@ -34,6 +34,7 @@ data class ExtendEvent(
         jsonPayload = when (ev) {
             is BurracoGameCreated -> Json.encodeToString(ev)
             is PlayerAdded -> Json.encodeToString(ev)
+            is CardsDealtToPlayer -> Json.encodeToString(ev)
             is GameStarted -> Json.encodeToString(ev)
             is CardPickedFromDeck -> Json.encodeToString(ev)
             is CardsPickedFromDiscardPile -> Json.encodeToString(ev)
@@ -43,7 +44,7 @@ data class ExtendEvent(
             is CardAddedOnBurraco -> Json.encodeToString(ev)
             is MazzettoPickedUp -> Json.encodeToString(ev)
             is TurnEnded -> Json.encodeToString(ev)
-            else -> throw Exception("Event not recognised")
+            else -> throw Exception("Event ${ev.javaClass.simpleName} not recognised")
         }
     )
 
@@ -54,6 +55,7 @@ data class ExtendEvent(
     fun toEvent(): Event = when (name) {
         "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(jsonPayload)
         "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(jsonPayload)
+        "CardsDealtToPlayer" -> Json.decodeFromString<CardsDealtToPlayer>(jsonPayload)
         "GameStarted" -> Json.decodeFromString<GameStarted>(jsonPayload)
         "CardPickedFromDeck" -> Json.decodeFromString<CardPickedFromDeck>(jsonPayload)
         "CardsPickedFromDiscardPile" -> Json.decodeFromString<CardsPickedFromDiscardPile>(jsonPayload)
