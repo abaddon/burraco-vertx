@@ -5,7 +5,6 @@ import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import com.abaddon83.burraco.readModel.projections.BurracoGame
 import com.abaddon83.burraco.readModel.projections.GamePlayer
-import com.abaddon83.utils.ddd.identity.UUIDIdentity
 import io.vertx.core.logging.LoggerFactory
 import org.ktorm.database.Database
 import org.ktorm.support.mysql.MySqlDialect
@@ -40,8 +39,9 @@ class MysqlRepositoryAdapter: RepositoryPort {
         if(Queries.insertOrUpdate(getConnection(),entity)){
             log.info("${entity.javaClass.simpleName} persisted")
         }else{
-            log.error("${entity.javaClass.simpleName} not persisted")
+            log.warn("${entity.javaClass.simpleName} not persisted")
         }
+
     }
 
     override fun findGame(gameIdentity: GameIdentity): BurracoGame {
@@ -56,13 +56,10 @@ class MysqlRepositoryAdapter: RepositoryPort {
         if(Queries.insertOrUpdate(getConnection(),entity)){
             log.info("${entity.javaClass.simpleName} persisted")
         }else{
-            log.error("${entity.javaClass.simpleName} not persisted")
+            log.warn("${entity.javaClass.simpleName} not persisted")
         }
     }
 
-
-
-    //TODO I'm using only the player id but we should use it + Game id
     override fun findGamePlayer(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity): GamePlayer {
         return Queries.selectGamePlayer(getConnection(), playerIdentity,gameIdentity)
     }

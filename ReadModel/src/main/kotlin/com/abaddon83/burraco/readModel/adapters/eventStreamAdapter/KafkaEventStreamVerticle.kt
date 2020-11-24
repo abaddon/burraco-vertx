@@ -20,7 +20,10 @@ class KafkaEventStreamVerticle : CoroutineVerticle() {
 
     companion object {
         private val log = LoggerFactory.getLogger(this::class.qualifiedName)!!
+
     }
+
+    val repository: RepositoryPort = MysqlRepositoryAdapter()
 
     private val kafkaProps: () -> Properties = {
         val props = Properties()
@@ -38,7 +41,7 @@ class KafkaEventStreamVerticle : CoroutineVerticle() {
     private var consumer: KafkaConsumer<UUID,String>? = null;
 
     override suspend fun start() {
-        val repository: RepositoryPort = MysqlRepositoryAdapter()
+        //val repository: RepositoryPort = MysqlRepositoryAdapter()
 
         consumer = KafkaConsumer.create<UUID, String>(vertx, kafkaProps.invoke())
         consumer?.subscribe(topics)

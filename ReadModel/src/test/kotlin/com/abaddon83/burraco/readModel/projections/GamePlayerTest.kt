@@ -19,4 +19,16 @@ internal class GamePlayerTest {
         assertEquals(playerAdded.identity,newGamePlayer.gameIdentity,"Game identity is not the same")
 
     }
+
+//    @Test
+//    fun applyEventPlayerAdded() {
+//        val gamePlayer = GamePlayer();
+//        val playerAdded = PlayerAdded(identity = GameIdentity.create(), playerIdentity = PlayerIdentity.create())
+//
+//        val newGamePlayer = gamePlayer.applyEvent(playerAdded)
+//
+//        assertEquals(playerAdded.playerIdentity,newGamePlayer.identity,"Player identity is not the same")
+//        assertEquals(playerAdded.identity,newGamePlayer.gameIdentity,"Game identity is not the same")
+//
+//    }
 }

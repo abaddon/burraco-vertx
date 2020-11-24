@@ -22,12 +22,12 @@ typealias EsScope = EventStorePort.() -> CmdResult
 data class CommandMsg(val command: Command, val response: CmdResult) // a command with a result
 
 
-class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") {
+class CommandHandler(val eventStore: EventStorePort) : WithLog("CommandHandler") {
 
     fun handle(cmd: Command): CmdResult =
-            CommandMsg(cmd, Valid(listOf())).let {
-                executeCommand(it).response
-            }
+        CommandMsg(cmd, Valid(listOf())).let {
+            executeCommand(it).response
+        }
 
     private fun executeCommand(msg: CommandMsg): CommandMsg {
 
@@ -79,10 +79,10 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     private fun execute(c: AddPlayerCmd): EsScope = {
         when (val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()) {
             is BurracoGameWaitingPlayers -> {
-                try{
+                try {
                     Valid(burracoGame.addPlayer(BurracoPlayer(c.playerIdentityToAdd)).getUncommittedChanges())
-                }catch (e: IllegalStateException){
-                    Invalid(BurracoGameError(e.message?:"GameIdentity ${c.gameIdentity}. unknown error", burracoGame))
+                } catch (e: IllegalStateException) {
+                    Invalid(BurracoGameError(e.message ?: "GameIdentity ${c.gameIdentity}. unknown error", burracoGame))
                 }
 
             }
@@ -90,18 +90,37 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
         }
     }
 
+    private fun tryToExecute(block: () -> CmdResult): CmdResult {
+        return try {
+            block()
+        } catch (e: IllegalStateException) {
+            Invalid(BurracoGameError(e.message ?: "Unknown error in ${this::class.qualifiedName}"))
+        } catch (e: NoSuchElementException) {
+            Invalid(BurracoGameError(e.message ?: "Unknown error in ${this::class.qualifiedName}"))
+        }
+    }
+
     private fun execute(c: StartGameCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameWaitingPlayers -> Valid(burracoGame.start().getUncommittedChanges())
-            else -> Invalid(BurracoGameError("The game ${c.gameIdentity} doesn't exist or is in a different status, this command can not be executed", burracoGame))
+            is BurracoGameWaitingPlayers -> tryToExecute {
+                Valid(burracoGame.start().getUncommittedChanges())
+            }
+            else -> Invalid(
+                BurracoGameError(
+                    "The game ${c.gameIdentity} doesn't exist or is in a different status, this command can not be executed",
+                    burracoGame
+                )
+            )
         }
     }
 
     private fun execute(c: PickUpACardFromDeckCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnBeginning -> Valid(burracoGame.pickUpACardFromDeck(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            is BurracoGameExecutionTurnBeginning -> tryToExecute {
+                Valid(burracoGame.pickUpACardFromDeck(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
@@ -109,15 +128,23 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     private fun execute(c: PickUpCardsFromDiscardPileCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnBeginning -> Valid(burracoGame.pickUpCardsFromDiscardPile(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            is BurracoGameExecutionTurnBeginning -> tryToExecute {
+                Valid(burracoGame.pickUpCardsFromDiscardPile(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
 
+
     private fun execute(c: DropTrisCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnExecution -> Valid(burracoGame.dropOnTableATris(playerIdentity = c.playerIdentity, tris = c.tris).getUncommittedChanges())
+            is BurracoGameExecutionTurnExecution -> tryToExecute {
+                Valid(
+                    burracoGame.dropOnTableATris(playerIdentity = c.playerIdentity, tris = c.tris)
+                        .getUncommittedChanges()
+                )
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
@@ -125,7 +152,12 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     private fun execute(c: DropScaleCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnExecution -> Valid(burracoGame.dropOnTableAScale(playerIdentity = c.playerIdentity, scale = c.scale).getUncommittedChanges())
+            is BurracoGameExecutionTurnExecution -> tryToExecute {
+                Valid(
+                    burracoGame.dropOnTableAScale(playerIdentity = c.playerIdentity, scale = c.scale)
+                        .getUncommittedChanges()
+                )
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
@@ -133,18 +165,23 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     private fun execute(c: PickUpMazzettoDeckCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnExecution ->
-                try {
-                    Valid(burracoGame.pickupMazzetto(playerIdentity = c.playerIdentity).getUncommittedChanges())
-                } catch (e: Exception) {
-                    Invalid(BurracoGameError(cmd = c, exception = e, burracoGame = burracoGame))
-                }
-            is BurracoGameExecutionTurnEnd ->
-                try {
-                    Valid(burracoGame.pickupMazzetto(playerIdentity = c.playerIdentity).getUncommittedChanges())
-                } catch (e: Exception) {
-                    Invalid(BurracoGameError(cmd = c, exception = e, burracoGame = burracoGame))
-                }
+            is BurracoGameExecutionTurnExecution -> tryToExecute {
+                Valid(burracoGame.pickupMazzetto(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            }
+//                try {
+//                    Valid(burracoGame.pickupMazzetto(playerIdentity = c.playerIdentity).getUncommittedChanges())
+//                } catch (e: Exception) {
+//                    Invalid(BurracoGameError(cmd = c, exception = e, burracoGame = burracoGame))
+//                }
+            is BurracoGameExecutionTurnEnd -> tryToExecute {
+                Valid(burracoGame.pickupMazzetto(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            }
+//
+//                try {
+//                    Valid(burracoGame.pickupMazzetto(playerIdentity = c.playerIdentity).getUncommittedChanges())
+//                } catch (e: Exception) {
+//                    Invalid(BurracoGameError(cmd = c, exception = e, burracoGame = burracoGame))
+//                }
             is BurracoGameExecutionTurnBeginning -> throw Exception("Not yet implemented the possibility to pickup mazzetto during the beginning phase")
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
@@ -154,11 +191,17 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     private fun execute(c: AppendCardOnBurracoCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnExecution -> try {
-                Valid(burracoGame.appendCardsOnABurracoDropped(playerIdentity = c.playerIdentity, cardsToAppend = c.cardsToAppend, burracoIdentity = c.burracoIdentity).getUncommittedChanges())
-            } catch (e: Exception) {
-                Invalid(BurracoGameError(cmd = c, exception = e, burracoGame = burracoGame))
+            is BurracoGameExecutionTurnExecution -> tryToExecute {
+                Valid(
+                    burracoGame.appendCardsOnABurracoDropped(
+                        playerIdentity = c.playerIdentity,
+                        cardsToAppend = c.cardsToAppend,
+                        burracoIdentity = c.burracoIdentity).getUncommittedChanges()
+                )
             }
+//            } catch (e: Exception) {
+//                Invalid(BurracoGameError(cmd = c, exception = e, burracoGame = burracoGame))
+//            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
@@ -166,7 +209,12 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     private fun execute(c: DropCardOnDiscardPileCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnExecution -> Valid(burracoGame.dropCardOnDiscardPile(playerIdentity = c.playerIdentity, card = c.card).getUncommittedChanges())
+            is BurracoGameExecutionTurnExecution -> tryToExecute {
+                Valid(
+                    burracoGame.dropCardOnDiscardPile(playerIdentity = c.playerIdentity, card = c.card)
+                        .getUncommittedChanges()
+                )
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
@@ -174,35 +222,38 @@ class CommandHandler(val eventStore: EventStorePort): WithLog("CommandHandler") 
     private fun execute(c: EndGameCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnEnd -> Valid(burracoGame.completeGame(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            is BurracoGameExecutionTurnEnd -> tryToExecute {
+                Valid(burracoGame.completeGame(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
+
 
     private fun execute(c: EndPlayerTurnCmd): EsScope = {
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
-            is BurracoGameExecutionTurnEnd -> Valid(burracoGame.nextPlayerTurn(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            is BurracoGameExecutionTurnEnd -> tryToExecute {
+                Valid(burracoGame.nextPlayerTurn(playerIdentity = c.playerIdentity).getUncommittedChanges())
+            }
             else -> Invalid(BurracoGameError("GameIdentity ${c.gameIdentity} not found", burracoGame))
         }
     }
-}
 
-private fun List<BurracoGameEvent>.fold(): BurracoGame {
-    val emptyBurracoGame = EmptyBurracoGame(GameIdentity(UUID.fromString("00000000-0000-0000-0000-000000000000")))
-    return  when(this.isEmpty()){
-        true -> emptyBurracoGame
-        false -> this.fold(emptyBurracoGame) { i: BurracoGame, e: BurracoGameEvent ->
-//            println("event: ${e.javaClass.simpleName}")
-//            println("burracoGame is BurracoGame: ${i is BurracoGame}")
-//            println("burracoGame is BurracoGameWaitingPlayers: ${i is BurracoGameWaitingPlayers}")
-            when(i){
-                is BurracoGameWaitingPlayers -> i.applyEvent(e)
-                is BurracoGameExecutionTurnBeginning -> i.applyEvent(e)
-                is BurracoGameExecutionTurnExecution -> i.applyEvent(e)
-                is BurracoGameExecutionTurnEnd -> i.applyEvent(e)
-                is BurracoGameEnded -> i.applyEvent(e)
-                else -> i.applyEvent(e)
+
+    private fun List<BurracoGameEvent>.fold(): BurracoGame {
+        val emptyBurracoGame = EmptyBurracoGame(GameIdentity(UUID.fromString("00000000-0000-0000-0000-000000000000")))
+        return when (this.isEmpty()) {
+            true -> emptyBurracoGame
+            false -> this.fold(emptyBurracoGame) { i: BurracoGame, e: BurracoGameEvent ->
+                when (i) {
+                    is BurracoGameWaitingPlayers -> i.applyEvent(e)
+                    is BurracoGameExecutionTurnBeginning -> i.applyEvent(e)
+                    is BurracoGameExecutionTurnExecution -> i.applyEvent(e)
+                    is BurracoGameExecutionTurnEnd -> i.applyEvent(e)
+                    is BurracoGameEnded -> i.applyEvent(e)
+                    else -> i.applyEvent(e)
+                }
             }
         }
     }

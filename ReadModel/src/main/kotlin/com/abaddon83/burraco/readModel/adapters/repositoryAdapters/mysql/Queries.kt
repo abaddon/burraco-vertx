@@ -16,8 +16,7 @@ object Queries {
 
     //BurracoGame
     fun insertOrUpdate(mysql: Database, entity: BurracoGame): Boolean {
-        try {
-
+        return try {
             val effectedRow = mysql.insertOrUpdate(GameTable) {
                 set(it.identity, entity.identity.convertTo().toString())
                 set(it.status, entity.status.toJson())
@@ -35,19 +34,19 @@ object Queries {
                     set(it.discardPile, Json.encodeToString(entity.discardPile))
                 }
             }
-            return when (effectedRow) {
+            when (effectedRow) {
                 1 -> true
                 else -> false
             }
         } catch (ex: Exception) {
             log.error("Insert Or Update query failed")
             ex.printStackTrace()
-            return false
+            false
         }
     }
 
     fun insert(mysql: Database, entity: BurracoGame): Boolean {
-        try {
+        return try {
             val effectedRow = mysql.insert(GameTable) {
                 set(it.identity, entity.identity.convertTo().toString())
                 set(it.status, entity.status.toJson())
@@ -57,13 +56,14 @@ object Queries {
                 set(it.numMazzettoAvailable, entity.numMazzettoAvailable)
                 set(it.discardPile, Json.encodeToString(entity.discardPile))
             }
-            return when (effectedRow) {
+            when (effectedRow) {
                 1 -> true
                 else -> false
             }
         } catch (ex: Exception) {
+            log.error("Insert Or Update query failed")
             ex.printStackTrace()
-            return false
+            false
         }
     }
 

@@ -51,9 +51,7 @@ data class GamePlayer(
 
     private fun apply(e: CardsDealtToPlayer): GamePlayer{
         check(this.key == GamePlayerKey(e.player,e.identity)){" check failed, the key is not the same"}
-        System.out.println("e.playerIdentity: $e.playerIdentity")
-        System.out.println("e.identity: $e.identity")
-
+        check(this.handCards.isEmpty()){"The handCards has to be empty"}
         return copy(handCards = e.cards)
     }
 

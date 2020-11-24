@@ -7,41 +7,48 @@ import com.abaddon83.burraco.readModel.projections.GamePlayer
 import com.abaddon83.burraco.readModel.projections.GamePlayerKey
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.ddd.readModel.ProjectionKey
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-class GamePlayerEventHandler(override val repository: RepositoryPort, event: Event) : EventHandlerJob<GamePlayer>(event) {
+class GamePlayerEventHandler(val repository: RepositoryPort, event: Event) : EventHandlerJob<GamePlayer>(event) {
     companion object {
         private val log = LoggerFactory.getLogger(this::class.qualifiedName)
     }
 
-//    init {
-//        log.info("Received event ${e.javaClass.simpleName} in ${this::class.qualifiedName}")
-//        launch {
-//            try {
-//                val key = getKey(e)
-//                if(key != null){
-//                    processEvent(key,e)
-//                }
-//            } catch (e: Exception) {
-//                throw e
-//            } finally {
-//                job.cancel()
-//            }
-//        }
-//    }
+    init {
+        log.info("Received event ${event.javaClass.simpleName} in ${this::class.qualifiedName}")
+        launch {
+            try {
+                val key = getKey(event)
+                if(key != null){
+                    processEvent(key,event)
+                }
+            } catch (e: Exception) {
+                throw e
+            } finally {
+                job.cancel()
+            }
+        }
+    }
 
     override fun processEvent(projectionKey: ProjectionKey, e: Event) {
         log.info("Loading event ${e.javaClass.simpleName} in GamePlayer projection")
         val gamePlayer: GamePlayer = getProjection(projectionKey)  //Create a class Key with other class that extend it
-            .applyEvent(e)
+        val updatedGamePlayer = gamePlayer.applyEvent(e)
+
+        if(updatedGamePlayer != gamePlayer && !updatedGamePlayer.identity.isEmpty()){
+            repository.persist(updatedGamePlayer)
+        }
+
         if (!gamePlayer.identity.isEmpty()) {
             repository.persist(gamePlayer)
         }
     }
 
     override fun getProjection(projectionKey: ProjectionKey): GamePlayer {
-        check(projectionKey is GamePlayerKey)
-
+        check(projectionKey is GamePlayerKey){"wrong projectionKey found, expected GamePlayerKey"}
+        check(repository != null){"Repository nullo"}
+        log.info("KEY: GamePlayerKey: ${projectionKey.gameIdentity} + ${projectionKey.identity}")
         return repository.findGamePlayer(projectionKey.identity,projectionKey.gameIdentity)
     }
 

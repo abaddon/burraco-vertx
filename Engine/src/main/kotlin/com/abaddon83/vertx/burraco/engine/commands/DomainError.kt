@@ -10,15 +10,17 @@ sealed class DomainError(val msg: String){
 
 data class BurracoGameError(
     val message: String,
-    val burracoGameIdentity: GameIdentity
+    val burracoGameIdentity: GameIdentity?
 ): DomainError(message){
     constructor(cmd: Command,exception: Exception, burracoGame: BurracoGame): this("Command ${cmd.javaClass.simpleName} not executed, exception type ${exception.javaClass.simpleName}",burracoGame.identity())
     constructor(message: String, burracoGame: BurracoGame): this( message,burracoGame.identity())
+    constructor(message: String): this( message,null)
 
     override fun toMap():Map<String,*> {
-        return mapOf(
-            "message" to message,
-            "gameIdentity" to burracoGameIdentity.convertTo().toString()
-        )
+        val response = mapOf("message" to message)
+        if(burracoGameIdentity != null) {
+            return response.plus("gameIdentity" to burracoGameIdentity.convertTo().toString())
+        }
+        return response
     }
 }

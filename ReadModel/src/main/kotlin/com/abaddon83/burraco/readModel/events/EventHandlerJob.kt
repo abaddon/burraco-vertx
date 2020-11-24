@@ -1,7 +1,5 @@
 package com.abaddon83.burraco.readModel.events
 
-import com.abaddon83.burraco.readModel.ports.RepositoryPort
-import com.abaddon83.burraco.readModel.projections.GamePlayerKey
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.ddd.readModel.EventHandler
 import com.abaddon83.utils.ddd.readModel.ProjectionKey
@@ -17,7 +15,7 @@ abstract class EventHandlerJob<T>(private val e: Event) : EventHandler<T>, Corou
     protected val job = Job()
     override val coroutineContext: CoroutineContext = Dispatchers.Default + job
 
-    abstract val repository: RepositoryPort
+
     //abstract val e: Event
 
     companion object {
@@ -25,22 +23,22 @@ abstract class EventHandlerJob<T>(private val e: Event) : EventHandler<T>, Corou
     }
 
     init {
+//        log.info("Received event ${e.javaClass.simpleName} in ${this::class.qualifiedName}")
+//        launch {
+//            try {
+//                val key = getKey(e)
+//                if(key != null){
+//                    processEvent(key,e)
+//                }
+//            } catch (e: Exception) {
+//                throw e
+//            } finally {
+//                job.cancel()
+//            }
+//        }
+
         job.invokeOnCompletion {
             log.info("Job ended")
-        }
-
-        log.info("Received event ${e.javaClass.simpleName} in ${this::class.qualifiedName}")
-        launch {
-            try {
-                val key = getKey(e)
-                if(key != null){
-                    processEvent(key,e)
-                }
-            } catch (e: Exception) {
-                throw e
-            } finally {
-                job.cancel()
-            }
         }
     }
 
