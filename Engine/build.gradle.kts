@@ -22,7 +22,7 @@ version = "1.0-SNAPSHOT"
 //}
 
 val kotlinVersion = "1.4.10"
-val vertxVersion = "3.9.3"
+val vertxVersion = "4.0.2"
 val junitJupiterVersion = "5.6.0"
 
 val mainVerticleName = "com.abaddon83.vertx.burraco.engine.MainVerticle"
