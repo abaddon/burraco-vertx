@@ -55,7 +55,7 @@ dependencies {
     implementation("io.vertx:vertx-hazelcast:$vertxVersion")
 
     //Json
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.2")
 
 //    //Kotlin
 //    implementation(kotlin("stdlib-jdk8"))
