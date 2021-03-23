@@ -1,7 +1,7 @@
 
 plugins {
     kotlin("jvm") version "1.4.10"
-    kotlin("plugin.serialization") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.32"
 }
 
 group = "com.abaddon83.burraco.models.common"
