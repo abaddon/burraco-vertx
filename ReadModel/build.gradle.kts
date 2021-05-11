@@ -50,7 +50,7 @@ dependencies {
     implementation("org.ktorm:ktorm-support-mysql:${ktormVersion}")
 
     //Mysql
-    implementation("mysql:mysql-connector-java:8.0.21")
+    implementation("mysql:mysql-connector-java:8.0.25")
 
     //Kotlin
 //    implementation(kotlin("stdlib-jdk8"))
