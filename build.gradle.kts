@@ -1,29 +1,37 @@
-//plugins {
-//    kotlin("jvm") version "1.4.10"
-//}
+plugins {
+    kotlin("jvm") version "1.4.10"
+}
 //
 //group = "com.abaddon83.vertx"
 //version = "1.0-SNAPSHOT"
 //
-//repositories {
-//    mavenCentral()
-//}
+repositories {
+    mavenCentral()
+}
 //
 //dependencies {
 //    implementation(kotlin("stdlib"))
 //}
 
-
 subprojects {
     apply<JavaLibraryPlugin>()
     apply<MavenPublishPlugin>()
+    apply(plugin = "org.jetbrains.kotlin.jvm")
 
 //    group = "de.bentolor.sampleproject"
 //    version = "0.1.0"
+    //val compileKotlin: KotlinCompile by tasks
 
     repositories {
         mavenCentral()
         jcenter()
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "11"
+        }
     }
 
     dependencies {

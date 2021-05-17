@@ -1,10 +1,9 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
     application
-    kotlin("jvm") version "1.4.10"
-    kotlin("kapt").version("1.4.10")
+    //kotlin("jvm") version "1.4.10"
+    kotlin("kapt")//.version("1.4.10")
     kotlin("plugin.serialization") version "1.4.10"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
@@ -76,6 +75,7 @@ dependencies {
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "11"
+
 
 tasks.withType<ShadowJar> {
     archiveClassifier.set("fat")

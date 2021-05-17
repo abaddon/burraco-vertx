@@ -5,7 +5,7 @@ import java.net.InetAddress.getByName
 
 plugins {
     application
-    kotlin("jvm") version "1.4.10"
+    //kotlin("jvm") version "1.4.10"
     kotlin("plugin.serialization") version "1.4.10"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
