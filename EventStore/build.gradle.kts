@@ -38,7 +38,7 @@ dependencies {
     implementation("org.ktorm:ktorm-core:${ktormVersion}")
 
     //Mysql
-    implementation("mysql:mysql-connector-java:8.0.21")
+    implementation("mysql:mysql-connector-java:8.0.25")
 
     //Vertx
     implementation("io.vertx:vertx-config:$vertxVersion")
