@@ -1,6 +1,6 @@
 
 plugins {
-    //kotlin("plugin.serialization") version "1.4.10"
+    id("com.github.johnrengelman.shadow") apply false
 }
 
 group = "com.abaddon83.burraco.models.common"

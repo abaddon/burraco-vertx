@@ -2,29 +2,18 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     application
-    //kotlin("jvm") version "1.4.10"
-    kotlin("kapt")//.version("1.4.10")
-    //kotlin("plugin.serialization") version "1.4.10"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    kotlin("kapt")
 }
 
 group = "com.abaddon83.vertx.eventStore"
 version = "1.0-SNAPSHOT"
 
-//repositories {
-//    mavenCentral()
-//    jcenter()
-//}
-
 val kotlinVersion = ext.get("kotlinVersion")
 val vertxVersion = ext.get("vertxVersion")
 val junitJupiterVersion = ext.get("junitJupiterVersion")
 val ktormVersion = ext.get("ktormVersion")
-
-//val kotlinVersion = "1.4.10"
-//val vertxVersion = "3.9.3"
-//val junitJupiterVersion = "5.6.0"
-//val ktormVersion = "3.2.0"
+val mysqlConnectorVersion = ext.get("mysqlConnectorVersion")
+val jacksonModuleKotlinVersion = "2.11.3"
 
 val mainVerticleName = "com.abaddon83.vertx.eventStore.MainVerticle"
 val watchForChange = "src/**/*"
@@ -43,7 +32,7 @@ dependencies {
     implementation("org.ktorm:ktorm-core:${ktormVersion}")
 
     //Mysql
-    implementation("mysql:mysql-connector-java:8.0.21")
+    implementation("mysql:mysql-connector-java:${mysqlConnectorVersion}")
 
     //Vertx
     implementation("io.vertx:vertx-config:$vertxVersion")
@@ -59,23 +48,7 @@ dependencies {
     implementation("io.vertx:vertx-hazelcast:$vertxVersion")
 
     //Json
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
-
-//    //Kotlin
-//    implementation(kotlin("stdlib-jdk8"))
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
-//
-//    //Log
-//    implementation("org.slf4j:slf4j-api:1.7.25")
-//    implementation("org.slf4j:slf4j-log4j12:1.7.25")
-//
-//    //Use the Kotlin JUnit integration.
-//    testImplementation("io.vertx:vertx-junit5:$vertxVersion")
-//    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
-//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-//    testImplementation("junit:junit:4.12") // JVM dependency
-//    testImplementation("org.jetbrains.kotlin:kotlin-test")
-//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
 }
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
@@ -112,30 +85,3 @@ kapt {
         arg("codegen.output", "$projectDir/src/main/generated")
     }
 }
-
-//tasks.register<JavaCompile>("annotationProcessing" ) { // codegen
-//    group = "build"
-//    source = sourceSets.main.get().java
-//    classpath = configurations.compile.get() + configurations.compileOnly.get()
-//    destinationDir = project.file("src/main/generated")
-//    options.compilerArgs = listOf(
-//        "-proc:only",
-//        "-processor", "io.vertx.codegen.CodeGenProcessor",
-//        "-Acodegen.output=${project.projectDir}/src/main"
-//    )
-//}
-
-//compileJava {
-//    targetCompatibility = 1.8
-//    sourceCompatibility = 1.8
-//
-//    dependsOn annotationProcessing
-//}
-
-//sourceSets {
-//    main {
-//        java {
-//            setSrcDirs(srcDirs.plus("src/main/generated"))
-//        }
-//    }
-//}

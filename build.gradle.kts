@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.5.0"
     kotlin("plugin.serialization") version "1.5.0" apply false
+    id("com.github.johnrengelman.shadow") version "5.2.0" apply false
 }
 //
 //group = "com.abaddon83.vertx"
@@ -15,15 +16,20 @@ repositories {
 //}
 
 val kotlinVersion = "1.5.10"
+val kotlinCoroutineVersion = "1.3.9"
 val vertxVersion = "3.9.4"
 val junitJupiterVersion = "5.6.0"
+val jUnitVersion = "4.12"
 val ktormVersion ="3.2.0"
+val slf4jVersion ="1.7.25"
+val mysqlConnectorVersion = "8.0.21"
 
 subprojects {
     apply<JavaLibraryPlugin>()
     apply<MavenPublishPlugin>()
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+    apply(plugin = "com.github.johnrengelman.shadow")
 
 //    group = "de.bentolor.sampleproject"
 //    version = "0.1.0"
@@ -39,6 +45,10 @@ subprojects {
     ext.set("vertxVersion",vertxVersion)
     ext.set("junitJupiterVersion",junitJupiterVersion)
     ext.set("ktormVersion",ktormVersion)
+    ext.set("slf4jVersion",slf4jVersion)
+    ext.set("kotlinCoroutineVersion",kotlinCoroutineVersion)
+    ext.set("mysqlConnectorVersion",mysqlConnectorVersion)
+
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
@@ -53,48 +63,15 @@ subprojects {
 
         implementation(kotlin("stdlib-jdk8"))
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
-        //implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc")
 
         //Log
-        implementation("org.slf4j:slf4j-api:1.7.25")
-        implementation("org.slf4j:slf4j-log4j12:1.7.25")
+        implementation("org.slf4j:slf4j-api:$slf4jVersion")
+        implementation("org.slf4j:slf4j-log4j12:$slf4jVersion")
 
         //Use the Kotlin JUnit integration.
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-        testImplementation("junit:junit:4.12") // JVM dependency
+        testImplementation("junit:junit:$jUnitVersion") // JVM dependency
         testImplementation("org.jetbrains.kotlin:kotlin-test")
-        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
+        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinCoroutineVersion")
     }
-
-
-//    configure<JavaPluginExtension> {
-//        sourceCompatibility = JavaVersion.VERSION_1_8
-//        targetCompatibility = JavaVersion.VERSION_1_8
-//    }
-
-//    configure<PublishingExtension> {
-//        publications {
-//            create<MavenPublication>(project.name) {
-//                from(components["java"])
-//
-//                // If you configured them before
-//                // val sourcesJar by tasks.getting(Jar::class)
-//                // val javadocJar by tasks.getting(Jar::class)
-//
-//                val sourcesJar by tasks.creating(Jar::class) {
-//                    val sourceSets: SourceSetContainer by project
-//
-//                    from(sourceSets["main"].allJava)
-//                    classifier = "sources"
-//                }
-//                val javadocJar by tasks.creating(Jar::class) {
-//                    from(tasks.get("javadoc"))
-//                    classifier = "javadoc"
-//                }
-//
-//                artifact(sourcesJar)
-//                artifact(javadocJar)
-//            }
-//        }
-//    }
 }

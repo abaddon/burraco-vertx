@@ -5,9 +5,6 @@ import java.net.InetAddress.getByName
 
 plugins {
     application
-    //kotlin("jvm") version "1.4.10"
-    //kotlin("plugin.serialization") version "1.4.10"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 group = "com.abaddon83.burraco.readModel"
@@ -22,11 +19,7 @@ val kotlinVersion = ext.get("kotlinVersion")
 val vertxVersion = ext.get("vertxVersion")
 val junitJupiterVersion = ext.get("junitJupiterVersion")
 val ktormVersion = ext.get("ktormVersion")
-
-//val kotlinVersion = "1.4.10"
-//val vertxVersion = "3.9.3"
-//val junitJupiterVersion = "5.6.0"
-//val ktormVersion = "3.2.0"
+val mysqlConnectorVersion = ext.get("mysqlConnectorVersion")
 
 val mainVerticleName = "com.abaddon83.burraco.readModel.MainVerticle"
 val watchForChange = "src/**/*"
@@ -55,23 +48,10 @@ dependencies {
     implementation("org.ktorm:ktorm-support-mysql:${ktormVersion}")
 
     //Mysql
-    implementation("mysql:mysql-connector-java:8.0.25")
-
-    //Kotlin
-//    implementation(kotlin("stdlib-jdk8"))
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
-
-    //Log
-//    implementation("org.slf4j:slf4j-api:1.7.25")
-//    implementation("org.slf4j:slf4j-log4j12:1.7.25")
+    implementation("mysql:mysql-connector-java:$mysqlConnectorVersion")
 
     //Use the Kotlin JUnit integration.
     testImplementation("io.vertx:vertx-junit5:$vertxVersion")
-//    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
-//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-//    testImplementation("junit:junit:4.12") // JVM dependency
-//    testImplementation("org.jetbrains.kotlin:kotlin-test")
-//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
 }
 
 val compileKotlin: KotlinCompile by tasks

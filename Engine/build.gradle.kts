@@ -3,12 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-//    `java-library`
     application
-    //kotlin("jvm") version "1.4.10"
-    //kotlin("plugin.serialization") version "1.4.10"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
-
 }
 
 group = "com.abaddon83.vertx.burraco.engine"
@@ -44,20 +39,6 @@ dependencies {
     implementation("io.vertx:vertx-lang-kotlin:$vertxVersion")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion") //?
     implementation("io.vertx:vertx-hazelcast:$vertxVersion")
-
-//    //Kotlin
-//    implementation(kotlin("stdlib-jdk8"))
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
-//
-//    //Log
-//    implementation("org.slf4j:slf4j-api:1.7.25")
-//    implementation("org.slf4j:slf4j-log4j12:1.7.25")
-//
-//    //Use the Kotlin JUnit integration.
-//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-//    testImplementation("junit:junit:4.12") // JVM dependency
-//    testImplementation("org.jetbrains.kotlin:kotlin-test")
-//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9")
 }
 
 val compileKotlin: KotlinCompile by tasks
