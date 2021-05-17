@@ -19,7 +19,7 @@ version = "1.0-SNAPSHOT"
 //}
 
 val kotlinVersion = "1.4.10"
-val vertxVersion = "3.9.3"
+val vertxVersion = "4.0.3"
 val junitJupiterVersion = "5.6.0"
 val ktormVersion = "3.2.0"
 
@@ -50,7 +50,7 @@ dependencies {
     implementation("org.ktorm:ktorm-support-mysql:${ktormVersion}")
 
     //Mysql
-    implementation("mysql:mysql-connector-java:8.0.21")
+    implementation("mysql:mysql-connector-java:8.0.25")
 
     //Kotlin
 //    implementation(kotlin("stdlib-jdk8"))
