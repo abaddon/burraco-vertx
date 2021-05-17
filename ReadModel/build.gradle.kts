@@ -6,8 +6,8 @@ import java.net.InetAddress.getByName
 plugins {
     application
     //kotlin("jvm") version "1.4.10"
-    kotlin("plugin.serialization") version "1.5.0"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    //kotlin("plugin.serialization") version "1.4.10"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "com.abaddon83.burraco.readModel"
@@ -18,10 +18,15 @@ version = "1.0-SNAPSHOT"
 //    jcenter()
 //}
 
-val kotlinVersion = "1.4.10"
-val vertxVersion = "3.9.3"
-val junitJupiterVersion = "5.6.0"
-val ktormVersion = "3.2.0"
+val kotlinVersion = ext.get("kotlinVersion")
+val vertxVersion = ext.get("vertxVersion")
+val junitJupiterVersion = ext.get("junitJupiterVersion")
+val ktormVersion = ext.get("ktormVersion")
+
+//val kotlinVersion = "1.4.10"
+//val vertxVersion = "3.9.3"
+//val junitJupiterVersion = "5.6.0"
+//val ktormVersion = "3.2.0"
 
 val mainVerticleName = "com.abaddon83.burraco.readModel.MainVerticle"
 val watchForChange = "src/**/*"
