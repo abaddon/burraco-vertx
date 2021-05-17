@@ -4,7 +4,7 @@ plugins {
     application
     //kotlin("jvm") version "1.4.10"
     kotlin("kapt")//.version("1.4.10")
-    kotlin("plugin.serialization") version "1.4.10"
+    //kotlin("plugin.serialization") version "1.4.10"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
@@ -16,10 +16,15 @@ version = "1.0-SNAPSHOT"
 //    jcenter()
 //}
 
-val kotlinVersion = "1.4.10"
-val vertxVersion = "3.9.3"
-val junitJupiterVersion = "5.6.0"
-val ktormVersion = "3.2.0"
+val kotlinVersion = ext.get("kotlinVersion")
+val vertxVersion = ext.get("vertxVersion")
+val junitJupiterVersion = ext.get("junitJupiterVersion")
+val ktormVersion = ext.get("ktormVersion")
+
+//val kotlinVersion = "1.4.10"
+//val vertxVersion = "3.9.3"
+//val junitJupiterVersion = "5.6.0"
+//val ktormVersion = "3.2.0"
 
 val mainVerticleName = "com.abaddon83.vertx.eventStore.MainVerticle"
 val watchForChange = "src/**/*"

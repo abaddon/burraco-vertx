@@ -1,5 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.5.0"
+    kotlin("plugin.serialization") version "1.5.0" apply false
 }
 //
 //group = "com.abaddon83.vertx"
@@ -13,19 +14,31 @@ repositories {
 //    implementation(kotlin("stdlib"))
 //}
 
+val kotlinVersion = "1.5.10"
+val vertxVersion = "3.9.4"
+val junitJupiterVersion = "5.6.0"
+val ktormVersion ="3.2.0"
+
 subprojects {
     apply<JavaLibraryPlugin>()
     apply<MavenPublishPlugin>()
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
 //    group = "de.bentolor.sampleproject"
 //    version = "0.1.0"
     //val compileKotlin: KotlinCompile by tasks
 
+
     repositories {
         mavenCentral()
         jcenter()
     }
+
+    ext.set("kotlinVersion",kotlinVersion)
+    ext.set("vertxVersion",vertxVersion)
+    ext.set("junitJupiterVersion",junitJupiterVersion)
+    ext.set("ktormVersion",ktormVersion)
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {

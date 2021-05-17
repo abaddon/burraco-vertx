@@ -6,7 +6,7 @@ plugins {
 //    `java-library`
     application
     //kotlin("jvm") version "1.4.10"
-    kotlin("plugin.serialization") version "1.4.10"
+    //kotlin("plugin.serialization") version "1.4.10"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 
 }
@@ -15,15 +15,9 @@ group = "com.abaddon83.vertx.burraco.engine"
 version = "1.0-SNAPSHOT"
 
 
-
-//repositories {
-//    mavenCentral()
-//    jcenter()
-//}
-
-val kotlinVersion = "1.4.10"
-val vertxVersion = "3.9.3"
-val junitJupiterVersion = "5.6.0"
+val kotlinVersion = ext.get("kotlinVersion")
+val vertxVersion = ext.get("vertxVersion")
+val junitJupiterVersion = ext.get("junitJupiterVersion")
 
 val mainVerticleName = "com.abaddon83.vertx.burraco.engine.MainVerticle"
 val watchForChange = "src/**/*"
