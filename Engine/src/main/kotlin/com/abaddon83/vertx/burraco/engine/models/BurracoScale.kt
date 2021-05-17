@@ -34,9 +34,9 @@ data class BurracoScale(
         private fun calculateScaleSuit(cards: List<Card>): Suits.Suit {
             val cardsBySuit = cards.groupBy { c -> c.suit }.mapValues { (_, v) -> v.size }
             check(cardsBySuit.keys.size <= 2) { "Too many different suits found: ${cardsBySuit.keys}" }
-            val primarySuit = cardsBySuit.maxBy { it.value }!!.key
+            val primarySuit = cardsBySuit.maxByOrNull { it.value }!!.key
             if (cardsBySuit.keys.size == 2) {
-                val numCardsSecondarySuit = cardsBySuit.minBy { it.value }!!.value
+                val numCardsSecondarySuit = cardsBySuit.minByOrNull { it.value }!!.value
                 assert(numCardsSecondarySuit == 1) { "Found $numCardsSecondarySuit with not a $primarySuit suit, max allowed is 1" }
             }
             return primarySuit

@@ -17,6 +17,7 @@ repositories {
 
 val kotlinVersion = "1.5.10"
 val kotlinCoroutineVersion = "1.3.9"
+val kotlinxSerializationJson = "1.0.1"
 val vertxVersion = "3.9.4"
 val junitJupiterVersion = "5.6.0"
 val jUnitVersion = "4.12"
@@ -62,7 +63,7 @@ subprojects {
         val testImplementation by configurations
 
         implementation(kotlin("stdlib-jdk8"))
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJson")
 
         //Log
         implementation("org.slf4j:slf4j-api:$slf4jVersion")

@@ -39,7 +39,7 @@ data class BurracoTris(
             val cardsByRankWithoutJollyAndTwo = cardsByRank.minus(Ranks.Jolly).minus(Ranks.Two)
 
             assert(cardsByRankWithoutJollyAndTwo.keys.size == 1) { "Too many different ranks found: ${cardsByRank.keys}" }
-            return checkNotNull(cardsByRank.maxBy { it.value }?.key) { "Tris Rank calculation failed" }
+            return checkNotNull(cardsByRank.maxByOrNull { it.value }?.key) { "Tris Rank calculation failed" }
         }
 
     }
