@@ -1,5 +1,6 @@
 rootProject.name = "BurracoProject"
-include("Engine")
+include("Game")
 include("ReadModel")
 include("EventStore")
 include("SharedComponents")
+include("Dealer")

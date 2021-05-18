@@ -18,7 +18,7 @@ repositories {
 val kotlinVersion = "1.5.10"
 val kotlinCoroutineVersion = "1.3.9"
 val kotlinxSerializationJson = "1.0.1"
-val vertxVersion = "3.9.4"
+val vertxVersion = "4.0.3"
 val junitJupiterVersion = "5.6.0"
 val jUnitVersion = "4.12"
 val ktormVersion ="3.2.0"
