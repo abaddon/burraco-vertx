@@ -12,7 +12,7 @@ import io.vertx.core.json.JsonObject
 class Starter : VertxCommandLauncher(), VertxLifecycleHooks {
 
     override fun beforeStartingVertx(options: VertxOptions) {
-        options.eventBusOptions.setClustered(true)//.host = "127.0.0.1"
+        //options.eventBusOptions.setClustered(true)//.host = "127.0.0.1"
     }
 
     override fun afterConfigParsed(config: JsonObject?) {}

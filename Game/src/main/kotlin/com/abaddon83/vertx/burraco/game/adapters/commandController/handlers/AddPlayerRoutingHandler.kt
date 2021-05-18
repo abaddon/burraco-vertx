@@ -5,6 +5,7 @@ import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.burraco.game.adapters.commandController.models.ErrorMsgModule
+import com.abaddon83.vertx.burraco.game.adapters.commandController.models.GameModule
 import com.abaddon83.vertx.burraco.game.ports.CommandControllerPort
 import com.abaddon83.vertx.burraco.game.ports.Outcome
 import io.vertx.core.http.HttpHeaders
@@ -34,7 +35,7 @@ class AddPlayerRoutingHandler(private val controllerAdapter: CommandControllerPo
                 .response()
                 .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 .setStatusCode(200)
-                .end(Json.encodePrettily(outcome))
+                .end(GameModule.from(outcome.value.game!!).toJson())
             is Invalid -> routingContext.response()
                 .putHeader("content-type", "application/json; charset=utf-8")
                 .setStatusCode(400)

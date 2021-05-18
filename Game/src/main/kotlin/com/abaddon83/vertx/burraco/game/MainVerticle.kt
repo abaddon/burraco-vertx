@@ -3,6 +3,9 @@ package com.abaddon83.vertx.burraco.game
 import com.abaddon83.vertx.burraco.game.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.vertx.burraco.game.adapters.commandController.RestApiVerticle
 import com.abaddon83.vertx.burraco.game.adapters.commandController.config.HttpConfig
+import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
+import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.vertx.EventStoreVertxAdapter
+import com.abaddon83.vertx.burraco.game.ports.EventStorePort
 import io.vertx.core.*
 import io.vertx.servicediscovery.ServiceDiscoveryOptions
 import io.vertx.servicediscovery.Record
@@ -17,6 +20,7 @@ class MainVerticle : AbstractVerticle() {
     private val HTTP_PORT = "8080"
     private val HTTP_ROOT = "/"
     private val SERVICE_NAME = "command-api-service"
+    private val EVENTSTORE: EventStorePort = EventStoreInMemoryAdapter()
 
     private val records: MutableList<Record> = mutableListOf()
 
@@ -25,14 +29,12 @@ class MainVerticle : AbstractVerticle() {
         .setName("my-name")
 
     override fun start(startPromise: Promise<Void>?) {
-        //val discovery: ServiceDiscovery = ServiceDiscovery.create(vertx, serviceDiscoveryOptions)
         val serverOpts = DeploymentOptions().setConfig(config())
-
         val httpConfig = HttpConfig(SERVICE_NAME,HTTP_HOST,HTTP_PORT.toInt(),HTTP_ROOT)
 
         //list of verticle to deploy
         val allFutures: List<Future<Any>> = listOf(
-            deploy(RestApiVerticle(httpConfig, CommandControllerAdapter(vertx)), serverOpts).future()
+            deploy(RestApiVerticle(httpConfig, CommandControllerAdapter(EVENTSTORE)), serverOpts).future()
         )
 
         CompositeFuture.all(allFutures).onComplete{

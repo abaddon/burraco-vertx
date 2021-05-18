@@ -40,9 +40,9 @@ class CommandHandler(val eventStore: EventStorePort) : WithLog("CommandHandler")
 
         //we want to reply after sending the event to the store
 //        if (res is Valid) {
-//            runBlocking {
+//
 //                eventStore.sendChannel.send(res.value)
-//            }
+//
 //        }
         return msg.copy(response = res)
     }

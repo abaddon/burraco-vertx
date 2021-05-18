@@ -4,7 +4,6 @@ import com.abaddon83.vertx.eventStore.adapters.controllerAdapter.EventStoreServi
 import com.abaddon83.vertx.eventStore.adapters.controllerAdapter.EventStoreServiceBusVerticle
 import com.abaddon83.vertx.eventStore.adapters.controllerAdapter.EventStoreServiceImpl
 import io.vertx.core.*
-import io.vertx.core.logging.LoggerFactory
 import io.vertx.kotlin.core.json.jsonObjectOf
 import io.vertx.servicediscovery.Record
 import io.vertx.servicediscovery.ServiceDiscovery
@@ -12,6 +11,7 @@ import io.vertx.servicediscovery.ServiceDiscoveryOptions
 import io.vertx.servicediscovery.ServiceReference
 import io.vertx.servicediscovery.types.EventBusService
 import io.vertx.serviceproxy.ServiceBinder
+import org.slf4j.LoggerFactory
 
 class MainVerticle : AbstractVerticle() {
 
@@ -26,27 +26,26 @@ class MainVerticle : AbstractVerticle() {
     .setName("my-name")
 
   override fun start(startPromise: Promise<Void>?) {
-    val discovery: ServiceDiscovery = ServiceDiscovery.create(vertx, serviceDiscoveryOptions)
+    //val discovery: ServiceDiscovery = ServiceDiscovery.create(vertx, serviceDiscoveryOptions)
     val serverOpts = DeploymentOptions().setConfig(config())
 
 
     //list of verticle to deploy
     val allFutures: List<Future<Any>> = listOf(
-      deploy(EventStoreServiceBusVerticle::class.qualifiedName!!, serverOpts).future()
+      deploy(EventStoreServiceBusVerticle(), serverOpts).future()
     )
 
-    CompositeFuture.all(allFutures).setHandler {
+    CompositeFuture.all(allFutures).onComplete {
       if (it.succeeded()) {
-        //When all vertx are deployed to something
+        log.info("MainVerticle started")
         startPromise?.complete()
       } else {
         startPromise?.fail(it.cause())
       }
-      discovery.close()
     }
   }
 
-  override fun stop(stopFuture: Future<Void>?) {
+  fun stop(stopFuture: Future<Void>?) {
     val ids = vertx.deploymentIDs()
     for (s in ids) {
       log.info(this.deploymentID())
@@ -66,6 +65,21 @@ class MainVerticle : AbstractVerticle() {
       }
     }
 
+    return done
+  }
+
+  private fun deploy(verticle: Verticle, opts: DeploymentOptions): Promise<Any> {
+    val done = Promise.promise<Any>()
+
+    vertx.deployVerticle(verticle, opts) {
+      if (it.failed()) {
+        log.error("Failed to deploy verticle ${verticle::class.qualifiedName}")
+        done.fail(it.cause())
+      } else {
+        log.info("Verticle deployed ${verticle::class.qualifiedName}")
+        done.complete()
+      }
+    }
     return done
   }
 

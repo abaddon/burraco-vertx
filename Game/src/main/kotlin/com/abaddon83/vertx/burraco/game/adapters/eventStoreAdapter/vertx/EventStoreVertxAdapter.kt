@@ -6,8 +6,7 @@ import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.game.ports.EventStorePort
 import io.vertx.core.Promise
 import io.vertx.core.Vertx
-import io.vertx.core.logging.LoggerFactory
-
+import org.slf4j.LoggerFactory
 
 class EventStoreVertxAdapter(vertx: Vertx) : EventStorePort() {
     private val vertx: Vertx = vertx
