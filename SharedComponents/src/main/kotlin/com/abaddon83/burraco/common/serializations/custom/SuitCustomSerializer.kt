@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.common.serializations.custom
 
-import com.abaddon83.burraco.common.models.valueObjects.Scale
 import com.abaddon83.burraco.common.models.valueObjects.Suits
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializer

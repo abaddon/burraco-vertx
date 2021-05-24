@@ -4,13 +4,12 @@ import com.abaddon83.utils.vertx.AbstractHttpServiceVerticle
 import com.abaddon83.vertx.burraco.game.adapters.commandController.config.HttpConfig
 import com.abaddon83.vertx.burraco.game.adapters.commandController.handlers.AddPlayerRoutingHandler
 import com.abaddon83.vertx.burraco.game.adapters.commandController.handlers.NewGameRoutingHandler
+import com.abaddon83.vertx.burraco.game.adapters.commandController.handlers.InitGameRoutingHandler
 import com.abaddon83.vertx.burraco.game.adapters.commandController.handlers.StartGameRoutingHandler
 import com.abaddon83.vertx.burraco.game.ports.CommandControllerPort
 import io.vertx.core.Promise
 import io.vertx.core.http.HttpHeaders
 import io.vertx.ext.web.openapi.RouterBuilder
-import io.vertx.kotlin.coroutines.dispatcher
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 class RestApiVerticle(val httpConfig: HttpConfig, private val controllerAdapter: CommandControllerPort) :
@@ -25,6 +24,11 @@ class RestApiVerticle(val httpConfig: HttpConfig, private val controllerAdapter:
         startHttpServer(startPromise);
     }
 
+//    override fun stop(endPromise: Promise<Void>?) {
+// //        stop()
+//        endPromise?.complete()
+//    }
+
     fun startHttpServer(startPromise: Promise<Void>) {
         val apiDefinitionUrl = this.javaClass.classLoader.getResource("gameAPIs.yaml")
         //val commandControllerRoutes = CommandControllerRoutes(vertx)
@@ -32,6 +36,7 @@ class RestApiVerticle(val httpConfig: HttpConfig, private val controllerAdapter:
             .onSuccess { routerBuilder ->
                 routerBuilder.operation("newGame").handler(NewGameRoutingHandler(controllerAdapter))
                 routerBuilder.operation("addPlayer").handler(AddPlayerRoutingHandler(controllerAdapter))
+                routerBuilder.operation("initGame").handler(InitGameRoutingHandler(controllerAdapter))
                 routerBuilder.operation("startGame").handler(StartGameRoutingHandler(controllerAdapter))
 
                 //generate the router

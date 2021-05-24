@@ -19,7 +19,15 @@ sealed class CommandImpl(override val commandId: UUID = UUID.randomUUID(), overr
 
 data class CreateNewBurracoGameCmd( val gameIdentity: GameIdentity) : CommandImpl()
 data class AddPlayerCmd(val gameIdentity: GameIdentity, val playerIdentityToAdd: PlayerIdentity) : CommandImpl()
+data class InitGameCmd(val gameIdentity: GameIdentity): CommandImpl()
+
+data class ApplyCardToPlayer(val gameIdentity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card): CommandImpl()
+data class ApplyCardToPlayerDeck(val gameIdentity: GameIdentity, val playerDeckId: Int, val card: Card): CommandImpl()
+data class ApplyCardToDiscardDeck(val gameIdentity: GameIdentity, val card: Card): CommandImpl()
+data class ApplyCardToDeck(val gameIdentity: GameIdentity, val card: Card): CommandImpl()
+
 data class StartGameCmd(val gameIdentity: GameIdentity): CommandImpl()
+
 data class PickUpACardFromDeckCmd(val gameIdentity: GameIdentity, val playerIdentity: PlayerIdentity): CommandImpl()
 data class PickUpCardsFromDiscardPileCmd(val gameIdentity: GameIdentity, val playerIdentity: PlayerIdentity): CommandImpl()
 data class DropTrisCmd(val gameIdentity: GameIdentity, val playerIdentity: PlayerIdentity, val tris: BurracoTris): CommandImpl()

@@ -17,11 +17,10 @@ val junitJupiterVersion = ext.get("junitJupiterVersion")
 val mainVerticleName = "com.abaddon83.vertx.burraco.game.MainVerticle"
 val watchForChange = "src/**/*"
 val doOnChange = "./gradlew classes"
-val launcherClassName = "com.abaddon83.vertx.burraco.game.Starter"
 
 
 application {
-    mainClassName = launcherClassName
+    mainClassName = mainVerticleName
 }
 
 dependencies {
@@ -59,9 +58,9 @@ tasks.withType<Test> {
     }
 }
 
-tasks.withType<JavaExec> {
-    args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")//, "-javaagent=./quasar-core-0.8.0.jar")
-}
+//tasks.withType<JavaExec> {
+//    args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")//, "-javaagent=./quasar-core-0.8.0.jar")
+//}
 
 sourceSets {
     main {

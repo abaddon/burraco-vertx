@@ -2,23 +2,21 @@ package com.abaddon83.vertx.burraco.game.models.burracoGameExecutions
 
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.TurnEnded
-import com.abaddon83.vertx.burraco.game.models.BurracoDeck
-import com.abaddon83.vertx.burraco.game.models.BurracoGame
-import com.abaddon83.vertx.burraco.game.models.DiscardPile
-import com.abaddon83.vertx.burraco.game.models.MazzettoDecks
 import com.abaddon83.vertx.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.vertx.burraco.game.models.burracoGameendeds.BurracoGameEnded
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
+import com.abaddon83.vertx.burraco.game.models.*
 
 data class BurracoGameExecutionTurnEnd private constructor(
-        override val players: List<PlayerInGame>,
-        override val playerTurn: PlayerIdentity,
-        override val burracoDeck: BurracoDeck,
-        override val mazzettoDecks: MazzettoDecks,
-        override val discardPile: DiscardPile,
-        override val identity: GameIdentity
+    override val players: List<PlayerInGame>,
+    override val playerTurn: PlayerIdentity,
+    override val burracoDeck: BurracoDeck,
+    override val playerDeck1: PlayerDeck,
+    override val playerDeck2: PlayerDeck,
+    override val discardPile: DiscardPile,
+    override val identity: GameIdentity
 ) : BurracoGameExecution(identity,"BurracoGameExecutionTurnEnd") {
 
 
@@ -36,7 +34,8 @@ data class BurracoGameExecutionTurnEnd private constructor(
                 identity = identity(),
                 players = players,
                 burracoDeck = burracoDeck,
-                mazzettoDecks = mazzettoDecks,
+                playerDeck1 = playerDeck1,
+                playerDeck2 = playerDeck2,
                 discardPile = discardPile,
                 playerTurn = event.nextPlayerTurn
         )
@@ -49,11 +48,11 @@ data class BurracoGameExecutionTurnEnd private constructor(
         check(player.showMyCards().isEmpty()) { warnMsg("The player cannot pick up a Mazzetto if he still has cards") }
         check(!player.isMazzettoTaken()) { warnMsg("The player cannot pick up a Mazzetto he already taken") }
 
-        val mazzetto = mazzettoDecks.firstMazzettoAvailable()
+        //val mazzetto = mazzettoDecks.firstMazzettoAvailable()
 
         return copy(
-                players = UpdatePlayers(player.pickUpMazzetto(mazzetto)),
-                mazzettoDecks = mazzettoDecks.mazzettoTaken(mazzetto)
+       //         players = UpdatePlayers(player.pickUpMazzetto(mazzetto)),
+       //         mazzettoDecks = mazzettoDecks.mazzettoTaken(mazzetto)
         )
     }
 
@@ -76,18 +75,19 @@ data class BurracoGameExecutionTurnEnd private constructor(
         check(player.burracoList().isNotEmpty()) { warnMsg("The player doesn't have a burraco") }
         //TODO add the logic to check if the squad taken the pozzetto
 
-        return BurracoGameEnded.create(identity(), players, mazzettoDecks, playerTurn)
+        return BurracoGameEnded.create(identity(), players, showNumMazzettoAvailable(), playerTurn)
     }
 
     override fun listOfPlayers(): List<PlayerInGame> = this.players
 
     companion object Factory {
-        fun create(players: List<PlayerInGame>, playerTurn: PlayerIdentity, burracoDeck: BurracoDeck, mazzettoDecks: MazzettoDecks, discardPile: DiscardPile, identity: GameIdentity): BurracoGameExecutionTurnEnd {
+        fun create(players: List<PlayerInGame>, playerTurn: PlayerIdentity, burracoDeck: BurracoDeck, playerDeck1: PlayerDeck, playerDeck2: PlayerDeck, discardPile: DiscardPile, identity: GameIdentity): BurracoGameExecutionTurnEnd {
             val game = BurracoGameExecutionTurnEnd(
                     players = players,
                     playerTurn = playerTurn,
                     burracoDeck = burracoDeck,
-                    mazzettoDecks = mazzettoDecks,
+                    playerDeck1 = playerDeck1,
+                    playerDeck2 = playerDeck2,
                     discardPile = discardPile,
                     identity = identity)
             game.testInvariants()

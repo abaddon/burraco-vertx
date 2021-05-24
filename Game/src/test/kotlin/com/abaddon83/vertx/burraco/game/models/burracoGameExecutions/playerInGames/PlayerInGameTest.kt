@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.game.models.burracoGameExecutions.playerInGa
 
 import com.abaddon83.vertx.burraco.game.models.BurracoScale
 import com.abaddon83.vertx.burraco.game.models.BurracoTris
-import com.abaddon83.vertx.burraco.game.models.MazzettoDeck
+import com.abaddon83.vertx.burraco.game.models.PlayerDeck
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.game.models.decks.ListCardsBuilder
 import com.abaddon83.burraco.common.models.valueObjects.Ranks
@@ -17,7 +17,7 @@ class PlayerInGameTest {
 
         val myCards = listOf(Card(Suits.Heart, Ranks.Six))
         val playerInGame = PlayerInGameTestFactory.create().withCards(myCards).build()
-        val mazzetto: MazzettoDeck = MazzettoDeck.create(ListCardsBuilder.allRanksCards().take(11))
+        val mazzetto: PlayerDeck = PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11))
 
         val expectedMyCardsSize = mazzetto.numCards() + myCards.size
         val expectedMazzettoTaken = true
@@ -34,8 +34,8 @@ class PlayerInGameTest {
     fun `given a Mazzetto, when I take it  for the second time, then I receive an error`() {
         val myCards = listOf(Card(Suits.Heart, Ranks.Six))
         val playerInGame = PlayerInGameTestFactory.create().withCards(myCards).build()
-        val mazzetto: MazzettoDeck = MazzettoDeck.create(ListCardsBuilder.allRanksCards().take(11))
-        val mazzetto2: MazzettoDeck = MazzettoDeck.create(ListCardsBuilder.allRanksCards().take(11))
+        val mazzetto: PlayerDeck = PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11))
+        val mazzetto2: PlayerDeck = PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11))
 
         assertFailsWith(IllegalStateException::class) {
             playerInGame.pickUpMazzetto(mazzetto).pickUpMazzetto(mazzetto2)

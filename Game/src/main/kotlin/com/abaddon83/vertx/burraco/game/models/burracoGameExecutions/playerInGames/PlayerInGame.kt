@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.game.models.burracoGameExecutions.playerInGa
 
 import com.abaddon83.vertx.burraco.game.models.BurracoScale
 import com.abaddon83.vertx.burraco.game.models.BurracoTris
-import com.abaddon83.vertx.burraco.game.models.MazzettoDeck
+import com.abaddon83.vertx.burraco.game.models.PlayerDeck
 import com.abaddon83.burraco.common.models.valueObjects.Burraco
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
@@ -33,7 +33,7 @@ data class PlayerInGame constructor(
     }
 
     //pickup
-    fun pickUpMazzetto(mazzetto: MazzettoDeck): PlayerInGame {
+    fun pickUpMazzetto(mazzetto: PlayerDeck): PlayerInGame {
         check(!mazzettoTaken) { warnMsg("The player has already taken the Mazzetto") }
         return addCardsOnMyCard(mazzetto.getCardList()).copy(mazzettoTaken = true)
     }

@@ -23,11 +23,11 @@ data class BurracoGameEnded(
     }
 
     companion object Factory {
-        fun create(identity: GameIdentity, players: List<PlayerInGame>, pozzettos: MazzettoDecks, playerTurn: PlayerIdentity): BurracoGameEnded =
+        fun create(identity: GameIdentity, players: List<PlayerInGame>, numPlayerDeckRemaining: Int, playerTurn: PlayerIdentity): BurracoGameEnded =
             BurracoGameEnded(
                     identity = identity,
                     players = playersScore(players, playerTurn),
-                    mazzettoMissed = pozzettos.numCards() > 0
+                    mazzettoMissed = numPlayerDeckRemaining > 0
             )
 
         private fun playersScore(players: List<PlayerInGame>, winner: PlayerIdentity): List<PlayerScore> =

@@ -14,17 +14,19 @@ data class BurracoGameExecutionTurnExecution private constructor(
         override val players: List<PlayerInGame>,
         override val playerTurn: PlayerIdentity,
         override val burracoDeck: BurracoDeck,
-        override val mazzettoDecks: MazzettoDecks,
+        override val playerDeck1: PlayerDeck,
+        override val playerDeck2: PlayerDeck,
         override val discardPile: DiscardPile,
         override val identity: GameIdentity) : BurracoGameExecution(identity,"BurracoGameExecutionTurnExecution") {
 
     companion object Factory {
-        fun create(identity: GameIdentity, players: List<PlayerInGame>, burracoDeck: BurracoDeck, mazzettoDecks: MazzettoDecks, discardPile: DiscardPile, playerTurn: PlayerIdentity): BurracoGameExecutionTurnExecution {
+        fun create(identity: GameIdentity, players: List<PlayerInGame>, burracoDeck: BurracoDeck, playerDeck1: PlayerDeck, playerDeck2: PlayerDeck, discardPile: DiscardPile, playerTurn: PlayerIdentity): BurracoGameExecutionTurnExecution {
             val game = BurracoGameExecutionTurnExecution(
                     identity = identity,
                     players = players,
                     burracoDeck = burracoDeck,
-                    mazzettoDecks = mazzettoDecks,
+                    playerDeck1 = playerDeck1,
+                    playerDeck2 = playerDeck2,
                     discardPile = discardPile,
                     playerTurn = playerTurn
             )
@@ -67,7 +69,7 @@ data class BurracoGameExecutionTurnExecution private constructor(
         check(player.showMyCards().isEmpty()) { warnMsg("The player cannot pick up a Mazzetto if he still has cards ( num cards: ${player.showMyCards().size})") }
         check(!player.isMazzettoTaken()) { warnMsg("The player cannot pick up a Mazzetto he already taken") }
 
-        val mazzetto = mazzettoDecks.firstMazzettoAvailable()
+        val mazzetto = firstMazzettoAvailable()
 
         return applyAndQueueEvent(
                 MazzettoPickedUp(identity = identity(), playerIdentity = player.identity(), mazzettoDeck = mazzetto.getCardList())
@@ -100,7 +102,8 @@ data class BurracoGameExecutionTurnExecution private constructor(
                 players = UpdatePlayers(player.dropACard(event.card)),
                 playerTurn = playerTurn,
                 burracoDeck = burracoDeck,
-                mazzettoDecks = mazzettoDecks,
+                playerDeck1 = playerDeck1,
+                playerDeck2 = playerDeck2,
                 discardPile = discardPile.addCard(event.card)
         )
     }
@@ -128,10 +131,12 @@ data class BurracoGameExecutionTurnExecution private constructor(
 
     private fun apply(event: MazzettoPickedUp): BurracoGameExecutionTurnExecution {
         val player = players.find { p -> p.identity() == event.playerIdentity }!!
-        val mazzettoDeck = MazzettoDeck.create(event.mazzettoDeck)
+        val mazzettoDeck = PlayerDeck.create(event.mazzettoDeck)
         return copy(
                 players = UpdatePlayers(player.pickUpMazzetto(mazzettoDeck)),
-                mazzettoDecks = mazzettoDecks.mazzettoTaken(mazzettoDeck)
+                //mazzettoDecks = mazzettoDecks.mazzettoTaken(mazzettoDeck)
         )
     }
+
+
 }

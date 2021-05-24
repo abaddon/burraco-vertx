@@ -1,6 +1,7 @@
 package com.abaddon83.vertx.burraco.game.adapters.commandController.handlers
 
 import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.burraco.game.adapters.commandController.models.ErrorMsgModule
@@ -12,19 +13,24 @@ import io.vertx.core.json.Json
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.validation.RequestParameters
 import io.vertx.ext.web.validation.ValidationHandler
+import io.vertx.kotlin.core.json.get
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class StartGameRoutingHandler(private val controllerAdapter: CommandControllerPort): RoutingHandler {
+class InitGameRoutingHandler(private val controllerAdapter: CommandControllerPort): RoutingHandler {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun handle(routingContext: RoutingContext) {
         val params: RequestParameters = routingContext.get(ValidationHandler.REQUEST_CONTEXT_KEY)
+        val bodyRequest = params.body()
+
 
         val gameIdentity = GameIdentity.create(params.pathParameter("gameId").string)
         checkNotNull(gameIdentity){"gameIdentity is null"}
+        val playerIdentity = PlayerIdentity.create(bodyRequest.jsonObject.get<String>("playerId"))
+        checkNotNull(playerIdentity){"playerIdentity is null"}
 
-        when (val outcome: Outcome = controllerAdapter.startGame(gameIdentity)) {
+        when (val outcome: Outcome = controllerAdapter.initGame(gameIdentity,playerIdentity)) {
             is Valid -> routingContext
                 .response()
                 .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")

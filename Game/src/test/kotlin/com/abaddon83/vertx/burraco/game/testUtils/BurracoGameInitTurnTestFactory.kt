@@ -79,8 +79,8 @@ data class BurracoGameInitTurnTestFactory(
             val player2 = PlayerInGame.create(player2Id, ListCardsBuilder.allRanksCards().take(11))
 
             val mazzettoDecks = MazzettoDecks.create(listOf(
-                    MazzettoDeck.create(ListCardsBuilder.allRanksCards().take(11)),
-                    MazzettoDeck.create(ListCardsBuilder.allRanksCards().take(11))
+                    PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11)),
+                    PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11))
             ))
             val discardPile = DiscardPile.create(listOf())
 

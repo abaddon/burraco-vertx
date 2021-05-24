@@ -27,9 +27,10 @@ open class BurracoGame(override val identity: GameIdentity, className:String) : 
 
     companion object Factory {
         fun create(gameIdentity: GameIdentity): BurracoGameWaitingPlayers {
-            val listCards=BurracoDeck.create().cards
+            //TODO generate cards
+            //val listCards=BurracoDeck.create().cards
             return BurracoGame(gameIdentity)
-                    .applyAndQueueEvent(BurracoGameCreated(gameIdentity,listCards))
+                    .applyAndQueueEvent(BurracoGameCreated(gameIdentity))
         }
     }
 
@@ -42,7 +43,7 @@ open class BurracoGame(override val identity: GameIdentity, className:String) : 
         }
     }
     private fun apply(event: BurracoGameCreated):BurracoGameWaitingPlayers {
-        val burracoDeck = BurracoDeck.create(event.deck)
-        return BurracoGameWaitingPlayers(event.identity, listOf(), burracoDeck)
+        //val burracoDeck = BurracoDeck.create(event.deck)
+        return BurracoGameWaitingPlayers(event.identity, listOf()/*, burracoDeck*/)
     }
 }

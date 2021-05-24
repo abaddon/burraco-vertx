@@ -1,4 +1,4 @@
-package com.abaddon83.vertx.burraco.game.adapters.eventBrokerConsumerAdapter.kafka.config
+package com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerConsumerAdapter.config
 
 data class KafkaConsumerConfig(
     val bootstrapServer: String,
@@ -9,6 +9,15 @@ data class KafkaConsumerConfig(
     val enableAutoCommit: String
 
 ) {
+
+    constructor(): this(
+        bootstrapServer = "localhost:50560",
+        keyDeserializer = "org.apache.kafka.common.serialization.StringDeserializer",
+        valueDeserializer = "org.apache.kafka.common.serialization.StringDeserializer",
+        groupId = "dealer",
+        autoOffsetReset = "earliest",
+        enableAutoCommit = "false"
+    )
 
     fun consumerConfig(): Map<String, String> = mapOf(
         "bootstrap.servers" to bootstrapServer,

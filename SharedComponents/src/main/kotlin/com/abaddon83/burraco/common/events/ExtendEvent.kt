@@ -1,29 +1,35 @@
-package com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.vertx.model
+package com.abaddon83.burraco.common.events
 
+import com.abaddon83.burraco.common.serializations.custom.InstantCustomSerializer
+import com.abaddon83.burraco.common.serializations.custom.UUIDCustomSerializer
 import com.abaddon83.utils.ddd.Event
-import com.abaddon83.burraco.common.events.*
-import com.fasterxml.jackson.annotation.JsonCreator
-import io.vertx.core.json.JsonObject
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.encodeToJsonElement
 import java.lang.Exception
 import java.time.Instant
 import java.util.*
 
+
+@Serializable
 data class ExtendEvent(
-    val name: String, val entityKey: UUID, val entityName: String, val instant: Instant, val jsonPayload: String
+    val name: String, @Serializable(with = UUIDCustomSerializer::class) val entityKey: UUID, val entityName: String, @Serializable(with = InstantCustomSerializer::class) val instant: Instant, val jsonPayload: String
 ) {
-    @JsonCreator
     constructor(json: JsonObject) : this(
-        name = json.getString("name"),
-        entityKey = UUID.fromString(json.getString("entityKey")),
-        entityName = json.getString("entityName"),
-        instant = json.getInstant("instant"),
-        jsonPayload = json.getString("jsonPayload")
+        name = json.getValue("name").toString(),// .getString("name"),
+        entityKey = UUID.fromString(json.getValue("entityKey").toString()),
+        entityName = json.getValue("entityName").toString(),
+        instant = Instant.parse(json.getValue("instant").toString()),
+        jsonPayload = json.getValue("jsonPayload").toString()
     )
 
     constructor(ev: ExtendEvent) : this(ev.name, ev.entityKey, ev.entityName, ev.instant, ev.jsonPayload)
+
+    constructor(jsonString: String): this(Json.decodeFromString<ExtendEvent>(jsonString))
 
     constructor(ev: Event) : this(
         name = ev::class.simpleName!!,
@@ -35,6 +41,13 @@ data class ExtendEvent(
             is BurracoGameCreated -> Json.encodeToString(ev)
             is PlayerAdded -> Json.encodeToString(ev)
             is GameStarted -> Json.encodeToString(ev)
+
+            is CardAssignedToPlayer -> Json.encodeToString(ev)
+            is CardAssignedToPlayerDeck -> Json.encodeToString(ev)
+            is CardAssignedToDeck -> Json.encodeToString(ev)
+            is CardAssignedToDiscardDeck -> Json.encodeToString(ev)
+
+            is StartGame -> Json.encodeToString(ev)
             is CardPickedFromDeck -> Json.encodeToString(ev)
             is CardsPickedFromDiscardPile -> Json.encodeToString(ev)
             is CardDroppedIntoDiscardPile -> Json.encodeToString(ev)
@@ -47,15 +60,24 @@ data class ExtendEvent(
         }
     )
 
-    fun toJson(): JsonObject {
-        return JsonObject.mapFrom(this)
+    fun toJson(): JsonElement {
+        return Json.encodeToJsonElement(this) //JsonObject.mapFrom(this)
+    }
+
+    fun toJsonString(): String {
+        return Json.encodeToString(this)
     }
 
     fun toEvent(): Event = when (name) {
         "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(jsonPayload)
         "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(jsonPayload)
-        //"CardsDealtToPlayer" -> Json.decodeFromString<CardsDealtToPlayer>(jsonPayload)
         "GameStarted" -> Json.decodeFromString<GameStarted>(jsonPayload)
+
+        "CardAssignedToPlayer" -> Json.decodeFromString<CardAssignedToPlayer>(jsonPayload)
+        "CardAssignedToPlayerDeck" -> Json.decodeFromString<CardAssignedToPlayerDeck>(jsonPayload)
+        "CardAssignedToDeck" -> Json.decodeFromString<CardAssignedToDeck>(jsonPayload)
+        "CardAssignedToDiscardDeck" -> Json.decodeFromString<CardAssignedToDiscardDeck>(jsonPayload)
+
         "CardPickedFromDeck" -> Json.decodeFromString<CardPickedFromDeck>(jsonPayload)
         "CardsPickedFromDiscardPile" -> Json.decodeFromString<CardsPickedFromDiscardPile>(jsonPayload)
         "CardDroppedIntoDiscardPile" -> Json.decodeFromString<CardDroppedIntoDiscardPile>(jsonPayload)

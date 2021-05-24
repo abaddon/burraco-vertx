@@ -8,7 +8,7 @@ import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Scale
 import com.abaddon83.burraco.common.models.valueObjects.Tris
 import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 
 
 @Serializable
@@ -16,6 +16,15 @@ sealed class BurracoGameEvent() : Event() {
     abstract val identity: GameIdentity
     override fun key(): String = identity.convertTo().toString()
     override val entityName: String = "BurracoGame"
+
+    fun toJson(): JsonElement{
+        return when(this){
+            is BurracoGameCreated -> Json.encodeToJsonElement(this)
+            is PlayerAdded -> Json.encodeToJsonElement(this)
+            is GameStarted -> Json.encodeToJsonElement(this)
+            else -> throw NotImplementedError("Event not reconised")
+        }
+    }
 
     companion object {
         //        inline fun <reified T> jsonToEvent(json: String): T {
@@ -29,8 +38,15 @@ sealed class BurracoGameEvent() : Event() {
             return when (eventClass) {
                 "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(json)
                 "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(json)
-                "CardsDealtToPlayer" -> Json.decodeFromString<CardsDealtToPlayer>(json)
                 "GameStarted" -> Json.decodeFromString<GameStarted>(json)
+
+                "CardAssignedToPlayer" -> Json.decodeFromString<CardAssignedToPlayer>(json)
+                "CardAssignedToPlayerDeck" -> Json.decodeFromString<CardAssignedToPlayerDeck>(json)
+                "CardAssignedToDeck" -> Json.decodeFromString<CardAssignedToDeck>(json)
+                "CardAssignedToDiscardDeck" -> Json.decodeFromString<CardAssignedToDiscardDeck>(json)
+
+                "GameReady" -> Json.decodeFromString<StartGame>(json)
+
                 "CardPickedFromDeck" -> Json.decodeFromString<CardPickedFromDeck>(json)
                 "CardsPickedFromDiscardPile" -> Json.decodeFromString<CardsPickedFromDiscardPile>(json)
                 else -> throw NotImplementedError("error jsonToEvent(..), ${eventClass.javaClass.simpleName} not managed")
@@ -40,24 +56,28 @@ sealed class BurracoGameEvent() : Event() {
 }
 
 @Serializable
-data class BurracoGameCreated(override val identity: GameIdentity, val deck: List<Card>) : BurracoGameEvent()
+data class BurracoGameCreated(override val identity: GameIdentity /*, val deck: List<Card>*/) : BurracoGameEvent()
 
 @Serializable
 data class PlayerAdded(override val identity: GameIdentity, val playerIdentity: PlayerIdentity) : BurracoGameEvent()
 
 @Serializable
-data class CardsDealtToPlayer(override val identity: GameIdentity, val player: PlayerIdentity, val cards: List<Card>) :
-    BurracoGameEvent()
+data class GameStarted(override val identity: GameIdentity, val players: List<PlayerIdentity> ) : BurracoGameEvent()
 
 @Serializable
-data class GameStarted(
-    override val identity: GameIdentity,
-    val deck: List<Card>,
-    val mazzettoDeck1: List<Card>,
-    val mazzettoDeck2: List<Card>,
-    val discardPileCards: List<Card>,
-    val playerTurn: PlayerIdentity
-) : BurracoGameEvent()
+data class CardAssignedToPlayer(override val identity: GameIdentity, val player: PlayerIdentity, val card: Card) : BurracoGameEvent()
+
+@Serializable
+data class CardAssignedToPlayerDeck(override val identity: GameIdentity, val playerDeckId: Int, val card: Card) : BurracoGameEvent()
+
+@Serializable
+data class CardAssignedToDeck(override val identity: GameIdentity, val card: Card) : BurracoGameEvent()
+
+@Serializable
+data class CardAssignedToDiscardDeck(override val identity: GameIdentity, val card: Card) : BurracoGameEvent()
+
+@Serializable
+data class StartGame(override val identity: GameIdentity) : BurracoGameEvent()
 
 @Serializable
 data class CardPickedFromDeck(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card) :

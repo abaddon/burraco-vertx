@@ -3,72 +3,69 @@ package com.abaddon83.vertx.burraco.game
 import com.abaddon83.vertx.burraco.game.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.vertx.burraco.game.adapters.commandController.RestApiVerticle
 import com.abaddon83.vertx.burraco.game.adapters.commandController.config.HttpConfig
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerConsumerAdapter.KafkaEventBrokerConsumerAdapter
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerConsumerAdapter.config.KafkaConsumerConfig
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducerAdapter.KafkaEventBrokerProducerAdapter
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducerAdapter.config.KafkaProducerConfig
 import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
-import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.vertx.EventStoreVertxAdapter
 import com.abaddon83.vertx.burraco.game.ports.EventStorePort
 import io.vertx.core.*
-import io.vertx.servicediscovery.ServiceDiscoveryOptions
-import io.vertx.servicediscovery.Record
 import org.slf4j.LoggerFactory
 
 class MainVerticle : AbstractVerticle() {
     companion object {
-        private val log = LoggerFactory.getLogger(this::class.qualifiedName)
+        @JvmStatic
+        fun main(args:Array<String>) {
+            Launcher.executeCommand("run", MainVerticle::class.java.name)
+        }
     }
 
+    private val log = LoggerFactory.getLogger(this::class.qualifiedName)
     private val HTTP_HOST = "localhost"
     private val HTTP_PORT = "8080"
     private val HTTP_ROOT = "/"
     private val SERVICE_NAME = "command-api-service"
-    private val EVENTSTORE: EventStorePort = EventStoreInMemoryAdapter()
-
-    private val records: MutableList<Record> = mutableListOf()
-
-    private val serviceDiscoveryOptions: ServiceDiscoveryOptions = ServiceDiscoveryOptions()
-        .setAnnounceAddress("vertx.discovery.announce")
-        .setName("my-name")
 
     override fun start(startPromise: Promise<Void>?) {
+        val httpConfig =  HttpConfig(SERVICE_NAME,HTTP_HOST,HTTP_PORT.toInt(),HTTP_ROOT)
+        val kafkaProducerConfigConfig = KafkaProducerConfig()
+        val eventStore: EventStorePort = EventStoreInMemoryAdapter()
+        val eventBrokerProducer = KafkaEventBrokerProducerAdapter(vertx,kafkaProducerConfigConfig)
+
         val serverOpts = DeploymentOptions().setConfig(config())
-        val httpConfig = HttpConfig(SERVICE_NAME,HTTP_HOST,HTTP_PORT.toInt(),HTTP_ROOT)
 
         //list of verticle to deploy
         val allFutures: List<Future<Any>> = listOf(
-            deploy(RestApiVerticle(httpConfig, CommandControllerAdapter(EVENTSTORE)), serverOpts).future()
+            deploy(RestApiVerticle(httpConfig, CommandControllerAdapter(eventStore,eventBrokerProducer)), serverOpts).future(),
+            deploy(KafkaEventBrokerConsumerAdapter(KafkaConsumerConfig(),eventStore,eventBrokerProducer),serverOpts).future()
         )
 
         CompositeFuture.all(allFutures).onComplete{
             if (it.succeeded()) {
                 log.info("MainVerticle started")
+                start()
+                log.info("IDS: ${vertx.deploymentIDs()}")
                 startPromise?.complete()
             } else {
                 startPromise?.fail(it.cause())
             }
-
         }
     }
 
-    fun stop(stopFuture: Future<Void>?) {
+    override fun stop(stopPromise: Promise<Void?>) {
         val ids = vertx.deploymentIDs()
-        for (s in ids) {
-            log.info(this.deploymentID())
-        }
-    }
-
-    private fun deploy(name: String, opts: DeploymentOptions): Promise<Any> {
-        val done = Promise.promise<Any>()
-
-        vertx.deployVerticle(name, opts) {
-            if (it.failed()) {
-                log.error("Failed to deploy verticle $name")
-                done.fail(it.cause())
-            } else {
-                log.info("Deployed verticle $name")
-                done.complete()
+        log.info("Undeployed ok: {}",ids)
+        for (id in ids) {
+            vertx.undeploy(id) { res: AsyncResult<Void?> ->
+                if (res.succeeded()) {
+                    log.info("Undeployed ok")
+                    stopPromise.complete()
+                } else {
+                    log.error("Undeploy failed!",res.cause())
+                    stopPromise.fail(res.cause())
+                }
             }
         }
-
-        return done
     }
 
     private fun deploy(verticle: Verticle, opts: DeploymentOptions): Promise<Any> {
@@ -83,22 +80,6 @@ class MainVerticle : AbstractVerticle() {
                 done.complete()
             }
         }
-        return done
-    }
-
-    private fun undeploy(name: String, opts: DeploymentOptions): Promise<Any> {
-        val done = Promise.promise<Any>()
-
-        vertx.deployVerticle(name, opts) {
-            if (it.failed()) {
-                log.error("Failed to deploy verticle $name")
-                done.fail(it.cause())
-            } else {
-                log.info("Deployed verticle $name")
-                done.complete()
-            }
-        }
-
         return done
     }
 }

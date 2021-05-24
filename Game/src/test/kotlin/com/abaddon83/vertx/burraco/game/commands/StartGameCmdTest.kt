@@ -22,20 +22,20 @@ class StartGameCmdTest {
 
     @Test
     fun `Given a command to start a game, when I execute the command, then the game is started`(){
-        val command = StartGameCmd(gameIdentity = gameIdentity)
+        val command = InitGameCmd(gameIdentity = gameIdentity)
         assert(commandHandler.handle(command) is Valid)
     }
 
     @Test
     fun `Given a burraco game already started, when I start the game again, then nothing happened`(){
-        val command = StartGameCmd(gameIdentity = gameIdentity)
+        val command = InitGameCmd(gameIdentity = gameIdentity)
         assert(commandHandler.handle(command) is Valid)
         assert(commandHandler.handle(command) is Invalid)
     }
 
     @Test
     fun `Given a command to execute on a burraco game that doesn't exist, when I execute the command, then I receive an error`(){
-        val command = StartGameCmd(gameIdentity = GameIdentity.create())
+        val command = InitGameCmd(gameIdentity = GameIdentity.create())
         assert(commandHandler.handle(command) is Invalid)
     }
 
