@@ -40,14 +40,14 @@ data class ExtendEvent(
         jsonPayload = when (ev) {
             is BurracoGameCreated -> Json.encodeToString(ev)
             is PlayerAdded -> Json.encodeToString(ev)
-            is GameStarted -> Json.encodeToString(ev)
+            is GameInitialised -> Json.encodeToString(ev)
 
             is CardAssignedToPlayer -> Json.encodeToString(ev)
             is CardAssignedToPlayerDeck -> Json.encodeToString(ev)
             is CardAssignedToDeck -> Json.encodeToString(ev)
             is CardAssignedToDiscardDeck -> Json.encodeToString(ev)
 
-            is StartGame -> Json.encodeToString(ev)
+            is GameStarted -> Json.encodeToString(ev)
             is CardPickedFromDeck -> Json.encodeToString(ev)
             is CardsPickedFromDiscardPile -> Json.encodeToString(ev)
             is CardDroppedIntoDiscardPile -> Json.encodeToString(ev)
@@ -71,7 +71,7 @@ data class ExtendEvent(
     fun toEvent(): Event = when (name) {
         "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(jsonPayload)
         "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(jsonPayload)
-        "GameStarted" -> Json.decodeFromString<GameStarted>(jsonPayload)
+        "GameStarted" -> Json.decodeFromString<GameInitialised>(jsonPayload)
 
         "CardAssignedToPlayer" -> Json.decodeFromString<CardAssignedToPlayer>(jsonPayload)
         "CardAssignedToPlayerDeck" -> Json.decodeFromString<CardAssignedToPlayerDeck>(jsonPayload)

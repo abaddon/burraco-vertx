@@ -1,7 +1,7 @@
 package com.abaddon83.vertx.eventStore.ports
 
-import com.abaddon83.utils.eventStore.model.Event
 import com.abaddon83.vertx.eventStore.commands.CommandHandler
+import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.queries.QueryHandler
 
 

@@ -1,7 +1,8 @@
 package com.abaddon83.vertx.burraco.game.models
 
 import com.abaddon83.vertx.burraco.game.models.decks.ListCardsBuilder
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class MazzettoDeckTest {

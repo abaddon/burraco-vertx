@@ -10,12 +10,13 @@ import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
-import org.junit.Before
-import org.junit.Test
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeEventBrokerProducer
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class StartGameCmdTest {
 
-    @Before
+    @BeforeAll
     fun loadEvents(){
         eventStore.save(events)
     }
@@ -40,7 +41,7 @@ class StartGameCmdTest {
     }
 
     val eventStore = EventStoreInMemoryAdapter()
-    private val commandHandler = CommandHandler(eventStore)
+    private val commandHandler = CommandHandler(eventStore,FakeEventBrokerProducer())
     val deck = BurracoDeck.create()
     val gameIdentity: GameIdentity = GameIdentity.create()
     val aggregate = BurracoGame(identity = gameIdentity)
@@ -48,7 +49,7 @@ class StartGameCmdTest {
     val playerIdentity2 = PlayerIdentity.create()
 
     val events = listOf<Event>(
-            BurracoGameCreated(identity = gameIdentity, deck = deck.cards),
+            BurracoGameCreated(identity = gameIdentity),
             PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity1),
             PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity2)
     )

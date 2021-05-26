@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.eventStore.queries
 
-import com.abaddon83.utils.eventStore.model.Event
+import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.vertx.eventStore.ports.RepositoryPort
 import io.vertx.core.logging.LoggerFactory
 

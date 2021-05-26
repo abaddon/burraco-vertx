@@ -3,7 +3,8 @@ package com.abaddon83.vertx.burraco.game.models
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.valueObjects.Ranks
 import com.abaddon83.burraco.common.models.valueObjects.Suits
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class BurracoScalaTest {

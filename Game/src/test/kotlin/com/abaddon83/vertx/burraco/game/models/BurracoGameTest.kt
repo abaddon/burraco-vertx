@@ -1,7 +1,8 @@
 package com.abaddon83.vertx.burraco.game.models
 
 import com.abaddon83.burraco.common.models.identities.GameIdentity
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class BurracoGameTest {
 

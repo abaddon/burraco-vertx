@@ -1,7 +1,9 @@
 package com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.inMemory
 
-import com.abaddon83.utils.eventStore.model.Event
-import io.vertx.core.logging.LoggerFactory
+
+import com.abaddon83.vertx.eventStore.models.Event
+import org.slf4j.LoggerFactory
+
 
 object InMemoryDB {
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)

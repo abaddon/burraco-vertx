@@ -4,12 +4,14 @@ import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.functionals.Valid
-import org.junit.Before
-import org.junit.Test
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeEventBrokerProducer
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+
 
 class CreateNewBurracoGameCmdTest {
 
-    @Before
+    @BeforeAll
     fun loadEvents(){
         eventStore.save(events)
     }
@@ -22,6 +24,6 @@ class CreateNewBurracoGameCmdTest {
     }
 
     val eventStore = EventStoreInMemoryAdapter()
-    private val commandHandler = CommandHandler(eventStore)
+    private val commandHandler = CommandHandler(eventStore, FakeEventBrokerProducer())
     val events = listOf<Event>()
 }

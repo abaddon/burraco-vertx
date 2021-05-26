@@ -1,23 +1,23 @@
 package com.abaddon83.vertx.eventStore.adapters.repositoryAdapter.mysql
 
-import com.abaddon83.utils.eventStore.model.Event
+import com.abaddon83.vertx.eventStore.models.Event
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.utils.functionals.Validated
 import com.abaddon83.vertx.eventStore.commands.EventError
 import com.abaddon83.vertx.eventStore.ports.OutcomeDetail
 import com.abaddon83.vertx.eventStore.ports.RepositoryPort
-import io.vertx.core.logging.LoggerFactory
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.schema.uuid
+import org.slf4j.LoggerFactory
 import java.util.*
 
 class MysqlRepositoryAdapter: RepositoryPort {
     companion object {
         private const val username = "root"
         private const val password = "root"
-        private const val host = "event.repository"
+        private const val host = "127.0.0.1"
         private const val port = "3306"
         private const val database = "eventstore"
 

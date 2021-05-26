@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.readModel.projections
 
 import com.abaddon83.burraco.common.events.BurracoGameCreated
-import com.abaddon83.burraco.common.events.GameStarted
+import com.abaddon83.burraco.common.events.GameInitialised
 import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
@@ -39,7 +39,7 @@ data class BurracoGame(
         return when(event){
             is BurracoGameCreated -> apply(event)
             is PlayerAdded -> apply(event)
-            is GameStarted -> apply(event)
+            is GameInitialised -> apply(event)
             else -> this
         }
     }
@@ -54,7 +54,7 @@ data class BurracoGame(
         return copy(players = players.plus(e.playerIdentity))
     }
 
-    private fun apply(e: GameStarted): BurracoGame{
+    private fun apply(e: GameInitialised): BurracoGame{
         check(this.key == BurracoGameKey(e.identity)){" check failed, the key is not the same"}
         return copy(
             status = GameStatus.Execution,

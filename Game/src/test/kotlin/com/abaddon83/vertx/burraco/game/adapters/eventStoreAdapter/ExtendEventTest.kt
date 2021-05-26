@@ -1,13 +1,11 @@
 package com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter
 
-import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.vertx.model.ExtendEvent
+import com.abaddon83.burraco.common.events.ExtendEvent
 import com.abaddon83.burraco.common.events.BurracoGameCreated
-import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.common.models.valueObjects.Ranks
-import com.abaddon83.burraco.common.models.valueObjects.Suits
 import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.tcp.VertxExtendEvent
 import io.vertx.core.json.JsonObject
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class ExtendEventTest {
@@ -20,7 +18,7 @@ class ExtendEventTest {
 //        println(json.getString("entityKey"))
 //        println(json.getInstant("instant"))
 //        println(json.getString("jsonPayload"))
-        val event = ExtendEvent(json)
+        val event = VertxExtendEvent.from(json)
         assertEquals(event.name, "BurracoGameCreated")
     }
 
@@ -28,10 +26,7 @@ class ExtendEventTest {
     fun `Given a json string I want to convert in the right Event model`(){
         //Json.decodeFromString<ExtendEvent>()
 
-        val burracoGameCreatedEv= BurracoGameCreated(GameIdentity.create(), listOf(
-            Card(Suits.Clover, Ranks.Ace),
-            Card(Suits.Clover, Ranks.Eight)
-        ))
+        val burracoGameCreatedEv= BurracoGameCreated(GameIdentity.create())
         val extendedEvent = ExtendEvent(burracoGameCreatedEv)
 
         val event= extendedEvent.toEvent()

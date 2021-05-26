@@ -21,7 +21,7 @@ sealed class BurracoGameEvent() : Event() {
         return when(this){
             is BurracoGameCreated -> Json.encodeToJsonElement(this)
             is PlayerAdded -> Json.encodeToJsonElement(this)
-            is GameStarted -> Json.encodeToJsonElement(this)
+            is GameInitialised -> Json.encodeToJsonElement(this)
             else -> throw NotImplementedError("Event not reconised")
         }
     }
@@ -38,14 +38,14 @@ sealed class BurracoGameEvent() : Event() {
             return when (eventClass) {
                 "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(json)
                 "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(json)
-                "GameStarted" -> Json.decodeFromString<GameStarted>(json)
+                "GameStarted" -> Json.decodeFromString<GameInitialised>(json)
 
                 "CardAssignedToPlayer" -> Json.decodeFromString<CardAssignedToPlayer>(json)
                 "CardAssignedToPlayerDeck" -> Json.decodeFromString<CardAssignedToPlayerDeck>(json)
                 "CardAssignedToDeck" -> Json.decodeFromString<CardAssignedToDeck>(json)
                 "CardAssignedToDiscardDeck" -> Json.decodeFromString<CardAssignedToDiscardDeck>(json)
 
-                "GameReady" -> Json.decodeFromString<StartGame>(json)
+                "GameReady" -> Json.decodeFromString<GameStarted>(json)
 
                 "CardPickedFromDeck" -> Json.decodeFromString<CardPickedFromDeck>(json)
                 "CardsPickedFromDiscardPile" -> Json.decodeFromString<CardsPickedFromDiscardPile>(json)
@@ -62,7 +62,7 @@ data class BurracoGameCreated(override val identity: GameIdentity /*, val deck: 
 data class PlayerAdded(override val identity: GameIdentity, val playerIdentity: PlayerIdentity) : BurracoGameEvent()
 
 @Serializable
-data class GameStarted(override val identity: GameIdentity, val players: List<PlayerIdentity> ) : BurracoGameEvent()
+data class GameInitialised(override val identity: GameIdentity, val players: List<PlayerIdentity> ) : BurracoGameEvent()
 
 @Serializable
 data class CardAssignedToPlayer(override val identity: GameIdentity, val player: PlayerIdentity, val card: Card) : BurracoGameEvent()
@@ -77,7 +77,7 @@ data class CardAssignedToDeck(override val identity: GameIdentity, val card: Car
 data class CardAssignedToDiscardDeck(override val identity: GameIdentity, val card: Card) : BurracoGameEvent()
 
 @Serializable
-data class StartGame(override val identity: GameIdentity) : BurracoGameEvent()
+data class GameStarted(override val identity: GameIdentity) : BurracoGameEvent()
 
 @Serializable
 data class CardPickedFromDeck(override val identity: GameIdentity, val playerIdentity: PlayerIdentity, val card: Card) :

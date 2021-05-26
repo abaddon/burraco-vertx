@@ -2,7 +2,7 @@ package com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerConsumerAdapter
 
 
 import com.abaddon83.burraco.common.events.ExtendEvent
-import com.abaddon83.burraco.common.events.GameStarted
+import com.abaddon83.burraco.common.events.GameInitialised
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
@@ -42,7 +42,7 @@ class KafkaEventBrokerConsumerAdapter(private val kafkaConfig: KafkaConsumerConf
                             val results = records.records().map { record  ->
                                 val event = ExtendEvent(record.value())
                                 val result = when(val ev = event.toEvent()){
-                                    is GameStarted -> commandHandler.handle(DealCards(ev.identity,ev.players))
+                                    is GameInitialised -> commandHandler.handle(DealCards(ev.identity,ev.players))
                                     else -> Valid(DomainResult(GameIdentity.create(), listOf()))
                                 }
                                 result

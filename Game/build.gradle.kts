@@ -34,6 +34,9 @@ dependencies {
     implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion") //?
     implementation("io.vertx:vertx-hazelcast:$vertxVersion")
     implementation("io.vertx:vertx-kafka-client:$vertxVersion")
+    implementation("io.vertx:vertx-tcp-eventbus-bridge:$vertxVersion")
+
+    testImplementation("io.vertx:vertx-junit5:$vertxVersion")
 }
 
 val compileKotlin: KotlinCompile by tasks

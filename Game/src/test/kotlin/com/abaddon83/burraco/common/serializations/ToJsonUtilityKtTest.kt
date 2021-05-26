@@ -3,8 +3,9 @@ package com.abaddon83.burraco.common.serializations
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.junit.Assert.*
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+
 
 class ToJsonUtilityKtTest{
 

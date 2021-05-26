@@ -4,13 +4,12 @@ import com.abaddon83.utils.functionals.*
 import com.abaddon83.vertx.eventStore.ports.EventStreamPort
 import com.abaddon83.vertx.eventStore.ports.OutcomeDetail
 import com.abaddon83.vertx.eventStore.ports.RepositoryPort
-import io.vertx.core.logging.LoggerFactory
+import org.slf4j.LoggerFactory
 
 typealias CmdResult = Validated<EventError, OutcomeDetail>
 
 
 data class CommandMsg(val command: Command, val response: CmdResult) // a command with a result
-
 
 class CommandHandler(
     private val repository: RepositoryPort,

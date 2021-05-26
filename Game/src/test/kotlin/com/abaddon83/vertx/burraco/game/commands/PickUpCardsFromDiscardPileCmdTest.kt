@@ -3,8 +3,7 @@ package com.abaddon83.vertx.burraco.game.commands
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
 import com.abaddon83.burraco.common.events.BurracoGameCreated
-import com.abaddon83.burraco.common.events.CardsDealtToPlayer
-import com.abaddon83.burraco.common.events.GameStarted
+import com.abaddon83.burraco.common.events.GameInitialised
 import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.vertx.burraco.game.models.BurracoDeck
 import com.abaddon83.vertx.burraco.game.models.BurracoGame
@@ -14,12 +13,13 @@ import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
-import org.junit.Before
-import org.junit.Test
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeEventBrokerProducer
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class PickUpCardsFromDiscardPileCmdTest {
 
-    @Before
+    @BeforeAll
     fun loadEvents(){
         eventStore.save(events)
     }
@@ -44,7 +44,7 @@ class PickUpCardsFromDiscardPileCmdTest {
     }
 
     val eventStore = EventStoreInMemoryAdapter()
-    private val commandHandler = CommandHandler(eventStore)
+    private val commandHandler = CommandHandler(eventStore, FakeEventBrokerProducer())
     val deck = BurracoDeck.create()
     val gameIdentity: GameIdentity = GameIdentity.create()
     val aggregate = BurracoGame(identity = gameIdentity)
@@ -67,19 +67,11 @@ class PickUpCardsFromDiscardPileCmdTest {
     val playersCards = mapOf<PlayerIdentity,List<Card>>(cardsPlayer1,cardsPlayer2)
 
     val events = listOf<Event>(
-            BurracoGameCreated(identity = gameIdentity, deck = deck.cards),
+            BurracoGameCreated(identity = gameIdentity),
             PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity1),
             PlayerAdded(identity = gameIdentity, playerIdentity = playerIdentity2),
-            CardsDealtToPlayer(identity = gameIdentity,player = playerIdentity1,cards = playersCards[playerIdentity1] ?: error("playerIdentity1 not found")),
-            CardsDealtToPlayer(identity = gameIdentity,player = playerIdentity2,cards = playersCards[playerIdentity2] ?: error("playerIdentity2 not found")),
-            GameStarted(
-                    identity = gameIdentity,
-
-                    deck = burracoDeckCards,
-                    mazzettoDeck1 = mazzettoDeck1Cards,
-                    mazzettoDeck2 = mazzettoDeck2Cards,
-                    discardPileCards = discardPileCards,
-                    playerTurn = playerIdentity1
-            )
+//            CardsDealtToPlayer(identity = gameIdentity,player = playerIdentity1,cards = playersCards[playerIdentity1] ?: error("playerIdentity1 not found")),
+//            CardsDealtToPlayer(identity = gameIdentity,player = playerIdentity2,cards = playersCards[playerIdentity2] ?: error("playerIdentity2 not found")),
+            GameInitialised(identity = gameIdentity, players = listOf(playerIdentity1,playerIdentity2)),
     )
 }

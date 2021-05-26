@@ -34,7 +34,7 @@ data class BurracoGameWaitingDealer private constructor(
 
     fun startGame(): BurracoGameExecutionTurnBeginning {
         check(areCardsDealt()){"the dealer has not finished dealing the cards"}
-        return applyAndQueueEvent(StartGame(identity))
+        return applyAndQueueEvent(GameStarted(identity))
     }
 
     fun dealPlayerCard(playerIdentity: PlayerIdentity, card: Card): BurracoGameWaitingDealer{
@@ -63,7 +63,7 @@ data class BurracoGameWaitingDealer private constructor(
             is CardAssignedToPlayerDeck -> apply(event)
             is CardAssignedToDeck -> apply(event)
             is CardAssignedToDiscardDeck -> apply(event)
-            is StartGame -> apply(event)
+            is GameStarted -> apply(event)
             else -> throw UnsupportedEventException(event::class.java)
         }
     }
@@ -110,7 +110,7 @@ data class BurracoGameWaitingDealer private constructor(
         return copy(discardCard = event.card)
     }
 
-    private fun apply(event: StartGame): BurracoGameExecutionTurnBeginning {
+    private fun apply(event: GameStarted): BurracoGameExecutionTurnBeginning {
         check(event.identity == identity) { "Game Identity mismatch" }
         check(discardCard != null) { "Game Identity mismatch" }
         return  BurracoGameExecutionTurnBeginning.create(

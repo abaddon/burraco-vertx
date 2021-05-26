@@ -8,6 +8,7 @@ import com.abaddon83.vertx.burraco.game.adapters.eventBrokerConsumerAdapter.conf
 import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducerAdapter.KafkaEventBrokerProducerAdapter
 import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducerAdapter.config.KafkaProducerConfig
 import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryAdapter
+import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.tcp.EventStoreTcpAdapter
 import com.abaddon83.vertx.burraco.game.ports.EventStorePort
 import io.vertx.core.*
 import org.slf4j.LoggerFactory
@@ -29,7 +30,7 @@ class MainVerticle : AbstractVerticle() {
     override fun start(startPromise: Promise<Void>?) {
         val httpConfig =  HttpConfig(SERVICE_NAME,HTTP_HOST,HTTP_PORT.toInt(),HTTP_ROOT)
         val kafkaProducerConfigConfig = KafkaProducerConfig()
-        val eventStore: EventStorePort = EventStoreInMemoryAdapter()
+        val eventStore: EventStorePort = EventStoreTcpAdapter(vertx)
         val eventBrokerProducer = KafkaEventBrokerProducerAdapter(vertx,kafkaProducerConfigConfig)
 
         val serverOpts = DeploymentOptions().setConfig(config())

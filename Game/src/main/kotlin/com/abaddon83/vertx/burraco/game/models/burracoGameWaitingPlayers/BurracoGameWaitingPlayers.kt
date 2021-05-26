@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.game.models.burracoGameWaitingPlayers
 
-import com.abaddon83.burraco.common.events.GameStarted
+import com.abaddon83.burraco.common.events.GameInitialised
 import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
@@ -34,7 +34,7 @@ data class BurracoGameWaitingPlayers constructor(
             warnMsg("Not enough players to initiate the game, ( Min: ${minPlayers})")
         }
 
-        return applyAndQueueEvent(GameStarted(
+        return applyAndQueueEvent(GameInitialised(
                 identity = identity(), players = players.map { it.identity() })
         )
     }
@@ -42,7 +42,7 @@ data class BurracoGameWaitingPlayers constructor(
     override fun applyEvent(event: Event): BurracoGame {
         log.info("apply event: ${event::class.simpleName.toString()}")
         return when (event) {
-            is GameStarted -> apply(event)
+            is GameInitialised -> apply(event)
             is PlayerAdded -> apply(event)
             else -> throw UnsupportedEventException(event::class.java)
         }
@@ -52,7 +52,7 @@ data class BurracoGameWaitingPlayers constructor(
         return copy(players = players.plus(BurracoPlayer(event.playerIdentity)))
     }
 
-    private fun apply(event: GameStarted): BurracoGameWaitingDealer {
+    private fun apply(event: GameInitialised): BurracoGameWaitingDealer {
         check(event.identity == identity){ "Game Identity mismatch" }
 
         val burracoGameWaitingDealer = BurracoGameWaitingDealer.create(

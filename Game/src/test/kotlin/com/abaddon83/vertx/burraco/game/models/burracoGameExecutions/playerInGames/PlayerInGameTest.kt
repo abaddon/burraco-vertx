@@ -8,7 +8,8 @@ import com.abaddon83.vertx.burraco.game.models.decks.ListCardsBuilder
 import com.abaddon83.burraco.common.models.valueObjects.Ranks
 import com.abaddon83.burraco.common.models.valueObjects.Suits
 import com.abaddon83.vertx.burraco.game.testUtils.PlayerInGameTestFactory
-import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
 class PlayerInGameTest {

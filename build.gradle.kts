@@ -19,8 +19,7 @@ val kotlinVersion = "1.5.10"
 val kotlinCoroutineVersion = "1.3.9"
 val kotlinxSerializationJson = "1.0.1"
 val vertxVersion = "4.0.3"
-val junitJupiterVersion = "5.6.0"
-val jUnitVersion = "4.12"
+val junitJupiterVersion = "5.7.0"
 val ktormVersion ="3.2.0"
 val slf4jVersion ="1.7.25"
 val mysqlConnectorVersion = "8.0.21"
@@ -58,6 +57,10 @@ subprojects {
         }
     }
 
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+
     dependencies {
         val implementation by configurations
         val testImplementation by configurations
@@ -70,8 +73,8 @@ subprojects {
         implementation("org.slf4j:slf4j-log4j12:$slf4jVersion")
 
         //Use the Kotlin JUnit integration.
-        testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-        testImplementation("junit:junit:$jUnitVersion") // JVM dependency
+        testImplementation("org.junit.jupiter:junit-jupiter:${junitJupiterVersion}") // JVM dependency
+        //testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinCoroutineVersion")
     }

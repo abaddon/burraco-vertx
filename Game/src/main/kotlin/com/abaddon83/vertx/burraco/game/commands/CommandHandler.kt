@@ -15,6 +15,7 @@ import com.abaddon83.vertx.burraco.game.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.game.models.burracoGameendeds.BurracoGameEnded
 import com.abaddon83.vertx.burraco.game.models.burracoWaitingDealer.BurracoGameWaitingDealer
 import com.abaddon83.vertx.burraco.game.ports.EventBrokerProducerPort
+import jdk.nashorn.internal.objects.Global
 import java.util.*
 
 typealias CmdResult = Validated<DomainError, DomainResult>
@@ -42,7 +43,7 @@ class CommandHandler(val eventStore: EventStorePort, private val eventBrokerProd
         return msg.copy(response = res)
     }
 
-    private fun processPoly(c: Command): EsScope {
+    private suspend fun processPoly(c: Command): EsScope {
 
         log.debug("Processing $c")
 
@@ -73,6 +74,7 @@ class CommandHandler(val eventStore: EventStorePort, private val eventBrokerProd
     }
 
     private fun execute(c: CreateNewBurracoGameCmd): EsScope = {
+
         val burracoGame = getEvents<BurracoGameEvent>(c.gameIdentity.convertTo().toString()).fold()
         when (burracoGame) {
             is EmptyBurracoGame -> {
