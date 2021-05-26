@@ -48,7 +48,7 @@ class KafkaEventBrokerConsumerAdapter(private val kafkaConfig: KafkaConsumerConf
                                 }
                                 result
                             }
-                            if(results.count{ it is Invalid } == 0){
+                            if(results.count{ it is Invalid<*> } == 0){
                                 consumer.commit()
                                     //.onSuccess { v -> log.info("Offset Committed") }
                                     .onFailure { cause ->  log.error("Commit failed",cause)}

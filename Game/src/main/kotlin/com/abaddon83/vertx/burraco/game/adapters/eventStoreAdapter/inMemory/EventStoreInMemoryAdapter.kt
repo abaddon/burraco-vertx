@@ -15,28 +15,28 @@ class EventStoreInMemoryAdapter : EventStorePort() {
         eventStore.save(events)
     }
 
-    override suspend fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
-        return eventStore.getEvents(pk).mapNotNull { event ->
-            when (event) {
-                is BurracoGameEvent -> event as BurracoGameEvent
-                else -> null
-            }
-        }.toList()
-
-    }
-
-//    override fun getBurracoGameEventsAsync(pk: String): Promise<List<BurracoGameEvent>> {
-//        val resultPromise: Promise<List<BurracoGameEvent>> = Promise.promise()
-//        val list: List<BurracoGameEvent>  = eventStore.getEvents(pk).mapNotNull { event ->
+//    override fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
+//        return eventStore.getEvents(pk).mapNotNull { event ->
 //            when (event) {
 //                is BurracoGameEvent -> event as BurracoGameEvent
 //                else -> null
 //            }
 //        }.toList()
-//        resultPromise.complete(list)
 //
-//        return resultPromise
 //    }
+
+    override fun getBurracoGameEvents(pk: String): Promise<List<BurracoGameEvent>> {
+        val resultPromise: Promise<List<BurracoGameEvent>> = Promise.promise()
+        val list: List<BurracoGameEvent>  = eventStore.getEvents(pk).mapNotNull { event ->
+            when (event) {
+                is BurracoGameEvent -> event as BurracoGameEvent
+                else -> null
+            }
+        }.toList()
+        resultPromise.complete(list)
+
+        return resultPromise
+    }
 }
 
 

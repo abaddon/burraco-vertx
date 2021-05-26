@@ -22,18 +22,19 @@ class NewGameRoutingHandler(private val controllerAdapter: CommandControllerPort
     override fun handle(routingContext: RoutingContext) {
         val params: RequestParameters = routingContext.get(ValidationHandler.REQUEST_CONTEXT_KEY)
         val bodyRequest = params.body()
-
-        when (val outcome: Outcome = controllerAdapter.createNewBurracoGame(GameIdentity.create())) {
-            is Valid ->
-                routingContext
-                .response()
-                .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                .setStatusCode(200)
-                .end(GameModule.from(outcome.value.game!!).toJson())
-            is Invalid -> routingContext.response()
-                .putHeader("content-type", "application/json; charset=utf-8")
-                .setStatusCode(400)
-                .end(Json.encodePrettily(ErrorMsgModule(code = 400, errorMessages = listOf(outcome.err.toMap()))))
+        controllerAdapter.createNewBurracoGame(GameIdentity.create()).future().onSuccess { outcome ->
+            when (outcome) {
+                is Valid ->
+                    routingContext
+                        .response()
+                        .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .setStatusCode(200)
+                        .end(GameModule.from(outcome.value.game!!).toJson())
+                is Invalid -> routingContext.response()
+                    .putHeader("content-type", "application/json; charset=utf-8")
+                    .setStatusCode(400)
+                    .end(Json.encodePrettily(ErrorMsgModule(code = 400, errorMessages = listOf(outcome.err.toMap()))))
+            }
         }
     }
 }

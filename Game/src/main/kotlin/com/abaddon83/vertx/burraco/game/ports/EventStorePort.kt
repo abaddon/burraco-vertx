@@ -9,16 +9,16 @@ abstract class EventStorePort {
 
     abstract fun save(events: Iterable<Event>)
 
-    inline fun <reified T: Event> getEvents(pk: String): List<T> =
-            when (T::class) {
-                BurracoGameEvent::class ->  getBurracoGameEvents(pk) as List<T>
-                else -> emptyList()
-            }
+    inline fun <reified T: Event> getEvents(pk: String): Promise<List<T>> =
+        when (T::class) {
+            BurracoGameEvent::class ->  getBurracoGameEvents(pk) as Promise<List<T>>
+            else -> Promise.promise()
+        }
 //    inline fun <reified T: Event> getEvents(pk: String): Promise<List<T>> =
 //        when (T::class) {
 //            BurracoGameEvent::class ->  getBurracoGameEvents(pk) as Promise<List<T>>
 //            else -> Promise.promise()
 //        }
 
-    abstract fun getBurracoGameEvents(pk: String): List<BurracoGameEvent>
+    abstract fun getBurracoGameEvents(pk: String): Promise<List<BurracoGameEvent>>
 }

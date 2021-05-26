@@ -71,12 +71,14 @@ data class ExtendEvent(
     fun toEvent(): Event = when (name) {
         "BurracoGameCreated" -> Json.decodeFromString<BurracoGameCreated>(jsonPayload)
         "PlayerAdded" -> Json.decodeFromString<PlayerAdded>(jsonPayload)
-        "GameStarted" -> Json.decodeFromString<GameInitialised>(jsonPayload)
+        "GameInitialised" -> Json.decodeFromString<GameInitialised>(jsonPayload)
 
         "CardAssignedToPlayer" -> Json.decodeFromString<CardAssignedToPlayer>(jsonPayload)
         "CardAssignedToPlayerDeck" -> Json.decodeFromString<CardAssignedToPlayerDeck>(jsonPayload)
         "CardAssignedToDeck" -> Json.decodeFromString<CardAssignedToDeck>(jsonPayload)
         "CardAssignedToDiscardDeck" -> Json.decodeFromString<CardAssignedToDiscardDeck>(jsonPayload)
+
+        "GameStarted" -> Json.decodeFromString<GameStarted>(jsonPayload)
 
         "CardPickedFromDeck" -> Json.decodeFromString<CardPickedFromDeck>(jsonPayload)
         "CardsPickedFromDiscardPile" -> Json.decodeFromString<CardsPickedFromDiscardPile>(jsonPayload)

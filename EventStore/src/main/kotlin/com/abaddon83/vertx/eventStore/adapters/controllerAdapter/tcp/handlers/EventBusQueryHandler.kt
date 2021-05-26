@@ -14,10 +14,7 @@ class EventBusQueryHandler(val controller: ControllerPort): Handler<Message<Json
     override fun handle(message: Message<JsonObject>?) {
         checkNotNull(message){"Event received null"}
         val jsonObject = message.body()
-        log.warn("Msg type ${jsonObject.getString("type")}")
         val events=QueryMessage(message.headers(), jsonObject)
-//        val event1 = JsonObject("{\"name\":\"BurracoGameCreated\",\"entityKey\":\"c3a7d61d-0d3f-4cf9-ba17-402da1436bec\",\"entityName\":\"BurracoGame\",\"instant\":\"2021-05-26T07:47:10.864033Z\",\"jsonPayload\":\"{\\\"entityName\\\":\\\"BurracoGame\\\",\\\"identity\\\":{\\\"id\\\":\\\"c3a7d61d-0d3f-4cf9-ba17-402da1436bec\\\"}}\"}")
-//        val event2 = JsonObject("{\"name\":\"BurracoGameCreated\",\"entityKey\":\"c3a7d61d-0d3f-4cf9-ba17-402da1436bec\",\"entityName\":\"BurracoGame\",\"instant\":\"2021-05-26T07:47:10.864033Z\",\"jsonPayload\":\"{\\\"entityName\\\":\\\"BurracoGame\\\",\\\"identity\\\":{\\\"id\\\":\\\"c3a7d61d-0d3f-4cf9-ba17-402da1436bec\\\"}}\"}")
         val jsonEvents = events.map { event ->  JsonObject.mapFrom(event) }.toList()
         val response = JsonObject.mapFrom(mapOf("events" to jsonEvents))
         message.reply(response)

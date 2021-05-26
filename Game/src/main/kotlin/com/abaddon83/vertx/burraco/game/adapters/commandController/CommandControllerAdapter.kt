@@ -10,39 +10,34 @@ import com.abaddon83.vertx.burraco.game.ports.CommandControllerPort
 import com.abaddon83.vertx.burraco.game.ports.EventBrokerProducerPort
 import com.abaddon83.vertx.burraco.game.ports.EventStorePort
 import com.abaddon83.vertx.burraco.game.ports.Outcome
+import io.vertx.core.Promise
 
 
 class CommandControllerAdapter(override val eventStore: EventStorePort, private val eventBrokerProducerPort: EventBrokerProducerPort<String, String>) : CommandControllerPort {
 
     val commandHandle: CommandHandler = CommandHandler(eventStore,eventBrokerProducerPort)
 
-    override fun createNewBurracoGame(gameIdentity: GameIdentity): Outcome {
+    override fun createNewBurracoGame(gameIdentity: GameIdentity): Promise<Outcome> {
         val cmdResult = commandHandle.handle(CreateNewBurracoGameCmd(gameIdentity))
         return CmdResultAdapter.toOutcome(cmdResult = cmdResult)
     }
 
-    override fun addPlayer(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
+    override fun addPlayer(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Promise<Outcome> {
         val cmdResult = commandHandle.handle(AddPlayerCmd(burracoGameIdentity, playerIdentity))
         return CmdResultAdapter.toOutcome(cmdResult = cmdResult)
     }
 
-    override fun initGame(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
+    override fun initGame(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Promise<Outcome> {
         val cmdResult = commandHandle.handle(InitGameCmd(burracoGameIdentity))
-        return when (cmdResult) {
-            is Valid -> Valid(cmdResult.value)
-            is Invalid -> cmdResult
-        }
+        return CmdResultAdapter.toOutcome(cmdResult = cmdResult)
     }
 
-    override fun startGame(burracoGameIdentity: GameIdentity): Outcome {
+    override fun startGame(burracoGameIdentity: GameIdentity): Promise<Outcome> {
         val cmdResult = commandHandle.handle(StartGameCmd(burracoGameIdentity))
-        return when (cmdResult) {
-            is Valid -> Valid(cmdResult.value)
-            is Invalid -> cmdResult
-        }
+        return CmdResultAdapter.toOutcome(cmdResult = cmdResult)
     }
 
-    override fun pickUpCardFromDeck(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
+    override fun pickUpCardFromDeck(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Promise<Outcome> {
         TODO("Not yet implemented")
     }
 
@@ -50,16 +45,20 @@ class CommandControllerAdapter(override val eventStore: EventStorePort, private 
         burracoGameIdentity: GameIdentity,
         playerIdentity: PlayerIdentity,
         cardToDrop: Card
-    ): Outcome {
+    ): Promise<Outcome> {
         TODO("Not yet implemented")
     }
 }
 
 object CmdResultAdapter {
-    fun toOutcome(cmdResult: CmdResult): Outcome {
-        return when (cmdResult) {
-            is Valid -> Valid(cmdResult.value)
-            is Invalid -> cmdResult
+    fun toOutcome(cmdResult: Promise<CmdResult>): Promise<Outcome> {
+        val promiseResult = Promise.promise<Outcome>()
+        cmdResult.future().onSuccess { result ->
+            when (result) {
+                is Valid -> promiseResult.complete(Valid(result.value))
+                is Invalid -> promiseResult.complete(result)
+            }
         }
+        return promiseResult
     }
 }

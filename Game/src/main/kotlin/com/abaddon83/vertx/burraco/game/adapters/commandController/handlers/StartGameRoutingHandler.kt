@@ -23,17 +23,19 @@ class StartGameRoutingHandler(private val controllerAdapter: CommandControllerPo
 
         val gameIdentity = GameIdentity.create(params.pathParameter("gameId").string)
         checkNotNull(gameIdentity){"gameIdentity is null"}
-
-        when (val outcome: Outcome = controllerAdapter.startGame(gameIdentity)) {
-            is Valid -> routingContext
-                .response()
-                .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                .setStatusCode(200)
-                .end(GameModule.from(outcome.value.game!!).toJson())
-            is Invalid -> routingContext.response()
-                .putHeader("content-type", "application/json; charset=utf-8")
-                .setStatusCode(400)
-                .end(Json.encodePrettily(ErrorMsgModule(code = 400, errorMessages = listOf(outcome.err.toMap()))))
+        controllerAdapter.startGame(gameIdentity).future().onSuccess { outcome ->
+            when (outcome) {
+                is Valid -> routingContext
+                    .response()
+                    .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                    .setStatusCode(200)
+                    .end(GameModule.from(outcome.value.game!!).toJson())
+                is Invalid -> routingContext.response()
+                    .putHeader("content-type", "application/json; charset=utf-8")
+                    .setStatusCode(400)
+                    .end(Json.encodePrettily(ErrorMsgModule(code = 400, errorMessages = listOf(outcome.err.toMap()))))
+            }
         }
+
     }
 }

@@ -61,11 +61,11 @@ class EventStoreTcpAdapter(val vertx: Vertx) : EventStorePort() {
 //
 //    }
 
-    override suspend fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
-            return getBurracoGameEventsAsync(pk).future().await()
-    }
+//    override suspend fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
+//            return getBurracoGameEventsAsync(pk).future().await()
+//    }
 
-    fun getBurracoGameEventsAsync(pk: String): Promise<List<BurracoGameEvent>> {
+    override fun getBurracoGameEvents(pk: String): Promise<List<BurracoGameEvent>> {
         val resultPromise: Promise<List<BurracoGameEvent>> = Promise.promise()
         val client = vertx.createNetClient()
         client.connect(SERVICE_TCP_PORT, SERVICE_TCP_ADDRESS) { conn ->
