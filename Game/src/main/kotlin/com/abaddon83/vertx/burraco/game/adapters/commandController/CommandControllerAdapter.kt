@@ -13,9 +13,9 @@ import com.abaddon83.vertx.burraco.game.ports.Outcome
 import io.vertx.core.Promise
 
 
-class CommandControllerAdapter(override val eventStore: EventStorePort, private val eventBrokerProducerPort: EventBrokerProducerPort<String, String>) : CommandControllerPort {
+class CommandControllerAdapter(override val eventStore: EventStorePort, private val eventBrokerProducer: EventBrokerProducerPort<String, String>) : CommandControllerPort {
 
-    val commandHandle: CommandHandler = CommandHandler(eventStore,eventBrokerProducerPort)
+    val commandHandle: CommandHandler = CommandHandler(eventStore,eventBrokerProducer)
 
     override fun createNewBurracoGame(gameIdentity: GameIdentity): Promise<Outcome> {
         val cmdResult = commandHandle.handle(CreateNewBurracoGameCmd(gameIdentity))

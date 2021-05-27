@@ -4,11 +4,9 @@ import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.vertx.burraco.game.ports.EventStorePort
 import io.vertx.core.Promise
-import io.vertx.kotlin.coroutines.await
-import kotlinx.coroutines.runBlocking
 
 //Test Purpose
-class EventStoreInMemoryAdapter : EventStorePort() {
+class EventStoreInMemoryBusAdapter : EventStorePort() {
 
     private  val eventStore: EventStoreInMemory =  EventStoreInMemory
     override fun save(events: Iterable<Event>) {

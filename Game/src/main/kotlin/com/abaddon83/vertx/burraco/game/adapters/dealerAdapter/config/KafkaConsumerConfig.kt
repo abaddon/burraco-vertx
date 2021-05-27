@@ -1,4 +1,4 @@
-package com.abaddon83.vertx.burraco.game.adapters.eventBrokerConsumerAdapter.config
+package com.abaddon83.vertx.burraco.game.adapters.dealerAdapter.config
 
 data class KafkaConsumerConfig(
     val bootstrapServer: String,

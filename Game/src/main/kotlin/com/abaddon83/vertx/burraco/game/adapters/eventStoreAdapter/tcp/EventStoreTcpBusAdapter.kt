@@ -13,7 +13,7 @@ import io.vertx.kotlin.coroutines.await
 
 import org.slf4j.LoggerFactory
 
-class EventStoreTcpAdapter(val vertx: Vertx) : EventStorePort() {
+class EventStoreTcpBusAdapter(val vertx: Vertx) : EventStorePort() {
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
     companion object {
@@ -56,14 +56,6 @@ class EventStoreTcpAdapter(val vertx: Vertx) : EventStorePort() {
             }
         }
     }
-
-//    override fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
-//
-//    }
-
-//    override suspend fun getBurracoGameEvents(pk: String): List<BurracoGameEvent> {
-//            return getBurracoGameEventsAsync(pk).future().await()
-//    }
 
     override fun getBurracoGameEvents(pk: String): Promise<List<BurracoGameEvent>> {
         val resultPromise: Promise<List<BurracoGameEvent>> = Promise.promise()

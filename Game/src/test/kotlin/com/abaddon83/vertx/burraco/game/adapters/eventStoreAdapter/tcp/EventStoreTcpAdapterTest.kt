@@ -25,7 +25,7 @@ internal class EventStoreTcpAdapterTest {
         @JvmStatic
         fun beforeAll(context: VertxTestContext) {
 
-            vertx.eventBus().consumer<JsonObject>(EventStoreTcpAdapter.SERVICE_BUS_ADDRESS) { handler ->
+            vertx.eventBus().consumer<JsonObject>(EventStoreTcpBusAdapter.SERVICE_BUS_ADDRESS) { handler ->
                 println("msg_received:" + handler.body().toString())
                 val jsonBody = handler.body()
                 val key = jsonBody.getString("entityKey")
@@ -56,7 +56,7 @@ internal class EventStoreTcpAdapterTest {
                     .addInboundPermitted(PermittedOptions())
                     .addOutboundPermitted(PermittedOptions())
             )
-            bridge.listen(EventStoreTcpAdapter.SERVICE_TCP_PORT) { res ->
+            bridge.listen(EventStoreTcpBusAdapter.SERVICE_TCP_PORT) { res ->
                 if (res.failed()) {
                     context.failNow(res.cause())
                 } else {
@@ -68,8 +68,8 @@ internal class EventStoreTcpAdapterTest {
 
     //@Test
     fun `testSave`(context: VertxTestContext) {
-        EventStoreTcpAdapter.SERVICE_BUS_ADDRESS
-        val eventStoreTcpAdapter = EventStoreTcpAdapter(vertx)
+        EventStoreTcpBusAdapter.SERVICE_BUS_ADDRESS
+        val eventStoreTcpAdapter = EventStoreTcpBusAdapter(vertx)
         val event = BurracoGameCreated(GameIdentity.create())
         eventStoreTcpAdapter.save(listOf(event))
         context.completeNow()
@@ -77,8 +77,8 @@ internal class EventStoreTcpAdapterTest {
 
     @Test
     fun `testQuery`(context: VertxTestContext) {
-        EventStoreTcpAdapter.SERVICE_BUS_ADDRESS
-        val eventStoreTcpAdapter = EventStoreTcpAdapter(vertx)
+        EventStoreTcpBusAdapter.SERVICE_BUS_ADDRESS
+        val eventStoreTcpAdapter = EventStoreTcpBusAdapter(vertx)
         val key = "c3a7d61d-0d3f-4cf9-ba17-402da1436bec"
 
         eventStoreTcpAdapter.getBurracoGameEvent(key).future()
