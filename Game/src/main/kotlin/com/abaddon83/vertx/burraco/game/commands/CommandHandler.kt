@@ -14,7 +14,7 @@ import com.abaddon83.utils.logs.WithLog
 import com.abaddon83.vertx.burraco.game.models.BurracoPlayer
 import com.abaddon83.vertx.burraco.game.models.burracoGameendeds.BurracoGameEnded
 import com.abaddon83.vertx.burraco.game.models.burracoWaitingDealer.BurracoGameWaitingDealer
-import com.abaddon83.vertx.burraco.game.ports.EventBrokerProducerPort
+import com.abaddon83.vertx.burraco.game.ports.GameEventsBrokerProducerPort
 import io.vertx.core.Promise
 import java.util.*
 
@@ -27,7 +27,7 @@ data class CommandMsg(val command: Command, val response: CmdResult) // a comman
 
 class CommandHandler(
     val eventStore: EventStorePort,
-    private val eventBrokerProducer: EventBrokerProducerPort<String, String>
+    private val gameEventsBrokerProducer: GameEventsBrokerProducerPort<String, String>
 ) : WithLog("CommandHandler") {
 
     private val TOPIC: String = "game"
@@ -35,7 +35,6 @@ class CommandHandler(
     fun handle(cmd: Command): Promise<CmdResult> {
         val resultPromise: Promise<CmdResult> = Promise.promise()
         CommandMsg(cmd, Valid(DomainResult(listOf(), null))).let { it ->
-            //executeCommand(it).response
             executeCommand(it).future()
                 .onSuccess { cmdMsg ->
                     resultPromise.complete(cmdMsg.response)
@@ -49,8 +48,13 @@ class CommandHandler(
         val res = processPoly(msg.command)//(eventStore)
         res.future().onSuccess { cmdResult ->
             if (cmdResult is Valid) {
-                eventStore.save(cmdResult.value.events)
-                publishEvent(cmdResult.value)
+                eventStore.save(cmdResult.value.events){ result ->
+                    if(result){
+                        publishEvent(cmdResult.value)
+                    }else{
+                        log.error("Events not published to the eventStore")
+                    }
+                }
             }
             resultPromise.complete(msg.copy(response = cmdResult))
         }
@@ -492,7 +496,7 @@ class CommandHandler(
     private fun publishEvent(domainResult: DomainResult) {
         val key = domainResult.game?.identity()?.id.toString()
         domainResult.events.forEach { event ->
-            eventBrokerProducer.publish(TOPIC, event)
+            gameEventsBrokerProducer.publish(TOPIC, event)
 //            val value =when(event){
 //                is BurracoGameEvent -> event.toJson()
 //                else -> null

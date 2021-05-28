@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.readModel.projections
 
 import com.abaddon83.burraco.common.events.BurracoGameCreated
+import com.abaddon83.burraco.common.events.CardAssignedToPlayer
 import com.abaddon83.burraco.common.events.GameInitialised
 import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.common.models.identities.GameIdentity
@@ -40,13 +41,14 @@ data class BurracoGame(
             is BurracoGameCreated -> apply(event)
             is PlayerAdded -> apply(event)
             is GameInitialised -> apply(event)
+            is CardAssignedToPlayer -> apply(event)
             else -> this
         }
     }
 
     private fun apply(e: BurracoGameCreated): BurracoGame{
         check(this.identity.isEmpty())
-        return BurracoGame(identity = e.identity, status = GameStatus.Waiting, players = listOf(), deck = e.deck)
+        return BurracoGame(identity = e.identity, status = GameStatus.Waiting, players = listOf(), deck = listOf())
     }
 
     private fun apply(e: PlayerAdded): BurracoGame{
@@ -57,18 +59,22 @@ data class BurracoGame(
     private fun apply(e: GameInitialised): BurracoGame{
         check(this.key == BurracoGameKey(e.identity)){" check failed, the key is not the same"}
         return copy(
-            status = GameStatus.Execution,
-            deck = e.deck,
-            playerTurn = e.playerTurn,
-            numMazzettoAvailable = 2,
-            discardPile = e.discardPileCards
+            status = GameStatus.Dealing
             )
+    }
+
+    private fun apply(e: CardAssignedToPlayer): BurracoGame{
+        check(this.key == BurracoGameKey(e.identity)){" check failed, the key is not the same"}
+        return copy(
+            status = GameStatus.Dealing
+        )
     }
 
 }
 
 enum class GameStatus{
     Waiting,
+    Dealing,
     Execution,
     Ended
 }

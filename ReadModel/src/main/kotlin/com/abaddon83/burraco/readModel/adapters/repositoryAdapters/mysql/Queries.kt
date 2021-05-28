@@ -3,13 +3,13 @@ package com.abaddon83.burraco.readModel.adapters.repositoryAdapters.mysql
 import com.abaddon83.burraco.common.models.identities.*
 import com.abaddon83.burraco.common.serializations.toJson
 import com.abaddon83.burraco.readModel.projections.*
-import io.vertx.core.logging.LoggerFactory
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.support.mysql.insertOrUpdate
+import org.slf4j.LoggerFactory
 
 object Queries {
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)

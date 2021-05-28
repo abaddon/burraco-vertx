@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.readModel.projections
 
-import com.abaddon83.burraco.common.events.CardsDealtToPlayer
+import com.abaddon83.burraco.common.events.CardAssignedToPlayer
 import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
@@ -9,7 +9,6 @@ import com.abaddon83.burraco.common.models.valueObjects.Scale
 import com.abaddon83.burraco.common.models.valueObjects.Tris
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.ddd.readModel.Projection
-import com.abaddon83.utils.ddd.readModel.ProjectionKey
 
 
 data class GamePlayer(
@@ -37,7 +36,7 @@ data class GamePlayer(
     override fun applyEvent(event: Event): GamePlayer{
         return when(event){
             is PlayerAdded -> apply(event)
-            is CardsDealtToPlayer -> apply(event)
+            is CardAssignedToPlayer -> apply(event)
             else -> this
         }
     }
@@ -49,10 +48,9 @@ data class GamePlayer(
         return GamePlayer(playerIdentity = e.playerIdentity, gameIdentity = e.identity)
     }
 
-    private fun apply(e: CardsDealtToPlayer): GamePlayer{
+    private fun apply(e: CardAssignedToPlayer): GamePlayer{
         check(this.key == GamePlayerKey(e.player,e.identity)){" check failed, the key is not the same"}
-        check(this.handCards.isEmpty()){"The handCards has to be empty"}
-        return copy(handCards = e.cards)
+        return copy(handCards = handCards.plus(e.card))
     }
 
 

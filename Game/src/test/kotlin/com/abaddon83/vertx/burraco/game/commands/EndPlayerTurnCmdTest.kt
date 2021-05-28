@@ -11,7 +11,7 @@ import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
-import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeEventBrokerProducer
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeGameEventsBrokerProducer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -42,7 +42,7 @@ class EndPlayerTurnCmdTest {
     }
 
     val eventStore = EventStoreInMemoryBusAdapter()
-    private val commandHandler = CommandHandler(eventStore,FakeEventBrokerProducer())
+    private val commandHandler = CommandHandler(eventStore,FakeGameEventsBrokerProducer())
     val deck = BurracoDeck.create()
     val gameIdentity: GameIdentity = GameIdentity.create()
     val aggregate = BurracoGame(identity = gameIdentity)

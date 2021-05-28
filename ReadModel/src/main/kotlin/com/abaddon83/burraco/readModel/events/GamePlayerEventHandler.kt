@@ -1,7 +1,5 @@
 package com.abaddon83.burraco.readModel.events
 
-import com.abaddon83.burraco.common.events.CardsDealtToPlayer
-import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import com.abaddon83.burraco.readModel.projections.GamePlayer
 import com.abaddon83.burraco.readModel.projections.GamePlayerKey
@@ -53,11 +51,12 @@ class GamePlayerEventHandler(val repository: RepositoryPort, event: Event) : Eve
     }
 
     override fun getKey(e: Event): GamePlayerKey?{
-        return when(e){
-            is PlayerAdded -> GamePlayerKey(e.playerIdentity,e.identity)
-            is CardsDealtToPlayer -> GamePlayerKey(e.player,e.identity)
-            else -> null
-        }
+//        return when(e){
+//            is PlayerAdded -> GamePlayerKey(e.playerIdentity,e.identity)
+//            is CardsDealtToPlayer -> GamePlayerKey(e.player,e.identity)
+//            else -> null
+//        }
+        TODO()
     }
 
 

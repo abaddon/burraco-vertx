@@ -1,6 +1,6 @@
 package com.abaddon83.vertx.burraco.dealer
 
-import com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerConsumerAdapter.KafkaEventBrokerConsumerAdapter
+import com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerConsumerAdapter.KafkaConsumerGameAdapter
 import com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerConsumerAdapter.config.KafkaConsumerConfig
 import com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerProducerAdapter.KafkaEventBrokerProducerAdapter
 import com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerProducerAdapter.config.KafkaProducerConfig
@@ -32,7 +32,7 @@ class MainVerticle : AbstractVerticle() {
 
         //list of verticle to deploy
         val allFutures: List<Future<Any>> = listOf(
-            deploy(KafkaEventBrokerConsumerAdapter(kafkaConfig = kafkaConfigConsumer ,eventBrokerProducerPort = kafkaEventBrokerProducer), serverOpts).future()
+            deploy(KafkaConsumerGameAdapter(kafkaConfig = kafkaConfigConsumer ,eventBrokerProducerPort = kafkaEventBrokerProducer), serverOpts).future()
         )
 
         CompositeFuture.all(allFutures).onComplete{

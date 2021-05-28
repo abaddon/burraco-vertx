@@ -65,12 +65,6 @@ tasks.withType<Test> {
 //    args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")//, "-javaagent=./quasar-core-0.8.0.jar")
 //}
 
-sourceSets {
-    main {
-        java.srcDir("src/core/java")
-    }
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8

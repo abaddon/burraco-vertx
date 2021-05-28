@@ -4,13 +4,15 @@ package com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerConsumerAdapter
 import com.abaddon83.burraco.common.events.ExtendEvent
 import com.abaddon83.burraco.common.events.GameInitialised
 import com.abaddon83.burraco.common.models.identities.GameIdentity
+import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.burraco.dealer.adapters.eventBrokerConsumerAdapter.config.KafkaConsumerConfig
+import com.abaddon83.vertx.burraco.dealer.commands.CmdResult
 import com.abaddon83.vertx.burraco.dealer.commands.CommandHandler
 import com.abaddon83.vertx.burraco.dealer.commands.DealCards
 import com.abaddon83.vertx.burraco.dealer.commands.DomainResult
-import com.abaddon83.vertx.burraco.dealer.ports.EventBrokerConsumerPort
+import com.abaddon83.vertx.burraco.dealer.ports.GamePort
 import com.abaddon83.vertx.burraco.dealer.ports.EventBrokerProducerPort
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Promise
@@ -19,14 +21,15 @@ import org.slf4j.LoggerFactory
 import java.time.Duration
 
 
-class KafkaEventBrokerConsumerAdapter(private val kafkaConfig: KafkaConsumerConfig, private val eventBrokerProducerPort: EventBrokerProducerPort<String,String>) : EventBrokerConsumerPort,
-    AbstractVerticle() {
+class KafkaConsumerGameAdapter(private val kafkaConfig: KafkaConsumerConfig, private val eventBrokerProducerPort: EventBrokerProducerPort<String,String>) : GamePort, AbstractVerticle() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
     private val TOPIC: String = "game"
     private val pollingDuration: Long = 100L
-    private val commandHandler = CommandHandler(eventBrokerProducerPort);
 
+    override val commandHandler: CommandHandler
+        get() = CommandHandler(eventBrokerProducerPort);
+    
     override fun start(startPromise: Promise<Void>) {
         val consumer: KafkaConsumer<String, String> = KafkaConsumer.create(vertx, kafkaConfig.consumerConfig());
         consumer
@@ -42,7 +45,7 @@ class KafkaEventBrokerConsumerAdapter(private val kafkaConfig: KafkaConsumerConf
                             val results = records.records().map { record  ->
                                 val event = ExtendEvent(record.value())
                                 val result = when(val ev = event.toEvent()){
-                                    is GameInitialised -> commandHandler.handle(DealCards(ev.identity,ev.players))
+                                    is GameInitialised -> dealCards(ev.identity,ev.players)
                                     else -> Valid(DomainResult(GameIdentity.create(), listOf()))
                                 }
                                 result
@@ -57,8 +60,10 @@ class KafkaEventBrokerConsumerAdapter(private val kafkaConfig: KafkaConsumerConf
                         }
                 }
             }
+    }
 
-
+    override fun dealCards(identity: GameIdentity, players: List<PlayerIdentity>) : CmdResult{
+        return commandHandler.handle(DealCards(identity,players))
     }
 
 }

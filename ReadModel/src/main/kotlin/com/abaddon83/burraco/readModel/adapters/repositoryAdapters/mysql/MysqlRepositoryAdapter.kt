@@ -5,17 +5,17 @@ import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import com.abaddon83.burraco.readModel.projections.BurracoGame
 import com.abaddon83.burraco.readModel.projections.GamePlayer
-import io.vertx.core.logging.LoggerFactory
 import org.ktorm.database.Database
 import org.ktorm.support.mysql.MySqlDialect
+import org.slf4j.LoggerFactory
 
 class MysqlRepositoryAdapter: RepositoryPort {
     companion object {
         private const val username = "root"
         private const val password = "root"
-        private const val host = "event.repository"
+        private const val host = "localhost"
         private const val port = "3306"
-        private const val database = "game"
+        private const val database = "readmodel_game"
 
         private val log = LoggerFactory.getLogger(this::class.qualifiedName)
     }
@@ -41,7 +41,6 @@ class MysqlRepositoryAdapter: RepositoryPort {
         }else{
             log.warn("${entity.javaClass.simpleName} not persisted")
         }
-
     }
 
     override fun findGame(gameIdentity: GameIdentity): BurracoGame {

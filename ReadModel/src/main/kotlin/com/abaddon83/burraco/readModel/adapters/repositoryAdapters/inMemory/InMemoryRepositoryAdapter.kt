@@ -23,7 +23,8 @@ class InMemoryRepositoryAdapter: RepositoryPort {
     }
 
     override fun findGame(gameIdentity: GameIdentity): BurracoGame {
-        return burracoGameStorage.getOrDefault(gameIdentity.id,BurracoGame())
+        //return burracoGameStorage.getOrDefault(gameIdentity.id,BurracoGame())
+        TODO("Not implemented")
     }
 
     override fun getAllBurracoGame(): List<BurracoGame> {

@@ -1,17 +1,25 @@
 package com.abaddon83.burraco.readModel
 
-import com.abaddon83.burraco.readModel.adapters.eventStreamAdapter.KafkaEventStreamVerticle
+import com.abaddon83.burraco.readModel.adapters.KafkaConsumerGameAdapter.KafkaConsumerGameAdapter
+import com.abaddon83.burraco.readModel.adapters.KafkaConsumerGameAdapter.config.KafkaConsumerConfig
+import com.abaddon83.burraco.readModel.adapters.readModelRestAdapter.RestApiVerticle
+import com.abaddon83.burraco.readModel.adapters.readModelRestAdapter.config.HttpConfig
+import com.abaddon83.burraco.readModel.adapters.repositoryAdapters.inMemory.InMemoryRepositoryAdapter
+import com.abaddon83.burraco.readModel.adapters.repositoryAdapters.mysql.MysqlRepositoryAdapter
+import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import io.vertx.core.*
-import io.vertx.core.logging.LoggerFactory
-import io.vertx.servicediscovery.Record
 import io.vertx.servicediscovery.ServiceDiscovery
 import io.vertx.servicediscovery.ServiceDiscoveryOptions
 
 class MainVerticle : AbstractVerticle() {
 
   companion object {
-    private val log = LoggerFactory.getLogger(this::class.qualifiedName)
+    @JvmStatic
+    fun main(args:Array<String>) {
+      Launcher.executeCommand("run", MainVerticle::class.java.name)
+    }
   }
+  private val log = org.slf4j.LoggerFactory.getLogger(this::class.qualifiedName)
 
   private val serviceDiscoveryOptions: ServiceDiscoveryOptions = ServiceDiscoveryOptions()
     .setAnnounceAddress("vertx.discovery.announce")
@@ -20,14 +28,17 @@ class MainVerticle : AbstractVerticle() {
   override fun start(startPromise: Promise<Void>?) {
     val discovery: ServiceDiscovery = ServiceDiscovery.create(vertx, serviceDiscoveryOptions)
     val serverOpts = DeploymentOptions().setConfig(config())
-
+    val kafkaConsumerConfig = KafkaConsumerConfig()
+    val repository: RepositoryPort = MysqlRepositoryAdapter()
 
     //list of verticle to deploy
     val allFutures: List<Future<Any>> = listOf(
-      deploy(KafkaEventStreamVerticle::class.qualifiedName!!, serverOpts).future()
+      deploy(KafkaConsumerGameAdapter(kafkaConsumerConfig, repository), serverOpts).future(),
+      //deploy(RestApiVerticle(HttpConfig()), serverOpts).future()
+
     )
 
-    CompositeFuture.all(allFutures).setHandler {
+    CompositeFuture.all(allFutures).onComplete{
       if (it.succeeded()) {
         //When all vertx are deployed to something
         startPromise?.complete()
@@ -38,42 +49,36 @@ class MainVerticle : AbstractVerticle() {
     }
   }
 
-  override fun stop(stopFuture: Future<Void>?) {
+  override fun stop(stopPromise: Promise<Void?>) {
     val ids = vertx.deploymentIDs()
-    for (s in ids) {
-      log.info(this.deploymentID())
+    log.info("Undeployed ok: {}",ids)
+    for (id in ids) {
+      vertx.undeploy(id) { res: AsyncResult<Void?> ->
+        if (res.succeeded()) {
+          log.info("Undeployed ok")
+          stopPromise.complete()
+        } else {
+          log.error("Undeploy failed!",res.cause())
+          stopPromise.fail(res.cause())
+        }
+      }
     }
+    //stop()
+    //stopPromise.complete()
   }
 
-  private fun deploy(name: String, opts: DeploymentOptions): Promise<Any> {
+  private fun deploy(verticle: Verticle, opts: DeploymentOptions): Promise<Any> {
     val done = Promise.promise<Any>()
 
-    vertx.deployVerticle(name, opts) {
+    vertx.deployVerticle(verticle, opts) {
       if (it.failed()) {
-        log.error("Failed to deploy verticle $name")
+        log.error("Failed to deploy verticle ${verticle::class.qualifiedName}")
         done.fail(it.cause())
       } else {
-        log.info("Deployed verticle $name")
+        log.info("Verticle deployed ${verticle::class.qualifiedName}")
         done.complete()
       }
     }
-
-    return done
-  }
-
-  private fun undeploy(name: String, opts: DeploymentOptions): Promise<Any> {
-    val done = Promise.promise<Any>()
-
-    vertx.deployVerticle(name, opts) {
-      if (it.failed()) {
-        log.error("Failed to deploy verticle $name")
-        done.fail(it.cause())
-      } else {
-        log.info("Deployed verticle $name")
-        done.complete()
-      }
-    }
-
     return done
   }
 

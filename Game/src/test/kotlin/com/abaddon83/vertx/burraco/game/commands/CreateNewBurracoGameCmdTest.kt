@@ -4,7 +4,7 @@ import com.abaddon83.utils.ddd.Event
 import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryBusAdapter
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.functionals.Valid
-import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeEventBrokerProducer
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeGameEventsBrokerProducer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -24,6 +24,6 @@ class CreateNewBurracoGameCmdTest {
     }
 
     val eventStore = EventStoreInMemoryBusAdapter()
-    private val commandHandler = CommandHandler(eventStore, FakeEventBrokerProducer())
+    private val commandHandler = CommandHandler(eventStore, FakeGameEventsBrokerProducer())
     val events = listOf<Event>()
 }

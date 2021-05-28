@@ -7,15 +7,15 @@ import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.burraco.game.commands.*
 import com.abaddon83.vertx.burraco.game.ports.CommandControllerPort
-import com.abaddon83.vertx.burraco.game.ports.EventBrokerProducerPort
+import com.abaddon83.vertx.burraco.game.ports.GameEventsBrokerProducerPort
 import com.abaddon83.vertx.burraco.game.ports.EventStorePort
 import com.abaddon83.vertx.burraco.game.ports.Outcome
 import io.vertx.core.Promise
 
 
-class CommandControllerAdapter(override val eventStore: EventStorePort, private val eventBrokerProducer: EventBrokerProducerPort<String, String>) : CommandControllerPort {
+class CommandControllerAdapter(override val eventStore: EventStorePort, private val gameEventsBrokerProducer: GameEventsBrokerProducerPort<String, String>) : CommandControllerPort {
 
-    val commandHandle: CommandHandler = CommandHandler(eventStore,eventBrokerProducer)
+    val commandHandle: CommandHandler = CommandHandler(eventStore,gameEventsBrokerProducer)
 
     override fun createNewBurracoGame(gameIdentity: GameIdentity): Promise<Outcome> {
         val cmdResult = commandHandle.handle(CreateNewBurracoGameCmd(gameIdentity))

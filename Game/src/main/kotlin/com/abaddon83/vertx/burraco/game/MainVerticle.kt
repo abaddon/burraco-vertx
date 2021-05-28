@@ -5,7 +5,7 @@ import com.abaddon83.vertx.burraco.game.adapters.commandController.RestApiVertic
 import com.abaddon83.vertx.burraco.game.adapters.commandController.config.HttpConfig
 import com.abaddon83.vertx.burraco.game.adapters.dealerAdapter.KafkaConsumerDealerAdapter
 import com.abaddon83.vertx.burraco.game.adapters.dealerAdapter.config.KafkaConsumerConfig
-import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducerAdapter.KafkaEventBrokerProducerAdapter
+import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducerAdapter.KafkaGameEventsBrokerProducerAdapter
 import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducerAdapter.config.KafkaProducerConfig
 import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.tcp.EventStoreTcpBusAdapter
 import com.abaddon83.vertx.burraco.game.ports.EventStorePort
@@ -30,7 +30,7 @@ class MainVerticle : AbstractVerticle() {
         val httpConfig =  HttpConfig(SERVICE_NAME,HTTP_HOST,HTTP_PORT.toInt(),HTTP_ROOT)
         val kafkaProducerConfigConfig = KafkaProducerConfig()
         val eventStore: EventStorePort = EventStoreTcpBusAdapter(vertx)
-        val eventBrokerProducer = KafkaEventBrokerProducerAdapter(vertx,kafkaProducerConfigConfig)
+        val eventBrokerProducer = KafkaGameEventsBrokerProducerAdapter(vertx,kafkaProducerConfigConfig)
 
         val serverOpts = DeploymentOptions().setConfig(config())
 
