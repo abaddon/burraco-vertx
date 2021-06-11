@@ -15,8 +15,10 @@ open class BurracoGame(override val identity: GameIdentity, className:String) : 
     override val maxPlayers: Int = 4
     override val minPlayers: Int = 2
     override val totalCardsRequired: Int = 108
+    override val numInitialPlayerCards: Int = 11
     override val players: List<Player> =listOf()
     override val deck: BurracoDeck = BurracoDeck.create(listOf())
+    protected val initialDiscardDeckSize: Int = 1
 
     object TYPE : AggregateType {
         override fun toString() = "BurracoGame"
@@ -45,5 +47,20 @@ open class BurracoGame(override val identity: GameIdentity, className:String) : 
     private fun apply(event: BurracoGameCreated):BurracoGameWaitingPlayers {
         //val burracoDeck = BurracoDeck.create(event.deck)
         return BurracoGameWaitingPlayers(event.identity, listOf()/*, burracoDeck*/)
+    }
+
+    protected fun sizePlayerDeck(playerDeckId: Int): Int{
+        return when(playerDeckId){
+            0 -> if (players.size > 2) 11 else 13
+            1 -> 11
+            else -> throw Exception("Player deck id has to be 0 or 1")
+        }
+    }
+
+    protected fun initialSizeDeck(): Int {
+        val playerDeck0Size = sizePlayerDeck(0)
+        val playerDeck1Size = sizePlayerDeck(1)
+        val playersCards = 11 * players.size
+        return totalCardsRequired - playerDeck0Size - playerDeck1Size - playersCards - initialDiscardDeckSize
     }
 }

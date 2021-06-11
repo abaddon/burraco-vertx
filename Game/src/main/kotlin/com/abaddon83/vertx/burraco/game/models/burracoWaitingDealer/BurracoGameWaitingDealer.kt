@@ -9,6 +9,7 @@ import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 import com.abaddon83.vertx.burraco.game.models.*
 import com.abaddon83.vertx.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
 import com.abaddon83.vertx.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
+import io.vertx.kotlin.ext.consul.checkListOf
 
 data class BurracoGameWaitingDealer private constructor(
     override val identity: GameIdentity,
@@ -38,11 +39,20 @@ data class BurracoGameWaitingDealer private constructor(
     }
 
     fun dealPlayerCard(playerIdentity: PlayerIdentity, card: Card): BurracoGameWaitingDealer{
-        check(players.count { it.identity() == playerIdentity } == 1){"The playerIdentity not found"}
+        val player = players.find { it.identity() == playerIdentity }
+        checkNotNull(player){"The playerIdentity not found"}
+        check(player.cards.size < numInitialPlayerCards){"The player has already enough card"}
         return applyAndQueueEvent(CardAssignedToPlayer(identity,playerIdentity,card))
     }
 
     fun dealPlayerDeckCard(playerDeckId: Int, card: Card): BurracoGameWaitingDealer{
+        check(playerDeckId in (0..1)){"Player Deck id not valid"}
+        val deckCards = when(playerDeckId){
+            0 -> playerDeck1.numCards()
+            1 -> playerDeck2.numCards()
+            else -> 100
+        }
+        check(deckCards < sizePlayerDeck(playerDeckId)){"The player deck has already enough card"}
         return applyAndQueueEvent(CardAssignedToPlayerDeck(identity, playerDeckId, card))
     }
 
@@ -52,7 +62,7 @@ data class BurracoGameWaitingDealer private constructor(
     }
 
     fun dealDeckCard(card: Card): BurracoGameWaitingDealer{
-        //check(discardCard == null){"Discard card already defined"}
+        check(deck.numCards() < initialSizeDeck()){"The Deck has already enough card"}
         return applyAndQueueEvent(CardAssignedToDeck(identity, card))
     }
 

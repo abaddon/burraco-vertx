@@ -5,25 +5,36 @@ import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.Even
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.vertx.burraco.game.adapters.eventBrokerProducer.FakeGameEventsBrokerProducer
+import io.vertx.core.Vertx
+import io.vertx.junit5.VertxTestContext
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 
 class CreateNewBurracoGameCmdTest {
 
-    @BeforeAll
-    fun loadEvents(){
-        eventStore.save(events)
+    companion object {
+        private val eventStore = EventStoreInMemoryBusAdapter()
+        private val commandHandler = CommandHandler(eventStore, FakeGameEventsBrokerProducer())
+        private val events = listOf<Event>()
+
+        @BeforeAll
+        @JvmStatic
+        fun beforeAll() {
+            eventStore.save(events) {}
+        }
     }
 
     @Test
-    fun `Given a command to create a new game, when I execute the command, then a new game is created`(){
+    fun `Given a valid command to create a new game, when I execute the command, then a new game is created`(){
         val gameIdentity = GameIdentity.create()
         val command = CreateNewBurracoGameCmd(gameIdentity = gameIdentity)
-        assert(commandHandler.handle(command) is Valid)
+        commandHandler.handle(command).future()
+            .onSuccess { cmdResult ->
+                assert(cmdResult is Valid)
+            }
+            .onFailure { assert(false) }
     }
 
-    val eventStore = EventStoreInMemoryBusAdapter()
-    private val commandHandler = CommandHandler(eventStore, FakeGameEventsBrokerProducer())
-    val events = listOf<Event>()
+
 }

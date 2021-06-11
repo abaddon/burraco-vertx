@@ -6,6 +6,7 @@ import com.abaddon83.vertx.burraco.game.models.players.Player
 interface Game{
     val maxPlayers: Int
     val minPlayers: Int
+    val numInitialPlayerCards: Int
     val totalCardsRequired: Int
     val players: List<Player>
     val deck: Deck

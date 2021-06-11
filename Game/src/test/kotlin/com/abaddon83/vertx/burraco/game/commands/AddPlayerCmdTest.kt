@@ -13,46 +13,68 @@ import com.abaddon83.vertx.burraco.game.adapters.eventStoreAdapter.inMemory.Even
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 
 class AddPlayerCmdTest {
 
-    @BeforeAll
-    fun loadEvents(){
-        eventStore.save(events)
+    companion object {
+        private val eventStore = EventStoreInMemoryBusAdapter()
+        private val commandHandler = CommandHandler(eventStore, FakeGameEventsBrokerProducer())
+        private val gameIdentity: GameIdentity = GameIdentity.create()
+        private val events = listOf<Event>(
+            BurracoGameCreated(identity = gameIdentity)
+        )
+
+        @BeforeAll
+        @JvmStatic
+        fun beforeAll() {
+            eventStore.save(events) {}
+        }
     }
 
     @Test
     fun `Given a command to add a player to the game, when I execute the command, then the player is added`(){
         val command = AddPlayerCmd(gameIdentity = gameIdentity, playerIdentityToAdd = PlayerIdentity.create())
-        assert(commandHandler.handle(command) is Valid)
+        commandHandler.handle(command).future()
+            .onSuccess { assert(it is Valid) }
+            .onFailure { assert(false) }
+    }
+
+    @Test
+    fun `Given two commands to add a player to the game, when I execute the commands, then the players are added`(){
+        val command = AddPlayerCmd(gameIdentity = gameIdentity, playerIdentityToAdd = PlayerIdentity.create())
+        commandHandler.handle(command).future()
+            .onSuccess { assert(it is Valid) }
+            .onFailure { assert(false) }
+
         val command2 = AddPlayerCmd(gameIdentity = gameIdentity, playerIdentityToAdd = PlayerIdentity.create())
-        assert(commandHandler.handle(command2) is Valid)
+        commandHandler.handle(command2).future()
+            .onSuccess { assert(it is Valid) }
+            .onFailure { assert(false) }
     }
 
     @Test
     fun `Given a command to add 2 time the same player to the game, when I execute the second command, then I receive an error`(){
         val playerIdentity = PlayerIdentity.create();
         val command = AddPlayerCmd(gameIdentity = gameIdentity, playerIdentityToAdd = playerIdentity)
-        assert(commandHandler.handle(command) is Valid)
+
+        commandHandler.handle(command).future()
+            .onSuccess { assert(it is Valid) }
+            .onFailure { assert(false) }
+
         val command2 = AddPlayerCmd(gameIdentity = gameIdentity, playerIdentityToAdd = playerIdentity)
-        val cmdResult: CmdResult=commandHandler.handle(command2)
-        assert(cmdResult is Invalid)
-        assertEquals("The player PlayerIdentity(id=${playerIdentity.convertTo().toString()}) is already a player of game GameIdentity(id=${gameIdentity.convertTo().toString()})",(cmdResult as Invalid).err.msg)
+        commandHandler.handle(command2).future()
+            .onSuccess { assert(it is Invalid) }
+            .onFailure { assert(false) }
     }
 
     @Test
     fun `Given a command to execute on a burraco game that doesn't exist, when I execute the command, then I receive an error`(){
         val command = AddPlayerCmd(gameIdentity = GameIdentity.create(), playerIdentityToAdd = PlayerIdentity.create())
-        assert(commandHandler.handle(command) is Invalid)
+        commandHandler.handle(command).future()
+            .onSuccess { assert(it is Invalid) }
+            .onFailure { assert(false) }
     }
-
-    val eventStore = EventStoreInMemoryBusAdapter()
-    val gameIdentity: GameIdentity = GameIdentity.create()
-    val aggregate = BurracoGame(identity = gameIdentity)
-    val deck = BurracoDeck.create()
-    val events = listOf<Event>(
-            BurracoGameCreated(identity = gameIdentity)
-    )
-    private val commandHandler = CommandHandler(eventStore, FakeGameEventsBrokerProducer())
 
 }

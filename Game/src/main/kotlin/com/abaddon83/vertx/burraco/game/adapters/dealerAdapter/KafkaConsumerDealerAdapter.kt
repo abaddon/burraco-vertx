@@ -6,9 +6,7 @@ import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.vertx.burraco.game.adapters.dealerAdapter.config.KafkaConsumerConfig
 import com.abaddon83.vertx.burraco.game.commands.*
-import com.abaddon83.vertx.burraco.game.ports.DealerPort
-import com.abaddon83.vertx.burraco.game.ports.GameEventsBrokerProducerPort
-import com.abaddon83.vertx.burraco.game.ports.EventStorePort
+import com.abaddon83.vertx.burraco.game.ports.*
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.CompositeFuture
 import io.vertx.core.Promise
@@ -18,11 +16,11 @@ import java.time.Duration
 
 class KafkaConsumerDealerAdapter(
     private val kafkaConfig: KafkaConsumerConfig,
-    private val eventStore: EventStorePort,
+    override val eventStore: EventStorePort,
     private val gameEventsBrokerProducer: GameEventsBrokerProducerPort<String, String>
-) : DealerPort,
+) : CommandControllerPort,
     AbstractVerticle() {
-    override val commandHandler: CommandHandler
+    val commandHandler: CommandHandler
         get() = CommandHandler(eventStore,gameEventsBrokerProducer)
 
     private val log = LoggerFactory.getLogger(this::class.java)

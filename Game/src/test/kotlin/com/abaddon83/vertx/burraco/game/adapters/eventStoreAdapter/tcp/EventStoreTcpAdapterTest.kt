@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(VertxExtension::class)
 internal class EventStoreTcpAdapterTest {
-    //private val vertx: Vertx = Vertx.vertx();
 
     companion object {
         private val vertx: Vertx = Vertx.vertx();
@@ -25,7 +24,7 @@ internal class EventStoreTcpAdapterTest {
         @JvmStatic
         fun beforeAll(context: VertxTestContext) {
 
-            vertx.eventBus().consumer<JsonObject>(EventStoreTcpBusAdapter.SERVICE_BUS_ADDRESS) { handler ->
+            vertx.eventBus().consumer<JsonObject>(EventStoreTcpBusAdapter.SERVICE_ADDRESS_PUBLISH) { handler ->
                 println("msg_received:" + handler.body().toString())
                 val jsonBody = handler.body()
                 val key = jsonBody.getString("entityKey")
@@ -67,25 +66,25 @@ internal class EventStoreTcpAdapterTest {
     }
 
     //@Test
-    fun `testSave`(context: VertxTestContext) {
-        EventStoreTcpBusAdapter.SERVICE_BUS_ADDRESS
-        val eventStoreTcpAdapter = EventStoreTcpBusAdapter(vertx)
-        val event = BurracoGameCreated(GameIdentity.create())
-        eventStoreTcpAdapter.save(listOf(event))
-        context.completeNow()
-    }
+//    fun `testSave`(context: VertxTestContext) {
+//        EventStoreTcpBusAdapter.SERVICE_ADDRESS_PUBLISH
+//        val eventStoreTcpAdapter = EventStoreTcpBusAdapter(vertx)
+//        val event = BurracoGameCreated(GameIdentity.create())
+//        eventStoreTcpAdapter.save(listOf(event))
+//        context.completeNow()
+//    }
 
-    @Test
-    fun `testQuery`(context: VertxTestContext) {
-        EventStoreTcpBusAdapter.SERVICE_BUS_ADDRESS
-        val eventStoreTcpAdapter = EventStoreTcpBusAdapter(vertx)
-        val key = "c3a7d61d-0d3f-4cf9-ba17-402da1436bec"
-
-        eventStoreTcpAdapter.getBurracoGameEvent(key).future()
-            .onSuccess { list ->
-                assertEquals(2, list.size)
-                context.completeNow()
-            }
-            .onFailure(context::failNow)
-    }
+    //@Test
+//    fun `testQuery`(context: VertxTestContext) {
+//        EventStoreTcpBusAdapter.SERVICE_ADDRESS_QUERY
+//        val eventStoreTcpAdapter = EventStoreTcpBusAdapter(vertx)
+//        val key = "c3a7d61d-0d3f-4cf9-ba17-402da1436bec"
+//
+//        eventStoreTcpAdapter.getBurracoGameEvent(key)
+//            .onSuccess { list ->
+//                assertEquals(2, list.size)
+//                context.completeNow()
+//            }
+//            .onFailure(context::failNow)
+//    }
 }
