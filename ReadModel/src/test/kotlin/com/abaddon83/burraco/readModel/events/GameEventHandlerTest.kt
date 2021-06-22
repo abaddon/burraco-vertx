@@ -5,7 +5,7 @@ import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.readModel.adapters.repositoryAdapters.inMemory.InMemoryRepositoryAdapter
 import com.abaddon83.burraco.readModel.ports.RepositoryPort
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class GameEventHandlerTest {
 
@@ -16,16 +16,16 @@ class GameEventHandlerTest {
 //        override fun io(): CoroutineDispatcher = coroutinesTestRule.testDispatcher
 //    }
 
-    @Test
-    fun `given x y z`() {
-        val event = BurracoGameCreated(GameIdentity.create(), listOf())
-
-        val handler = GameEventHandler(repository,event)
-        runBlockingTest{
-            handler.join()
-        }
-
-    }
+    //@Test
+//    fun `given x y z`() {
+//        val event = BurracoGameCreated(GameIdentity.create(), listOf())
+//
+//        val handler = GameEventHandler(repository,event)
+//        runBlockingTest{
+//            handler.join()
+//        }
+//
+//    }
 
 
 }

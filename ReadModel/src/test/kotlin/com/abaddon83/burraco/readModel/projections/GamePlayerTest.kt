@@ -3,7 +3,7 @@ package com.abaddon83.burraco.readModel.projections
 import com.abaddon83.burraco.common.events.PlayerAdded
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 internal class GamePlayerTest {
