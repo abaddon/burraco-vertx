@@ -29,10 +29,10 @@ dependencies {
     //Vertx
     implementation("io.vertx:vertx-config:$vertxVersion")
     implementation("io.vertx:vertx-web-openapi:$vertxVersion")
-    implementation("io.vertx:vertx-service-discovery:$vertxVersion")
+    //implementation("io.vertx:vertx-service-discovery:$vertxVersion")
     implementation("io.vertx:vertx-lang-kotlin:$vertxVersion")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion") //?
-    implementation("io.vertx:vertx-hazelcast:$vertxVersion")
+    //implementation("io.vertx:vertx-hazelcast:$vertxVersion")
     implementation("io.vertx:vertx-kafka-client:$vertxVersion")
     implementation("io.vertx:vertx-tcp-eventbus-bridge:$vertxVersion")
 

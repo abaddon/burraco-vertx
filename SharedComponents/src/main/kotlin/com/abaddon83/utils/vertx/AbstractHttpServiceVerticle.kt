@@ -6,13 +6,9 @@ import io.vertx.core.Promise
 import io.vertx.core.http.HttpServer
 import io.vertx.core.http.HttpServerResponse
 import io.vertx.core.json.JsonObject
-import io.vertx.kotlin.coroutines.CoroutineVerticle
-import io.vertx.kotlin.coroutines.awaitResult
-import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.servicediscovery.Record
 import io.vertx.servicediscovery.ServiceDiscovery
 import io.vertx.servicediscovery.types.HttpEndpoint
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 abstract class AbstractHttpServiceVerticle : AbstractVerticle() {
@@ -32,9 +28,6 @@ abstract class AbstractHttpServiceVerticle : AbstractVerticle() {
     override fun stop(endPromise: Promise<Void>?) {
         log.info("Stopping " + this::class.qualifiedName)
 
-        // Shutting the server AND waiting for the answer should prevents a
-        //  java.net.BindException: Address already in use with gradle (but does not)
-        //launch(vertx.dispatcher()) {
         CompositeFuture.all(unpublishRecord().future(), shutdownServer().future()).onComplete {
             if(it.succeeded()) {
                 log.info("Stopped " + this::class.qualifiedName)
