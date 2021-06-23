@@ -2,11 +2,11 @@ package com.abaddon83.burraco.readModel.projections
 
 import com.abaddon83.burraco.common.events.CardAssignedToPlayer
 import com.abaddon83.burraco.common.events.PlayerAdded
+import com.abaddon83.burraco.common.models.entities.BurracoScale
+import com.abaddon83.burraco.common.models.entities.BurracoTris
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.common.models.valueObjects.Scale
-import com.abaddon83.burraco.common.models.valueObjects.Tris
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.ddd.readModel.Projection
 
@@ -16,10 +16,10 @@ data class GamePlayer(
     val identity: PlayerIdentity,
     val gameIdentity: GameIdentity,
     val handCards: List<Card> = listOf(),
-    val tris: List<Tris> = listOf(),
-    val scale: List<Scale> = listOf(),
+    val tris: List<BurracoTris> = listOf(),
+    val scale: List<BurracoScale> = listOf(),
 
-): Projection<GamePlayer> {
+    ): Projection<GamePlayer> {
 
     constructor(): this(
         key = GamePlayerKey(PlayerIdentity(),GameIdentity()),

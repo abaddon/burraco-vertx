@@ -2,9 +2,6 @@ package com.abaddon83.burraco.common.serializations
 
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.common.models.valueObjects.Scale
-import com.abaddon83.burraco.common.models.valueObjects.Tris
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

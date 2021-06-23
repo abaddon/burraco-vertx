@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 import java.lang.Exception
 
 object Ranks {
-    val noFiguresRanks: List<Rank> = listOf(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)
+    private val noFiguresRanks: List<Rank> = listOf(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)
     val fullRanks: List<Rank> = listOf(noFiguresRanks, listOf(Jack, Queen, King)).flatten()
 
     fun valueOf(value: String): Rank =
-        when (val rank = fullRanks.plus(Jolly).find { it.javaClass.simpleName.toLowerCase() == value.toLowerCase() }) {
+        when (val rank = fullRanks.plus(Jolly).find { it.label.equals(value, ignoreCase = true) }) {
             is Rank -> rank
             else -> throw Exception("$value is not a valid Rank")
         }

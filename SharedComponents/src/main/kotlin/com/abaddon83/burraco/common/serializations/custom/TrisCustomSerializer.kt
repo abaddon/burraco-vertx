@@ -1,20 +1,5 @@
 package com.abaddon83.burraco.common.serializations.custom
 
-import com.abaddon83.burraco.common.models.identities.BurracoIdentity
-import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.common.models.valueObjects.Ranks
-import com.abaddon83.burraco.common.models.valueObjects.Suits
-import com.abaddon83.burraco.common.models.valueObjects.Tris
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.*
-
 //@Serializer(forClass = Tris::class)
 //class TrisCustomSerializer : KSerializer<Tris> {
 //    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Tris", PrimitiveKind.STRING)

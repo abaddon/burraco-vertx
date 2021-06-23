@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.Encoder
 class RankCustomSerializer : KSerializer<Ranks.Rank> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Rank", PrimitiveKind.STRING)
     override fun serialize(encoder: Encoder, value: Ranks.Rank) {
-        encoder.encodeString(value.javaClass.simpleName)
+        encoder.encodeString(value.label)
     }
     override fun deserialize(decoder: Decoder): Ranks.Rank {
         return Ranks.valueOf(decoder.decodeString())

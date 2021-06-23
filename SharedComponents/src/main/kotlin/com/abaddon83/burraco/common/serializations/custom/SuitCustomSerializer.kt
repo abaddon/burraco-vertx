@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.Encoder
 class SuitCustomSerializer : KSerializer<Suits.Suit> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Rank", PrimitiveKind.STRING)
     override fun serialize(encoder: Encoder, value: Suits.Suit) {
-        encoder.encodeString(value.javaClass.simpleName)
+        encoder.encodeString(value.label)
     }
     override fun deserialize(decoder: Decoder): Suits.Suit {
         return Suits.valueOf(decoder.decodeString())
