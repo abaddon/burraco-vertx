@@ -4,7 +4,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
-import java.lang.Exception
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 

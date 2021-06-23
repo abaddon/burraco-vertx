@@ -2,11 +2,8 @@ package com.abaddon83.burraco.game
 
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.game.adapters.commandController.RestApiVerticle
-import com.abaddon83.burraco.game.adapters.commandController.config.HttpConfig
 import com.abaddon83.burraco.game.adapters.dealerAdapter.KafkaConsumerDealerAdapter
-import com.abaddon83.burraco.game.adapters.dealerAdapter.config.KafkaConsumerConfig
 import com.abaddon83.burraco.game.adapters.eventBrokerProducerAdapter.KafkaGameEventsBrokerProducerAdapter
-import com.abaddon83.burraco.game.adapters.eventBrokerProducerAdapter.config.KafkaProducerConfig
 import com.abaddon83.burraco.game.adapters.eventStoreAdapter.tcp.EventStoreTcpBusAdapter
 import com.abaddon83.burraco.game.ports.EventStorePort
 import io.vertx.core.*
@@ -21,23 +18,19 @@ class MainVerticle : AbstractVerticle() {
     }
 
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
-    private val HTTP_HOST = "localhost"
-    private val HTTP_PORT = "8080"
-    private val HTTP_ROOT = "/"
-    private val SERVICE_NAME = "command-api-service"
 
     override fun start(startPromise: Promise<Void>?) {
-        val httpConfig =  HttpConfig(SERVICE_NAME,HTTP_HOST,HTTP_PORT.toInt(),HTTP_ROOT)
-        val kafkaProducerConfigConfig = KafkaProducerConfig()
-        val eventStore: EventStorePort = EventStoreTcpBusAdapter(vertx)
+        val serviceConfig =  ServiceConfig.load()
+        val kafkaProducerConfigConfig = serviceConfig.kafkaGameProducer
+        val eventStore: EventStorePort = EventStoreTcpBusAdapter(vertx, serviceConfig.eventStoreTcpBus)
         val eventBrokerProducer = KafkaGameEventsBrokerProducerAdapter(vertx,kafkaProducerConfigConfig)
 
         val serverOpts = DeploymentOptions().setConfig(config())
 
         //list of verticle to deploy
         val allFutures: List<Future<Any>> = listOf(
-            deploy(RestApiVerticle(httpConfig, CommandControllerAdapter(eventStore,eventBrokerProducer)), serverOpts).future(),
-            deploy(KafkaConsumerDealerAdapter(KafkaConsumerConfig(),eventStore,eventBrokerProducer),serverOpts).future()
+            deploy(RestApiVerticle(serviceConfig.restApi, CommandControllerAdapter(eventStore,eventBrokerProducer)), serverOpts).future(),
+            deploy(KafkaConsumerDealerAdapter(serviceConfig.kafkaDealerConsumer,eventStore,eventBrokerProducer),serverOpts).future()
         )
 
         CompositeFuture.all(allFutures).onComplete{
@@ -47,6 +40,7 @@ class MainVerticle : AbstractVerticle() {
                 log.info("IDS: ${vertx.deploymentIDs()}")
                 startPromise?.complete()
             } else {
+                log.error(it.cause().message,it.cause())
                 startPromise?.fail(it.cause())
             }
         }

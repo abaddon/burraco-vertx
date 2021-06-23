@@ -1,9 +1,7 @@
 package com.abaddon83.burraco.common.models.valueObjects
 
-import com.abaddon83.burraco.common.serializations.custom.RankCustomSerializer
+import com.abaddon83.burraco.common.serializations.RankCustomSerializer
 import kotlinx.serialization.Serializable
-
-import java.lang.Exception
 
 object Ranks {
     private val noFiguresRanks: List<Rank> = listOf(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten)

@@ -4,43 +4,44 @@ package com.abaddon83.burraco.common.models.identities
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class GameIdentityTest {
+
     @Test
-    fun `new GameIdentity using UUID`(){
+    fun `Given nothing when I create a new GameIdentity then I'll have a new GameIdentity with a random key`(){
+        Assertions.assertNotNull(GameIdentity.create())
+    }
+
+    @Test
+    fun `Given a UUID, when I create a new GameIdentity using it then I have a GameIdentity with the same UUID key`(){
         val expectedUUID = UUID.randomUUID()
         val identity = GameIdentity(expectedUUID)
         assert(identity.convertTo() == expectedUUID)
     }
+
     @Test
-    fun `new GameIdentity using a valid UUID String`(){
-        val expectedUUID = UUID.randomUUID()
-        val identity = GameIdentity.create(expectedUUID.toString())!!
-        assert(identity.convertTo() == expectedUUID)
+    fun `Given a UUID string, when I create a new GameIdentity using it then I have a GameIdentity with the same UUID key`(){
+        val expectedUUIDString = UUID.randomUUID().toString()
+        val identity = GameIdentity.create(expectedUUIDString)!!
+        assert(identity.convertTo().toString() == expectedUUIDString)
     }
     @Test
-    fun `new GameIdentity using a not valid UUID String should fail`(){
-
-        assertNull(GameIdentity.create("fake-UUID"),"the GameIdentity should be null")
-
-        }
+    fun `Given a not valid UUID string, when I create a new GameIdentity using it then I receive a null GameIdentity`(){
+        Assertions.assertNull(GameIdentity.create("fake-UUID"), "the GameIdentity should be null")
+    }
 
     @Test
-    fun `given a GameIdentity when I serialise it, then I should have the same GameIdentity deserialized`() {
-        val expectedUUID = UUID.randomUUID()
-        val identity = GameIdentity.create(expectedUUID.toString())!!
+    fun `Given a GameIdentity when I serialise and deserialize it, then I should have the same GameIdentity deserialized`() {
 
-        val jsonString = Json.encodeToString(identity);
-        val deserializedTris = Json.decodeFromString<GameIdentity>(jsonString)
+        val expectedIdentity = GameIdentity.create(UUID.randomUUID().toString())!!
 
+        val jsonString = Json.encodeToString(expectedIdentity);
+        val deserializedIdentity = Json.decodeFromString<GameIdentity>(jsonString)
 
-//        val jsonString = Json.encodeToString(identity);
-//        val deserializedTris = Json.decodeFromString<GameIdentity>(jsonString)
-        assertEquals(identity.id,deserializedTris.id)
+        Assertions.assertEquals(expectedIdentity, deserializedIdentity)
 
     }
 }

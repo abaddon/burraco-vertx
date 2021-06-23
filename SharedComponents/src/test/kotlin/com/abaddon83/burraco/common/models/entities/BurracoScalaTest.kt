@@ -3,7 +3,11 @@ package com.abaddon83.burraco.common.models.entities
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.valueObjects.Ranks
 import com.abaddon83.burraco.common.models.valueObjects.Suits
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class BurracoScalaTest {
@@ -405,23 +409,50 @@ class BurracoScalaTest {
         }
     }
 
+    @Test
+    fun `given a scale with 5 cards, when I ask the numCards then the answer is 5`() {
+        val cards = listOf(
+            Card(Suits.Heart, Ranks.King),
+            Card(Suits.Heart, Ranks.Queen),
+            Card(Suits.Heart, Ranks.Jack),
+            Card(Suits.Heart, Ranks.Ten),
+            Card(Suits.Heart, Ranks.Nine)
+        ).shuffled()
+        val sortedScale = BurracoScale.create(cards)
 
-//    @Test
-//    fun `given a scale when I serialise it, then I should have the same scale deserialized`() {
-//        val cards = listOf(
-//                Card(Suits.Heart, Ranks.King),
-//                Card(Suits.Heart, Ranks.Queen),
-//                Card(Suits.Heart, Ranks.Jack),
-//                Card(Suits.Heart, Ranks.Ten),
-//                Card(Suits.Heart, Ranks.Nine)
-//        ).shuffled()
-//        val scale = BurracoScale.create(cards) as Scale
-//
-//        val jsonString = Json.encodeToString(BurracoScaleCustomSerializer,scale);
-//        val deserializedScale = Json.decodeFromString<BurracoScale>(BurracoScaleCustomSerializer,jsonString)
-//        assertEquals(scale.identity(),deserializedScale.identity())
-//        assertEquals(scale.showCards(),deserializedScale.showCards())
-//        assertEquals(scale.showSuit(),deserializedScale.showSuit())
-//    }
+        assertEquals(5, sortedScale.numCards())
+    }
+
+    @Test
+    fun `given a scale of Heart, when I ask the suit then the answer is Heart`() {
+        val cards = listOf(
+            Card(Suits.Heart, Ranks.King),
+            Card(Suits.Heart, Ranks.Queen),
+            Card(Suits.Heart, Ranks.Jack),
+            Card(Suits.Heart, Ranks.Ten),
+            Card(Suits.Heart, Ranks.Nine)
+        ).shuffled()
+        val sortedScale = BurracoScale.create(cards)
+
+        assertEquals(Suits.Heart, sortedScale.showSuit())
+    }
+
+    @Test
+    fun `given a scale, when I serialise and deserialise it then I should get the same object`() {
+        val cards = listOf(
+            Card(Suits.Heart, Ranks.King),
+            Card(Suits.Heart, Ranks.Queen),
+            Card(Suits.Heart, Ranks.Jack),
+            Card(Suits.Heart, Ranks.Ten),
+            Card(Suits.Heart, Ranks.Nine)
+        ).shuffled()
+        val sortedScale = BurracoScale.create(cards)
+
+        val jsonString = Json.encodeToString(sortedScale);
+        println("scale json: $jsonString")
+        val deserializedBurracoScale = Json.decodeFromString<BurracoScale>(jsonString)
+
+        assertEquals(sortedScale, deserializedBurracoScale)
+    }
 
 }

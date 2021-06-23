@@ -3,7 +3,11 @@ package com.abaddon83.burraco.common.models.entities
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.valueObjects.Ranks
 import com.abaddon83.burraco.common.models.valueObjects.Suits
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class BurracoTrisTest {
@@ -200,19 +204,42 @@ class BurracoTrisTest {
         }
     }
 
-//    @Test
-//    fun `given a tris when I serialise it, then I should have the same tris deserialized`() {
-//        val burracoTrisRank = Ranks.Five
-//        val burracoTrisSize = 3
-//
-//        val burracoTris = createABurracoTrisWith(burracoTrisRank, burracoTrisSize)
-//
-//        val jsonString = Json.encodeToString(BurracoTrisCustomSerializer,burracoTris);
-//        val deserializedTris = Json.decodeFromString<BurracoTris>(BurracoTrisCustomSerializer,jsonString)
-//        assertEquals(burracoTris.identity(),deserializedTris.identity())
-//        assertEquals(burracoTris.showCards(),deserializedTris.showCards())
-//        assertEquals(burracoTris.showRank(),deserializedTris.showRank())
-//    }
+    @Test
+    fun `given a tris with 3 cards, when I ask the numCards then the answer is 5`() {
+        val burracoTrisRank = Ranks.Five
+        val burracoTrisSize = 3
+        val cards = allRanksWithJollyCards().filter{ c -> c . rank == burracoTrisRank}.take(burracoTrisSize)
+
+        val actualBurracoTris = BurracoTris.create(cards)
+
+        assertEquals(3, actualBurracoTris.numCards())
+    }
+
+    @Test
+    fun `given a tris of 5, when I ask the rank then the answer is Five`() {
+        val burracoTrisRank = Ranks.Five
+        val burracoTrisSize = 3
+        val cards = allRanksWithJollyCards().filter{ c -> c . rank == burracoTrisRank}.take(burracoTrisSize)
+
+        val actualBurracoTris = BurracoTris.create(cards)
+
+        assertEquals(burracoTrisRank, actualBurracoTris.showRank())
+    }
+
+    @Test
+    fun `given a tris when I serialise and deserialize it then I should get the same object`() {
+        val burracoTrisRank = Ranks.Five
+        val burracoTrisSize = 3
+        val cards = allRanksWithJollyCards().filter{ c -> c . rank == burracoTrisRank}.take(burracoTrisSize)
+
+        val actualBurracoTris = BurracoTris.create(cards)
+
+        val jsonString = Json.encodeToString(actualBurracoTris);
+        println("tris json: $jsonString")
+        val deserializedBurracoTris = Json.decodeFromString<BurracoTris>(jsonString)
+
+        assertEquals(actualBurracoTris, deserializedBurracoTris)
+    }
 
     //TODO missing test related to the definition of a Burraco
 

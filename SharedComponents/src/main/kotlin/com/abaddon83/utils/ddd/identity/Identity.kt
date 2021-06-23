@@ -1,5 +1,8 @@
 package com.abaddon83.utils.ddd.identity
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
 
 abstract class Identity<T>(){
     abstract val id: T
@@ -10,4 +13,7 @@ abstract class Identity<T>(){
 
     abstract fun isEmpty(): Boolean
 
+    fun toJson(): String {
+        return Json.encodeToString(this)
+    }
 }

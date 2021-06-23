@@ -1,8 +1,5 @@
 package com.abaddon83.burraco.common.models.valueObjects
 
-import com.abaddon83.burraco.common.models.identities.BurracoIdentity
-import kotlinx.serialization.Serializable
-
 //@Serializable
 //open class Scale(
 //    override val identity: BurracoIdentity,

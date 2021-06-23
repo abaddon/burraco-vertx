@@ -2,12 +2,13 @@ package com.abaddon83.utils.vertx
 
 import io.vertx.core.*
 import io.vertx.core.impl.ConcurrentHashSet
+import io.vertx.servicediscovery.Record
 import io.vertx.servicediscovery.ServiceDiscovery
 import io.vertx.servicediscovery.ServiceDiscoveryOptions
 import io.vertx.servicediscovery.types.EventBusService
 import io.vertx.servicediscovery.types.HttpEndpoint
 import io.vertx.servicediscovery.types.MessageSource
-import io.vertx.servicediscovery.Record
+
 /**
  * An implementation of [Verticle] taking care of the discovery and publication of services.
  *

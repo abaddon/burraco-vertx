@@ -1,7 +1,6 @@
 package com.abaddon83.burraco.readModel.adapters.repositoryAdapters.mysql
 
 import com.abaddon83.burraco.common.models.identities.*
-import com.abaddon83.burraco.common.serializations.toJson
 import com.abaddon83.burraco.readModel.projections.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

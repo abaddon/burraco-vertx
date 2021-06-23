@@ -1,8 +1,7 @@
 package com.abaddon83.burraco.common.models.valueObjects
 
-import com.abaddon83.burraco.common.serializations.custom.SuitCustomSerializer
+import com.abaddon83.burraco.common.serializations.SuitCustomSerializer
 import kotlinx.serialization.Serializable
-import java.lang.Exception
 import java.util.*
 
 object Suits {

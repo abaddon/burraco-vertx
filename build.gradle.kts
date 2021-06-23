@@ -23,6 +23,7 @@ val junitJupiterVersion = "5.7.0"
 val ktormVersion ="3.2.0"
 val slf4jVersion ="1.7.25"
 val mysqlConnectorVersion = "8.0.21"
+val config4k = "0.4.2"
 
 subprojects {
     apply<JavaLibraryPlugin>()
@@ -67,6 +68,7 @@ subprojects {
 
         implementation(kotlin("stdlib-jdk8"))
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJson")
+        implementation("io.github.config4k:config4k:$config4k")
 
         //Log
         implementation("org.slf4j:slf4j-api:$slf4jVersion")

@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.adapters.commandController
 
 import com.abaddon83.utils.vertx.AbstractHttpServiceVerticle
-import com.abaddon83.burraco.game.adapters.commandController.config.HttpConfig
+import com.abaddon83.burraco.game.adapters.commandController.config.RestApiConfig
 import com.abaddon83.burraco.game.adapters.commandController.handlers.AddPlayerRoutingHandler
 import com.abaddon83.burraco.game.adapters.commandController.handlers.NewGameRoutingHandler
 import com.abaddon83.burraco.game.adapters.commandController.handlers.InitGameRoutingHandler
@@ -12,7 +12,7 @@ import io.vertx.core.http.HttpHeaders
 import io.vertx.ext.web.openapi.RouterBuilder
 import org.slf4j.LoggerFactory
 
-class RestApiVerticle(val httpConfig: HttpConfig, private val controllerAdapter: CommandControllerPort) :
+class RestApiVerticle(val restApiConfig: RestApiConfig, private val controllerAdapter: CommandControllerPort) :
     AbstractHttpServiceVerticle() {
 
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
@@ -31,7 +31,6 @@ class RestApiVerticle(val httpConfig: HttpConfig, private val controllerAdapter:
 
     fun startHttpServer(startPromise: Promise<Void>) {
         val apiDefinitionUrl = this.javaClass.classLoader.getResource("gameAPIs.yaml")
-        //val commandControllerRoutes = CommandControllerRoutes(vertx)
         RouterBuilder.create(vertx, apiDefinitionUrl.toString())
             .onSuccess { routerBuilder ->
                 routerBuilder.operation("newGame").handler(NewGameRoutingHandler(controllerAdapter))
@@ -64,7 +63,7 @@ class RestApiVerticle(val httpConfig: HttpConfig, private val controllerAdapter:
                 }
 
                 //server creation
-                vertx.createHttpServer(httpConfig.getHttpServerOptions())
+                vertx.createHttpServer(restApiConfig.getHttpServerOptions())
                     .requestHandler(router)
                     .listen()
                     .onSuccess { arServer ->

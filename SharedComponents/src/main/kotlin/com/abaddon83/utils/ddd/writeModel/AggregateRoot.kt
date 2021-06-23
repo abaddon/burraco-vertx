@@ -1,7 +1,6 @@
 package com.abaddon83.utils.ddd.writeModel
 
 import com.abaddon83.utils.ddd.Event
-import java.util.*
 
 interface AggregateType
 

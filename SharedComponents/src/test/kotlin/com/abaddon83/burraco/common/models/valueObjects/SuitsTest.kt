@@ -1,11 +1,7 @@
 package com.abaddon83.burraco.common.models.valueObjects
 
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.lang.Exception
 import kotlin.test.assertFailsWith
 
 internal class SuitsTest{
