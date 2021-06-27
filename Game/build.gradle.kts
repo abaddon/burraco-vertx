@@ -1,4 +1,4 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -6,7 +6,7 @@ plugins {
     application
 }
 
-group = "com.abaddon83.vertx.burraco.game"
+group = "com.abaddon83.burraco.game"
 version = "1.0-SNAPSHOT"
 
 
@@ -14,7 +14,7 @@ val kotlinVersion = ext.get("kotlinVersion")
 val vertxVersion = ext.get("vertxVersion")
 val junitJupiterVersion = ext.get("junitJupiterVersion")
 
-val mainVerticleName = "com.abaddon83.vertx.burraco.game.MainVerticle"
+val mainVerticleName = "com.abaddon83.burraco.game.MainVerticle"
 val watchForChange = "src/**/*"
 val doOnChange = "./gradlew classes"
 
@@ -42,8 +42,8 @@ dependencies {
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "11"
 
-tasks.withType<ShadowJar> {
-    archiveClassifier.set("fat")
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    archiveClassifier.set("all")
     manifest {
         attributes(mapOf(
             "Main-Verticle" to mainVerticleName
@@ -66,6 +66,6 @@ tasks.withType<Test> {
 //}
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }

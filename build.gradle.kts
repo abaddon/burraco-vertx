@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "1.5.0"
     kotlin("plugin.serialization") version "1.5.0" apply false
-    id("com.github.johnrengelman.shadow") version "5.2.0" apply false
+    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
 }
 //
 //group = "com.abaddon83.vertx"
@@ -39,7 +39,6 @@ subprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
     }
 
     ext.set("kotlinVersion",kotlinVersion)

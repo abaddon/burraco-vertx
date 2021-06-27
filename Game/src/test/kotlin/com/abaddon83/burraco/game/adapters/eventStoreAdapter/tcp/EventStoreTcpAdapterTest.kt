@@ -23,8 +23,9 @@ internal class EventStoreTcpAdapterTest {
         @BeforeAll
         @JvmStatic
         fun beforeAll(context: VertxTestContext) {
-
-            vertx.eventBus().consumer<JsonObject>(EventStoreTcpBusAdapter.SERVICE_ADDRESS_PUBLISH) { handler ->
+            val SERVICE_ADDRESS_PUBLISH = ""
+            val SERVICE_TCP_PORT = 8080
+            vertx.eventBus().consumer<JsonObject>(SERVICE_ADDRESS_PUBLISH) { handler ->
                 println("msg_received:" + handler.body().toString())
                 val jsonBody = handler.body()
                 val key = jsonBody.getString("entityKey")
@@ -55,7 +56,7 @@ internal class EventStoreTcpAdapterTest {
                     .addInboundPermitted(PermittedOptions())
                     .addOutboundPermitted(PermittedOptions())
             )
-            bridge.listen(EventStoreTcpBusAdapter.SERVICE_TCP_PORT) { res ->
+            bridge.listen(SERVICE_TCP_PORT) { res ->
                 if (res.failed()) {
                     context.failNow(res.cause())
                 } else {
