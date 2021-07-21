@@ -72,10 +72,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.IMAGE_NAME }}
           tags: |
-              type=ref,event=branch,pattern={{date 'YYYYMMDD'}},enable=true,priority=1000
               type=ref,event=branch,enable=true,priority=600
               type=ref,event=tag,enable=true,priority=600
               type=ref,event=pr,prefix=pr-,enable=true,priority=600
+          flavor: |
+            latest=true
+            prefix=
+            suffix=
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
