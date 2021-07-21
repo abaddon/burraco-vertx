@@ -87,7 +87,6 @@ jobs:
     env:
       MODULE: ${{ env.GAME_PATH }}
 
-
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -98,7 +97,7 @@ jobs:
         
       - name: packages rename
         run: |
-          mv ./${{ env.MODULE }}/build/lib/*.jar ./${{ env.MODULE }}.jar
+          mv ./$MODULE/build/lib/*.jar ./$env.MODULE.jar
       - name: Display structure of downloaded files
         run: ls -l
         
