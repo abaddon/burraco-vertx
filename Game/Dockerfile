@@ -20,8 +20,8 @@
 
 FROM openjdk:11-jre-slim
 
-ENV VERTICLE_ORIGIN_PATH ./build/libs
-ENV VERTICLE_FILE Game-1.0-SNAPSHOT-all.jar
+ENV VERTICLE_ORIGIN_PATH ./
+ENV VERTICLE_FILE Game.jar
 
 # Set the location of the verticles
 ENV VERTICLE_HOME /usr/verticles
