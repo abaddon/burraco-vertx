@@ -14,7 +14,8 @@ on:
 env:
   REGISTRY: ghcr.io
   OWNER: abaddon
-  IMAGE_NAME: game
+  PROJECT_NAME: burraco
+  IMAGE_NAME: game-service
   IMAGE_TAG: latest
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -59,7 +60,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
       
       - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -70,15 +71,15 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME }}
-#          flavor: |
- #           latest=true
-#        tags: |
- #         type=schedule,enable=true,priority=1000,prefix=,suffix=,pattern={{date 'YYYYMMDD'}}
+          flavor: |
+            latest=true
+          tags: |
+            type=schedule,enable=true,priority=1000,prefix=,suffix=,pattern={{date 'YYYYMMDD'}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: ./Game
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-#          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
