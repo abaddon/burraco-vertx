@@ -97,7 +97,7 @@ jobs:
         
       - name: packages rename
         run: |
-          mv ./$MODULE/build/lib/*.jar ./$env.MODULE.jar
+          mv ./$MODULE/build/libs/*.jar ./$env.MODULE.jar
       - name: Display structure of downloaded files
         run: ls -l
         
