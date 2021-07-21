@@ -25,7 +25,8 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-package:
+  job-build-package:
+    name: Create Burraco articatory
     runs-on: ubuntu-latest
     
     permissions:
@@ -74,7 +75,9 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
       
   
-  build-and-publish-game-container:
+  job-build-and-publish-game-container:
+    name: Build and publish Game service
+    needs: job-build-package
     runs-on: ubuntu-latest
 
     permissions:
