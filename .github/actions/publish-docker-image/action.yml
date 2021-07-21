@@ -1,81 +1,81 @@
-# action.yml
-name: 'Build and publish Docker image'
-description: 'Build and publish Docker image to the registry'
-inputs:
-  module:  # module name
-    description: 'module name'
-    required: true
-  service_name: # service name
-    description: 'service name'
-    required: true
-  registry: # registry
-    description: 'registry url'
-    required: true
-  owner: # owner
-    description: 'github owner'
-    required: true
-  password: # password
-    description: 'github token'
-    required: true
-  project: # project
-    description: 'project name'
-    required: true
-  artifactory: # artifactory
-    description: 'artifactory name'
-    required: true
-
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
-
-permissions:
-  contents: read
-  packages: write
-
-runs:
-  using: "composite"
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - uses: actions/download-artifact@v2
-      with:
-        name: ${{ inputs.artifactory }}
-
-    - name: Display structure of downloaded files
-      run: ls -R
-
-    - name: packages rename
-      run: mv ./${{ inputs.module }}/build/libs/*.jar ./${{ inputs.module }}/${{ inputs.module }}.jar
-
-    - name: Display structure of downloaded files
-      run: ls -l ./${{ inputs.module }}/
-
-    - name: Log in to the Container registry
-      uses: docker/login-action@v1
-      with:
-        registry: ${{ inputs.registry }}
-        username: ${{ inputs.owner }}
-        password: ${{ inputs.password }}
-
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@v3
-      with:
-        images: ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.project }}/${{ inputs.service_name }}
-        tags: |
-          type=ref,event=branch,enable=true,priority=600
-          type=ref,event=tag,enable=true,priority=600
-          type=ref,event=pr,prefix=pr-,enable=true,priority=600
-        flavor: |
-          latest=true
-          prefix=
-          suffix=
-
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: ./${{ inputs.module }}/
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+## action.yml
+#name: 'Build and publish Docker image'
+#description: 'Build and publish Docker image to the registry'
+#inputs:
+#  module:  # module name
+#    description: 'module name'
+#    required: true
+#  service_name: # service name
+#    description: 'service name'
+#    required: true
+#  registry: # registry
+#    description: 'registry url'
+#    required: true
+#  owner: # owner
+#    description: 'github owner'
+#    required: true
+#  password: # password
+#    description: 'github token'
+#    required: true
+#  project: # project
+#    description: 'project name'
+#    required: true
+#  artifactory: # artifactory
+#    description: 'artifactory name'
+#    required: true
+#
+#outputs:
+#  time: # id of output
+#    description: 'The time we greeted you'
+#
+#permissions:
+#  contents: read
+#  packages: write
+#
+#runs:
+#  using: "composite"
+#  steps:
+#    - run: Checkout repository
+#      uses: actions/checkout@v2
+#
+#    - run: actions/download-artifact@v2
+#      with:
+#        name: ${{ inputs.artifactory }}
+#
+#    - run: Display structure of downloaded files
+#      run: ls -R
+#
+#    - name: packages rename
+#      run: mv ./${{ inputs.module }}/build/libs/*.jar ./${{ inputs.module }}/${{ inputs.module }}.jar
+#
+#    - name: Display structure of downloaded files
+#      run: ls -l ./${{ inputs.module }}/
+#
+#    - name: Log in to the Container registry
+#      uses: docker/login-action@v1
+#      with:
+#        registry: ${{ inputs.registry }}
+#        username: ${{ inputs.owner }}
+#        password: ${{ inputs.password }}
+#
+#    - name: Extract metadata (tags, labels) for Docker
+#      id: meta
+#      uses: docker/metadata-action@v3
+#      with:
+#        images: ${{ inputs.registry }}/${{ inputs.owner }}/${{ inputs.project }}/${{ inputs.service_name }}
+#        tags: |
+#          type=ref,event=branch,enable=true,priority=600
+#          type=ref,event=tag,enable=true,priority=600
+#          type=ref,event=pr,prefix=pr-,enable=true,priority=600
+#        flavor: |
+#          latest=true
+#          prefix=
+#          suffix=
+#
+#    - name: Build and push Docker image
+#      uses: docker/build-push-action@v2
+#      with:
+#        context: ./${{ inputs.module }}/
+#        push: true
+#        tags: ${{ steps.meta.outputs.tags }}
+#        labels: ${{ steps.meta.outputs.labels }}
