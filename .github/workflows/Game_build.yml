@@ -2,9 +2,7 @@
 
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
   pull_request:
@@ -16,14 +14,9 @@ env:
   PROJECT_NAME: burraco
   REGISTRY: ghcr.io
   GAME_PATH: Game
-  GAME_IMAGE_NAME: game-service
   DEALER_PATH: Dealer
-  DEALER_IMAGE_NAME: dealer-service
   
 
-#  IMAGE_TAG: latest
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   job-build-package:
     name: Create Burraco articatory
@@ -66,13 +59,13 @@ jobs:
             ./${{ env.GAME_PATH }}/build/libs
             ./${{ env.DEALER_PATH }}/build/libs
       
-
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+      
       
   
   job-build-and-publish-game-container:
@@ -86,6 +79,7 @@ jobs:
       
     env:
       MODULE: Game
+      SERVICE_NAME: game-service
 
     steps:
       - uses: actions/download-artifact@v2
@@ -97,7 +91,7 @@ jobs:
         
       - name: packages rename
         run: |
-          mv ./$MODULE/build/libs/*.jar ./$env.MODULE.jar
+          mv ./$MODULE/build/libs/*.jar ./$MODULE.jar
       - name: Display structure of downloaded files
         run: ls -l
         
@@ -112,7 +106,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.OWNER }}/$PROJECT_NAME/$SERVICE_NAME
           tags: |
               type=ref,event=branch,enable=true,priority=600
               type=ref,event=tag,enable=true,priority=600
@@ -129,5 +123,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          #tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          #labels: ${{ steps.meta.outputs.labels }}
