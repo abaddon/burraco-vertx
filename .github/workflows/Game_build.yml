@@ -48,6 +48,13 @@ jobs:
     
       - name: Build with Gradle
         run: cd Game && ../gradlew shadowJar
+        
+      - name: Debug
+        run: |
+          pwd
+          ls -l
+          echo 'ls -l ./build/libs'
+          ls -l ./build/libs
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
@@ -72,7 +79,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: Game/Dockerfile
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
