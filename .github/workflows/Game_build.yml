@@ -47,17 +47,7 @@ jobs:
             ${{ runner.os }}-gradle-
     
       - name: Build with Gradle
-        run: cd Game && ./gradlew shadowJar
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: cd ./Game
-
-      # Runs a set of commands using the runners shell
-      - name: Execute Gradle task
-        uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-15
-        with:
-          args: project shadowJar
+        run: cd Game && ../gradlew shadowJar
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
