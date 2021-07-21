@@ -12,16 +12,20 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
-  CONTEXT_PATH: ./Game
   OWNER: ${{ github.actor }}
   PROJECT_NAME: burraco
-  IMAGE_NAME: game-service
+  REGISTRY: ghcr.io
+  GAME.PATH: Game
+  GAME.IMAGE_NAME: game-service
+  DEALER.PATH: Dealer
+  DEALER.IMAGE_NAME: dealer-service
+  
+
 #  IMAGE_TAG: latest
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-and-push-image:
+  build-package:
     runs-on: ubuntu-latest
     
     permissions:
@@ -51,7 +55,16 @@ jobs:
             ${{ runner.os }}-gradle-
     
       - name: Build with Gradle
-        run: cd Game && ../gradlew shadowJar
+        run: ./gradlew shadowJar
+      
+      - name: Upload ${{ env.GAME.PATH }} artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: burraco-artifact
+          path: |
+            ./${{ env.GAME.PATH }}/build/libs
+            ./${{ env.DEALER.PATH }}/build/libs
+      
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
@@ -60,6 +73,14 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
       
+  build-and-publish-game-container:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:  
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
