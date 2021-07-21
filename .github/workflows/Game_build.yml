@@ -85,7 +85,7 @@ jobs:
       packages: write
       
     env:
-      MODULE: game
+      MODULE: Game
 
     steps:
       - uses: actions/download-artifact@v2
