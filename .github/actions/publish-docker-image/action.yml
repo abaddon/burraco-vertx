@@ -17,8 +17,11 @@ inputs:
   password: # password
     description: 'github token'
     required: true
-  project: # password
+  project: # project
     description: 'project name'
+    required: true
+  artifactory: # artifactory
+    description: 'artifactory name'
     required: true
 
 outputs:
@@ -37,7 +40,7 @@ runs:
 
     - uses: actions/download-artifact@v2
       with:
-        name: burraco-artifacts
+        name: ${{ inputs.artifactory }}
 
     - name: Display structure of downloaded files
       run: ls -R
