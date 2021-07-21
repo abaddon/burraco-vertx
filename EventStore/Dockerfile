@@ -1,7 +1,7 @@
 FROM openjdk:11-jre-slim
 
 ENV VERTICLE_ORIGIN_PATH .
-ENV VERTICLE_FILE Eventstore.jar
+ENV VERTICLE_FILE EventStore.jar
 
 # Set the location of the verticles
 ENV VERTICLE_HOME /usr/verticles
