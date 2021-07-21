@@ -83,6 +83,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+      
+    env:
+      MODULE: ${{ env.GAME_PATH }}
 
 
     steps:
@@ -92,6 +95,12 @@ jobs:
     
       - name: Display structure of downloaded files
         run: ls -R
+        
+      - name: packages rename
+        run: |
+          mv ./${{ env.MODULE }}/build/lib/*.jar ./${{ env.MODULE }}.jar
+      - name: Display structure of downloaded files
+        run: ls -l
         
       - name: Log in to the Container registry
         uses: docker/login-action@v1
