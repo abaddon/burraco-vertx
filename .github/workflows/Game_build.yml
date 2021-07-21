@@ -33,7 +33,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Execute Gradle task
-        uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-1
+        uses: OrangeLabs-moe/gradle-actions@v5.0-openjdk-15
         with:
           args: project shadowJar
 
