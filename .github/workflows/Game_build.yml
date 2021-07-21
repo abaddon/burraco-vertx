@@ -81,14 +81,14 @@ jobs:
         uses: actions/checkout@v2
       - name: build image and publish
         uses: ./.github/actions/publish-docker-image
-          with:
-            module:  Game
-            service_name: game-service
-            registry: ${{ env.REGISTRY }}
-            owner: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-            project: burraco
-            artifactory:
+        with:
+          module:  Game
+          service_name: game-service
+          registry: ${{ env.REGISTRY }}
+          owner: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          project: burraco
+          artifactory:
 
       #   job-build-and-publish-game-container:
       #     name: Build and publish Game service
