@@ -69,7 +69,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME }}
 #          flavor: |
  #           latest=true
 #        tags: |
@@ -80,5 +80,5 @@ jobs:
         with:
           context: ./Game
           push: true
-          tags: ${{ env.REGISTRY }}/${{ OWNER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 #          labels: ${{ steps.meta.outputs.labels }}
