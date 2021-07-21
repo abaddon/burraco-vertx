@@ -88,7 +88,7 @@ jobs:
           owner: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           project: burraco
-          artifactory:
+          artifactory: burraco-artifacts
 
       #   job-build-and-publish-game-container:
       #     name: Build and publish Game service
