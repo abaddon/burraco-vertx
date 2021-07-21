@@ -85,7 +85,7 @@ jobs:
       packages: write
       
     env:
-      MODULE: ${{ env.GAME_PATH }}
+      MODULE: game
 
     steps:
       - uses: actions/download-artifact@v2
