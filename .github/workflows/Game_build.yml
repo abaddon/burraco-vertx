@@ -126,3 +126,62 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  job-build-and-publish-dealer-container:
+    name: Build and publish Dealer service
+    needs: job-build-package
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      
+    env:
+      MODULE: Dealer
+      SERVICE_NAME: dealer-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: burraco-artifacts
+    
+      - name: Display structure of downloaded files
+        run: ls -R
+        
+      - name: packages rename
+        run: mv ./${{ env.MODULE }}/build/libs/*.jar ./${{ env.MODULE }}/${{ env.MODULE }}.jar
+        
+      - name: Display structure of downloaded files
+        run: ls -l ./${{ env.MODULE }}/
+        
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.OWNER }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}
+          tags: |
+              type=ref,event=branch,enable=true,priority=600
+              type=ref,event=tag,enable=true,priority=600
+              type=ref,event=pr,prefix=pr-,enable=true,priority=600
+          flavor: |
+            latest=true
+            prefix=
+            suffix=
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./${{ env.MODULE }}/
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
