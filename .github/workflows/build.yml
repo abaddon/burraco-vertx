@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 on:
@@ -15,6 +13,7 @@ env:
   REGISTRY: ghcr.io
   GAME_PATH: Game
   DEALER_PATH: Dealer
+  EVENTSTORE_PATH: EventStore
 
 
 jobs:
@@ -58,6 +57,7 @@ jobs:
           path: |
             ./${{ env.GAME_PATH }}/build/libs
             ./${{ env.DEALER_PATH }}/build/libs
+            ./${{ env.EVENTSTORE_PATH }}/build/libs
 
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
