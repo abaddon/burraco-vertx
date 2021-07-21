@@ -79,5 +79,5 @@ jobs:
         with:
           context: ./Game
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:{{ env.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 #          labels: ${{ steps.meta.outputs.labels }}
