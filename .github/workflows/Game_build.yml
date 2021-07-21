@@ -15,10 +15,10 @@ env:
   OWNER: ${{ github.actor }}
   PROJECT_NAME: burraco
   REGISTRY: ghcr.io
-  GAME.PATH: Game
-  GAME.IMAGE_NAME: game-service
-  DEALER.PATH: Dealer
-  DEALER.IMAGE_NAME: dealer-service
+  GAME_PATH: Game
+  GAME_IMAGE_NAME: game-service
+  DEALER_PATH: Dealer
+  DEALER_IMAGE_NAME: dealer-service
   
 
 #  IMAGE_TAG: latest
@@ -62,8 +62,8 @@ jobs:
         with:
           name: burraco-artifact
           path: |
-            ./${{ env.GAME.PATH }}/build/libs
-            ./${{ env.DEALER.PATH }}/build/libs
+            ./${{ env.GAME_PATH }}/build/libs
+            ./${{ env.DEALER_PATH }}/build/libs
       
 
       - name: Cleanup Gradle Cache
