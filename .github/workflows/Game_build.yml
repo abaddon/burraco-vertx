@@ -91,7 +91,7 @@ jobs:
         
       - name: packages rename
         run: |
-          mv ./$MODULE/build/libs/*.jar ./$MODULE.jar
+          mv ./${{ env.MODULE }}/build/libs/*.jar ./${{ env.MODULE }}.jar
       - name: Display structure of downloaded files
         run: ls -l
         
@@ -106,7 +106,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.OWNER }}/$PROJECT_NAME/$SERVICE_NAME
+          images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}
           tags: |
               type=ref,event=branch,enable=true,priority=600
               type=ref,event=tag,enable=true,priority=600
