@@ -21,6 +21,17 @@ servers:
           - http
 
 paths:
+  /health:
+    get:
+      operationId: 'healthCheck'
+      summary: 'Game service Health Check'
+      description: 'Public API to monitoring the health of the webservice'
+      tags:
+        - Public
+      responses:
+        '200':
+          $ref: '#/components/responses/HealthCheckResponse'
+
   /game/burraco:
     post:
       operationId: 'newGame'
@@ -102,6 +113,22 @@ paths:
 
 components:
   schemas:
+    HealthCheck:
+      type: object
+      properties:
+        checks:
+          type: array
+          items:
+            $ref: "#/components/schemas/HealthCheckProcedure"
+        outcome:
+          type: string
+    HealthCheckProcedure:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
     Game:
       type: object
       properties:
@@ -167,6 +194,12 @@ components:
                 $ref: "#/components/schemas/PlayerId"
 
   responses:
+    HealthCheckResponse:
+      description: 'Health Check response'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HealthCheck'
     NewGameResponse:
       description: 'New Burraco game response'
       content:
