@@ -1,0 +1,55 @@
+#kubectl create -f ./burraco_deployment.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: burraco
+
+---
+#Deployment Game
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: game-command-api
+  namespace: burraco
+spec:
+  selector:
+    matchLabels:
+      app: game-command-api
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: game-command-api
+        tier: backend
+    spec:
+      containers:
+      - name: game
+        image: "ghcr.io/abaddon/burraco/game-service:latest"
+        ports:
+          - name: http
+            containerPort: 8080
+        env:
+        - name: REST_SERVICE-NAME
+          value: "game-command-api"
+        - name: REST_HTTP_ADDRESS
+          value: "0.0.0.0"
+        - name: KAFKA_BOOTSTRAP-SERVERS
+          value: "service-redpanda:9092"
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: service-game-command-api
+#  namespace: burraco
+#spec:
+#  selector:
+#    app: game-command-api
+#    tier: backend
+#  ports:
+#    - protocol: TCP
+#      port: 8081
+#      targetPort: http
+

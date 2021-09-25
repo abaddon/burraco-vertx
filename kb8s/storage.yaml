@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: storage1-pv
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/kb8s_storage1"
+  storageClassName: storage1-pv

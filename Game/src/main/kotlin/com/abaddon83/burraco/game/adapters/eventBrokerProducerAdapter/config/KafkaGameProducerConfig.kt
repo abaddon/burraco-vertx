@@ -2,9 +2,12 @@ package com.abaddon83.burraco.game.adapters.eventBrokerProducerAdapter.config
 
 
 data class KafkaGameProducerConfig(
-    val properties: Map<String, String>
+    val properties: Map<String, String>,
+    val topic: String
 ){
     fun producerConfig(): Map<String, String> = properties
+
+    fun topic(): String = topic;
 
 }
 

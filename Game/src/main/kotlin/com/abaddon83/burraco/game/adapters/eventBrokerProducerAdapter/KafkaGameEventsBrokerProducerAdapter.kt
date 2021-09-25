@@ -23,4 +23,8 @@ class KafkaGameEventsBrokerProducerAdapter(val vertx: Vertx, private val kafkaCo
                 log.error("message not published to Kafka",it)
             }
     }
+
+    override fun topic(): String {
+        TODO("Not yet implemented")
+    }
 }

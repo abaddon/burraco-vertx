@@ -7,4 +7,6 @@ class FakeGameEventsBrokerProducer: GameEventsBrokerProducerPort<String, String>
     override fun publish(topic: String, event: Event) {
 
     }
+
+    override fun topic(): String = "game"
 }

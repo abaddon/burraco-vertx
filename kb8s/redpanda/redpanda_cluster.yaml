@@ -1,0 +1,113 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: redpanda-cluster
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redpanda-vol-claim
+  namespace: redpanda-cluster
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage1-pv
+  volumeName: storage1-pv
+
+---
+#Deployment RedPanda
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda-node
+  namespace: redpanda-cluster
+spec:
+  selector:
+    matchLabels:
+      app: redpanda-node
+      tier: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: redpanda-node
+        tier: backend
+    spec:
+      containers:
+        - name: redpanda
+          image: "docker.vectorized.io/vectorized/redpanda:latest"
+          volumeMounts:
+            - mountPath: /data
+              name: redpanda-vol
+          ports:
+            - name: kafka-api
+              containerPort: 9092
+            - name: pandaproxy-api
+              containerPort: 8082
+            - name: admin-api
+              containerPort: 9644
+      restartPolicy: Always
+      volumes:
+        - name: redpanda-vol
+          persistentVolumeClaim:
+            claimName: redpanda-vol-claim
+
+---
+#Service RedPanda
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-redpanda
+  namespace: redpanda-cluster
+spec:
+  selector:
+    app: redpanda-node
+    tier: backend
+  ports:
+    - name: service-kafka-api
+      protocol: TCP
+      port: 9092
+      targetPort: kafka-api
+    - name: service-pandaproxy-api
+      protocol: TCP
+      port: 8082
+      targetPort: pandaproxy-api
+    - name: service-admin-api
+      protocol: TCP
+      port: 9644
+      targetPort: admin-api
+
+
+#
+#
+#apiVersion: redpanda.vectorized.io/v1alpha1
+#kind: Cluster
+#metadata:
+#  name: one-node-cluster
+#  namespace: redpanda
+#spec:
+#  image: "docker.vectorized.io/vectorized/redpanda"
+#  version: "latest"
+#  replicas: 1
+#  resources:
+#    requests:
+#      cpu: 1
+##     memory: 1.2Gi
+#    limits:
+#      cpu: 1
+#      memory: 1.2Gi
+#  configuration:
+#    rpcServer:
+#      port: 33145
+#    kafkaApi:
+#      - port: 9092
+#    pandaproxyApi:
+#      - port: 8082
+#    adminApi:
+#      - port: 9644
+#    developerMode: true

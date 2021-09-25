@@ -496,7 +496,7 @@ class CommandHandler(
     private fun publishEvent(domainResult: DomainResult) {
         val key = domainResult.game?.identity()?.id.toString()
         domainResult.events.forEach { event ->
-            gameEventsBrokerProducer.publish(TOPIC, event)
+            gameEventsBrokerProducer.publish(gameEventsBrokerProducer.topic(), event)
 //            val value =when(event){
 //                is BurracoGameEvent -> event.toJson()
 //                else -> null
