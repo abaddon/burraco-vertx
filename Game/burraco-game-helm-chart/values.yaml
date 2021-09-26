@@ -80,3 +80,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+env:
+  name:
+    REST_HTTP_ADDRESS: "0.0.0.0"
