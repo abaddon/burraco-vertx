@@ -1,8 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches: [ master ]
+#  push:
+#    branches: [ master ]
   create:
     tags: [ '*' ]
 #  pull_request:
