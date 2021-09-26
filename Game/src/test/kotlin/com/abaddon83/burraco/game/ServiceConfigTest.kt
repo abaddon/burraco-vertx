@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.game
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 internal class ServiceConfigTest{
@@ -31,5 +32,14 @@ internal class ServiceConfigTest{
         //assertEquals(8080, serviceConfig.eventStoreTcpBus.service.port)
         assertEquals("eventstore-bus-publish", serviceConfig.eventStoreTcpBus.channels.publish)
         assertEquals("eventstore-bus-query", serviceConfig.eventStoreTcpBus.channels.query)
+    }
+
+    @Test
+    fun `Given a ServiceConfig element when I execute the method to Json then I receive a JSonObject`(){
+        val config = ServiceConfig.load()
+        val expected = "{\"restApi\":{\"serviceName\":command-api-service,\"http\":{\"port\":8080,\"address\":\"localhost\",\"root\":\"/\"}},\"eventStoreTcpBus\":{\"service\":{\"address\":\"localhost\",\"port\":7000},\"channels\":{\"publish\":\"eventstore-bus-publish\",\"query\":\"eventstore-bus-query\"}}}"
+
+        kotlin.test.assertEquals(expected, config.toJson().toString())
+
     }
 }

@@ -7,6 +7,7 @@ import com.abaddon83.burraco.game.adapters.eventBrokerProducerAdapter.KafkaGameE
 import com.abaddon83.burraco.game.adapters.eventStoreAdapter.tcp.EventStoreTcpBusAdapter
 import com.abaddon83.burraco.game.ports.EventStorePort
 import io.vertx.core.*
+import io.vertx.core.json.Json
 import org.slf4j.LoggerFactory
 
 class MainVerticle : AbstractVerticle() {
@@ -21,6 +22,8 @@ class MainVerticle : AbstractVerticle() {
 
     override fun start(startPromise: Promise<Void>?) {
         val serviceConfig =  ServiceConfig.load()
+        log.info(Json.encodePrettily(serviceConfig.toJson()));
+
         val kafkaProducerConfigConfig = serviceConfig.kafkaGameProducer
         val eventStore: EventStorePort = EventStoreTcpBusAdapter(vertx, serviceConfig.eventStoreTcpBus)
         val eventBrokerProducer = KafkaGameEventsBrokerProducerAdapter(vertx,kafkaProducerConfigConfig)

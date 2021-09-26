@@ -1,5 +1,8 @@
 package com.abaddon83.burraco.game.adapters.eventBrokerProducerAdapter.config
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
 
 data class KafkaGameProducerConfig(
     val properties: Map<String, String>,
@@ -8,6 +11,10 @@ data class KafkaGameProducerConfig(
     fun producerConfig(): Map<String, String> = properties
 
     fun topic(): String = topic;
+
+    fun toJson(): String{
+        return Json.encodeToString(this);
+    }
 
 }
 

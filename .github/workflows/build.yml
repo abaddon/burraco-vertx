@@ -170,9 +170,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}
           tags: |
-            type=ref,event=branch,enable=true,priority=600
+            type=semver,pattern={{version}}
             type=ref,event=tag,enable=true,priority=600
-            type=ref,event=pr,prefix=pr-,enable=true,priority=600
           flavor: |
             latest=true
             prefix=
@@ -228,9 +227,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.PROJECT_NAME }}/${{ env.SERVICE_NAME }}
           tags: |
-            type=ref,event=branch,enable=true,priority=600
+            type=semver,pattern={{version}}
             type=ref,event=tag,enable=true,priority=600
-            type=ref,event=pr,prefix=pr-,enable=true,priority=600
           flavor: |
             latest=true
             prefix=

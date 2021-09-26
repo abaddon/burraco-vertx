@@ -1,5 +1,6 @@
-//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -66,10 +67,6 @@ tasks.withType<Test> {
         events = setOf(PASSED, SKIPPED, FAILED)
     }
 }
-
-//tasks.withType<JavaExec> {
-//    args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")//, "-javaagent=./quasar-core-0.8.0.jar")
-//}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
