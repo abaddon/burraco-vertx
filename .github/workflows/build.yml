@@ -1,8 +1,8 @@
 name: CI
 
 on:
-#  push:
-#    branches: [ master ]
+  push:
+    branches: [ master ]
   create:
     tags: [ '*' ]
 #  pull_request:
@@ -243,7 +243,7 @@ jobs:
 
   release-game-service-helm-chart:
     name: Publish Game service helm chart
-    needs: job-build-package
+    needs: job-build-and-publish-game-container
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
