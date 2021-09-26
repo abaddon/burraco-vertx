@@ -36,6 +36,13 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+deployment:
+  env:
+    REST_SERVICE_NAME: game-command-api
+    REST_HTTP_PORT: 8080
+    REST_HTTP_ADDRESS: 0.0.0.0
+    REST_HTTP_ROOT: /
+
 service:
   type: ClusterIP
   port: 8080
@@ -80,10 +87,6 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-env:
-  name:
-    REST_HTTP_ADDRESS: "0.0.0.0"
 
 livenessProbe:
   initialDelaySeconds: 10
