@@ -12,7 +12,7 @@ val vertxVersion = ext.get("vertxVersion")
 val junitJupiterVersion = ext.get("junitJupiterVersion")
 val ktormVersion = ext.get("ktormVersion")
 val mysqlConnectorVersion = ext.get("mysqlConnectorVersion")
-val jacksonModuleKotlinVersion = "2.12.4"
+val jacksonModuleKotlinVersion = "2.13.0"
 
 val mainVerticleName = "com.abaddon83.vertx.eventStore.MainVerticle"
 val watchForChange = "src/**/*"
