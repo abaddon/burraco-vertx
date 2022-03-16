@@ -4,7 +4,7 @@ import com.abaddon83.burraco.game.models.burracoGameExecutions.playerInGames.Pla
 import com.abaddon83.burraco.common.models.entities.Burraco
 import com.abaddon83.burraco.common.models.valueObjects.Card
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.burraco.game.models.players.Player
+import com.abaddon83.burraco.game.models.player.Player
 
 data class PlayerScore private constructor(
         override val identity: PlayerIdentity,

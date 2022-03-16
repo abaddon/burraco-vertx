@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.game.adapters.commandController.models
 
-import com.abaddon83.burraco.game.models.BurracoPlayer
+import com.abaddon83.burraco.game.models.Player
 import java.util.*
 
 
@@ -9,7 +9,7 @@ data class BurracoPlayerModule(
 ) {
 
     companion object Factory {
-        fun from(player: BurracoPlayer): BurracoPlayerModule =
+        fun from(player: Player): BurracoPlayerModule =
                 BurracoPlayerModule(
                         id = player.identity().convertTo()
                 )

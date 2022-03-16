@@ -13,7 +13,7 @@ import com.abaddon83.utils.functionals.Invalid
 import com.abaddon83.utils.functionals.Valid
 import com.abaddon83.burraco.game.adapters.eventBrokerProducer.FakeGameEventsBrokerProducer
 import com.abaddon83.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryBusAdapter
-import com.abaddon83.burraco.game.models.burracoWaitingDealer.BurracoGameWaitingDealer
+import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -54,7 +54,7 @@ internal class ApplyCardToPlayerTest{
             commandHandler.handle(command).future()
                 .onSuccess { cmdResult ->
                     assert(cmdResult is Valid)
-                    val cardSize = ((cmdResult as Valid).value.game as BurracoGameWaitingDealer).players.find { burracoPlayer ->  burracoPlayer.identity() == playerIdentity1}!!.cards.size
+                    val cardSize = ((cmdResult as Valid).value.game as GameWaitingDealer).players.find { burracoPlayer ->  burracoPlayer.identity() == playerIdentity1}!!.cards.size
                     if(cardSize == 11){
                         keepRunning = false
                         assert(true)

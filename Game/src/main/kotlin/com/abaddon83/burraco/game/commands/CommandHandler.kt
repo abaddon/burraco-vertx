@@ -2,18 +2,17 @@ package com.abaddon83.burraco.game.commands
 
 import com.abaddon83.burraco.common.events.BurracoGameEvent
 import com.abaddon83.burraco.game.ports.EventStorePort
-import com.abaddon83.burraco.game.models.BurracoGame
+import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
 import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnEnd
 import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
-import com.abaddon83.burraco.game.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.utils.functionals.*
 import com.abaddon83.utils.logs.WithLog
-import com.abaddon83.burraco.game.models.BurracoPlayer
+import com.abaddon83.burraco.game.models.Player
 import com.abaddon83.burraco.game.models.burracoGameendeds.BurracoGameEnded
-import com.abaddon83.burraco.game.models.burracoWaitingDealer.BurracoGameWaitingDealer
+import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import com.abaddon83.burraco.game.ports.GameEventsBrokerProducerPort
 import io.vertx.core.Promise
 import java.util.*
@@ -21,7 +20,7 @@ import java.util.*
 typealias CmdResult = Validated<DomainError, DomainResult>
 typealias EsScope = EventStorePort.() -> CmdResult
 
-data class DomainResult(val events: Iterable<Event>, val game: BurracoGame?)
+data class DomainResult(val events: Iterable<Event>, val game: Game?)
 
 data class CommandMsg(val command: Command, val response: CmdResult) // a command with a result
 
@@ -100,7 +99,7 @@ class CommandHandler(
                 val burracoGame = eventList.fold()
                 when (burracoGame) {
                     is EmptyBurracoGame -> {
-                        val burracoGame = BurracoGame.create(c.gameIdentity)
+                        val burracoGame = Game.create(c.gameIdentity)
                         resultPromise.complete(Valid(DomainResult(burracoGame.getUncommittedChanges(), burracoGame)))
                     }
                     else -> resultPromise.complete(
@@ -150,7 +149,7 @@ class CommandHandler(
                 when (burracoGame) {
                     is BurracoGameWaitingPlayers -> {
                         try {
-                            val newBurracoGame = burracoGame.addPlayer(BurracoPlayer(c.playerIdentityToAdd))
+                            val newBurracoGame = burracoGame.addPlayer(Player(c.playerIdentityToAdd))
                             resultPromise.complete(
                                 Valid(DomainResult(newBurracoGame.getUncommittedChanges(), newBurracoGame))
                             )
@@ -173,7 +172,7 @@ class CommandHandler(
             .onSuccess { eventList ->
                 val burracoGame = eventList.fold()
                 when (burracoGame) {
-                    is BurracoGameWaitingDealer -> {
+                    is GameWaitingDealer -> {
                         try {
                             val newBurracoGame = burracoGame.dealPlayerCard(c.playerIdentity, c.card)
                             resultPromise.complete(Valid(DomainResult(newBurracoGame.getUncommittedChanges(), newBurracoGame)))
@@ -195,7 +194,7 @@ class CommandHandler(
             .onSuccess { eventList ->
                 val burracoGame = eventList.fold()
                 when (burracoGame) {
-                    is BurracoGameWaitingDealer -> {
+                    is GameWaitingDealer -> {
                         try {
                             val newBurracoGame = burracoGame.dealPlayerDeckCard(c.playerDeckId, c.card)
                             resultPromise.complete(Valid(DomainResult(newBurracoGame.getUncommittedChanges(), newBurracoGame)))
@@ -216,7 +215,7 @@ class CommandHandler(
             .onSuccess { eventList ->
                 val burracoGame = eventList.fold()
                 when (burracoGame) {
-                    is BurracoGameWaitingDealer -> {
+                    is GameWaitingDealer -> {
                         try {
                             val newBurracoGame = burracoGame.dealDiscardDeckCard(c.card)
                             resultPromise.complete(Valid(DomainResult(newBurracoGame.getUncommittedChanges(), newBurracoGame)))
@@ -237,7 +236,7 @@ class CommandHandler(
             .onSuccess { eventList ->
                 val burracoGame = eventList.fold()
                 when (burracoGame) {
-                    is BurracoGameWaitingDealer -> {
+                    is GameWaitingDealer -> {
                         try {
                             val newBurracoGame = burracoGame.dealDeckCard(c.card)
                             resultPromise.complete(Valid(DomainResult(newBurracoGame.getUncommittedChanges(), newBurracoGame)))
@@ -263,7 +262,7 @@ class CommandHandler(
             .onSuccess { eventList ->
                 val burracoGame = eventList.fold()
                 when (burracoGame) {
-                    is BurracoGameWaitingDealer -> {
+                    is GameWaitingDealer -> {
                         try {
                             val newBurracoGame = burracoGame.startGame()
                             resultPromise.complete(Valid(DomainResult(newBurracoGame.getUncommittedChanges(), newBurracoGame)))
@@ -476,11 +475,11 @@ class CommandHandler(
         return resultPromise
     }
 
-    private fun List<BurracoGameEvent>.fold(): BurracoGame {
+    private fun List<BurracoGameEvent>.fold(): Game {
         val emptyBurracoGame = EmptyBurracoGame(GameIdentity(UUID.fromString("00000000-0000-0000-0000-000000000000")))
         return when (this.isEmpty()) {
             true -> emptyBurracoGame
-            false -> this.fold(emptyBurracoGame) { i: BurracoGame, e: BurracoGameEvent ->
+            false -> this.fold(emptyBurracoGame) { i: Game, e: BurracoGameEvent ->
                 when (i) {
                     is BurracoGameWaitingPlayers -> i.applyEvent(e)
                     is BurracoGameExecutionTurnBeginning -> i.applyEvent(e)
@@ -510,4 +509,4 @@ class CommandHandler(
     }
 }
 
-data class EmptyBurracoGame constructor(override val identity: GameIdentity) : BurracoGame(identity)
+data class EmptyBurracoGame constructor(override val identity: GameIdentity) : Game(identity)

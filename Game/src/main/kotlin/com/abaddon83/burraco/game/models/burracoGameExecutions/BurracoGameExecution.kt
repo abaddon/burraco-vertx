@@ -3,12 +3,15 @@ package com.abaddon83.burraco.game.models.burracoGameExecutions
 import com.abaddon83.burraco.game.models.*
 import com.abaddon83.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.common.models.entities.BurracoScale
 import com.abaddon83.burraco.common.models.entities.BurracoTris
+import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameIdentity
+import com.abaddon83.burraco.game.models.player.PlayerIdentity
 
-abstract class BurracoGameExecution(identity: GameIdentity, classname:String) : BurracoGame(identity, classname) {
+abstract class BurracoGameExecution(identity: GameIdentity, classname:String) : Game(identity, classname) {
     abstract override val players: List<PlayerInGame>
     protected abstract val playerTurn: PlayerIdentity
     protected abstract val burracoDeck: BurracoDeck
@@ -20,7 +23,7 @@ abstract class BurracoGameExecution(identity: GameIdentity, classname:String) : 
     fun playerCards(playerIdentity: PlayerIdentity): List<Card> =
             when (val player = players.find { p -> p.identity() == playerIdentity }) {
                 is PlayerInGame -> player.showMyCards()
-                else -> throw NoSuchElementException("Player $playerIdentity is not a player of this game ${identity()}")
+                else -> throw NoSuchElementException("Player $playerIdentity is not a player of this game $id")
             }
 
     fun playerTrisOnTable(playerIdentity: PlayerIdentity): List<BurracoTris> =

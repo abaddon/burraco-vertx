@@ -2,8 +2,6 @@ package com.abaddon83.burraco.game.commands
 
 import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.BurracoGameCreated
-import com.abaddon83.burraco.game.models.BurracoDeck
-import com.abaddon83.burraco.game.models.BurracoGame
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.functionals.Invalid
@@ -12,9 +10,6 @@ import com.abaddon83.burraco.game.adapters.eventBrokerProducer.FakeGameEventsBro
 import com.abaddon83.burraco.game.adapters.eventStoreAdapter.inMemory.EventStoreInMemoryBusAdapter
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertFailsWith
 
 class AddPlayerCmdTest {
 

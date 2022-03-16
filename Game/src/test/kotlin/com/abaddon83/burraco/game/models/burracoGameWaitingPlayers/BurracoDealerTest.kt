@@ -1,12 +1,5 @@
 package com.abaddon83.burraco.game.models.burracoGameWaitingPlayers
 
-import com.abaddon83.burraco.game.models.BurracoGame
-import com.abaddon83.burraco.common.models.identities.GameIdentity
-import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.burraco.game.models.BurracoPlayer
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-
 class BurracoDealerTest {
 //    @Test
 //    fun `check BurracoCardsDealt for 2 players`() {

@@ -1,8 +1,7 @@
 package com.abaddon83.burraco.game.models.burracoGameendeds
 
 import com.abaddon83.utils.ddd.Event
-import com.abaddon83.burraco.game.models.BurracoGame
-import com.abaddon83.burraco.game.models.MazzettoDecks
+import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
@@ -11,7 +10,7 @@ import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 data class BurracoGameEnded(
         override val identity: GameIdentity,
         override val players: List<PlayerScore>,
-        val mazzettoMissed: Boolean) : BurracoGame(identity,"BurracoGameEnded") {
+        val mazzettoMissed: Boolean) : Game(identity,"BurracoGameEnded") {
 
     override fun applyEvent(event: Event): BurracoGameEnded {
         log.info("apply event: ${event::class.simpleName.toString()}")

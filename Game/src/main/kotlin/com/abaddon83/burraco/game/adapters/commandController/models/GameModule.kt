@@ -1,8 +1,7 @@
 package com.abaddon83.burraco.game.adapters.commandController.models
-import com.abaddon83.burraco.game.models.BurracoGame
+import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
 import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
-import com.abaddon83.burraco.game.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
 import java.util.*
 
 data class GameModule(
@@ -12,7 +11,7 @@ data class GameModule(
     val players: List<UUID>
 ): Module() {
     companion object {
-        fun from(game: BurracoGame): GameModule {
+        fun from(game: Game): GameModule {
             return GameModule(
                 game.identity().id,
                 "BURRACO",
@@ -21,7 +20,7 @@ data class GameModule(
             )
         }
 
-        private fun getStatus(game: BurracoGame): String{
+        private fun getStatus(game: Game): String{
             return when(game){
                 is BurracoGameWaitingPlayers -> "DRAFT"
                 is BurracoGameExecutionTurnBeginning -> "STARTED"

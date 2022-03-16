@@ -1,15 +1,5 @@
 package com.abaddon83.burraco.game.models.burracoGameWaitingPlayers
 
-import com.abaddon83.burraco.game.models.BurracoGame
-import com.abaddon83.burraco.game.models.PlayerNotAssigned
-import com.abaddon83.burraco.common.models.identities.GameIdentity
-import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-import com.abaddon83.burraco.game.models.BurracoPlayer
-import com.abaddon83.burraco.game.testUtils.BurracoGameInitTurnTestFactory
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import kotlin.test.assertFailsWith
-
 class BurracoGameWaitingPlayersTest {
 //    @Test
 //    fun `Given a burraco game, when I add a new player, then the num of player increase`(){

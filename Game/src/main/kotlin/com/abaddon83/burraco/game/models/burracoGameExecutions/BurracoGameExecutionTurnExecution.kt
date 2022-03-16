@@ -6,10 +6,11 @@ import com.abaddon83.burraco.game.models.*
 import com.abaddon83.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
 import com.abaddon83.burraco.common.models.identities.BurracoIdentity
 import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.common.models.entities.BurracoScale
 import com.abaddon83.burraco.common.models.entities.BurracoTris
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameIdentity
 import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 
 data class BurracoGameExecutionTurnExecution private constructor(
@@ -19,7 +20,8 @@ data class BurracoGameExecutionTurnExecution private constructor(
         override val playerDeck1: PlayerDeck,
         override val playerDeck2: PlayerDeck,
         override val discardPile: DiscardPile,
-        override val identity: GameIdentity) : BurracoGameExecution(identity,"BurracoGameExecutionTurnExecution") {
+        override val identity: GameIdentity
+) : BurracoGameExecution(identity,"BurracoGameExecutionTurnExecution") {
 
     companion object Factory {
         fun create(identity: GameIdentity, players: List<PlayerInGame>, burracoDeck: BurracoDeck, playerDeck1: PlayerDeck, playerDeck2: PlayerDeck, discardPile: DiscardPile, playerTurn: PlayerIdentity): BurracoGameExecutionTurnExecution {
@@ -85,7 +87,7 @@ data class BurracoGameExecutionTurnExecution private constructor(
         return applyAndQueueEvent(eventCardDroppedIntoDiscardPile)
     }
 
-    override fun applyEvent(event: Event): BurracoGame {
+    override fun applyEvent(event: Event): Game {
         log.info("apply event: ${event::class.simpleName.toString()}")
         return when (event) {
             is CardDroppedIntoDiscardPile -> apply(event)

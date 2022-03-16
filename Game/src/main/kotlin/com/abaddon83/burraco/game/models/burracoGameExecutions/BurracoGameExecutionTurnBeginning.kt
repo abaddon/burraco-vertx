@@ -4,10 +4,11 @@ import com.abaddon83.utils.ddd.Event
 import com.abaddon83.burraco.common.events.CardPickedFromDeck
 import com.abaddon83.burraco.common.events.CardsPickedFromDiscardPile
 import com.abaddon83.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
-import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.utils.ddd.writeModel.UnsupportedEventException
 import com.abaddon83.burraco.game.models.*
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameIdentity
 
 data class BurracoGameExecutionTurnBeginning private constructor(
     override val identity: GameIdentity,
@@ -58,7 +59,7 @@ data class BurracoGameExecutionTurnBeginning private constructor(
         return applyAndQueueEvent(CardsPickedFromDiscardPile(identity, player.identity(), discardPile.grabAllCards()))
     }
 
-    override fun applyEvent(event: Event): BurracoGame {
+    override fun applyEvent(event: Event): Game {
         log.info("apply event: ${event::class.simpleName.toString()}")
         return when (event) {
             is CardPickedFromDeck -> apply(event)

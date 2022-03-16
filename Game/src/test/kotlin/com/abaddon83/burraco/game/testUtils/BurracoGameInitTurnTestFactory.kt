@@ -1,23 +1,17 @@
 package com.abaddon83.burraco.game.testUtils
 
-import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
-import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnEnd
-import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
 import com.abaddon83.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
-import com.abaddon83.burraco.game.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
-import com.abaddon83.burraco.common.models.valueObjects.Card
-import com.abaddon83.burraco.game.models.decks.ListCardsBuilder
-import com.abaddon83.burraco.common.models.identities.GameIdentity
 import com.abaddon83.burraco.common.models.identities.PlayerIdentity
 import com.abaddon83.burraco.game.models.*
+import com.abaddon83.burraco.game.models.game.GameIdentity
 
 data class BurracoGameInitTurnTestFactory(
-        private val gameIdentity: GameIdentity,
-        private val player1: PlayerInGame,
-        private val player2: PlayerInGame,
-        private val mazzettoDecks: MazzettoDecks,
-        private val discardPile: DiscardPile,
-        private val playerTurn: PlayerIdentity
+    private val gameIdentity: GameIdentity,
+    private val player1: PlayerInGame,
+    private val player2: PlayerInGame,
+    private val mazzettoDecks: MazzettoDecks,
+    private val discardPile: DiscardPile,
+    private val playerTurn: PlayerIdentity
 ) {
 //
 //    fun buildTurnPhaseStart(): BurracoGameExecutionTurnBeginning {

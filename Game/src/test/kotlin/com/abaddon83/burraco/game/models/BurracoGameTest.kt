@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.models
 
-import com.abaddon83.burraco.common.models.identities.GameIdentity
-import org.junit.jupiter.api.BeforeAll
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameIdentity
 import org.junit.jupiter.api.Test
 
 class BurracoGameTest {
@@ -9,7 +9,7 @@ class BurracoGameTest {
     @Test
     fun `Given anew game identity, when I create a new Burraco game, then I have a new game`(){
         val gameId= GameIdentity.create()
-        val game = BurracoGame.create(gameId)
+        val game = Game.create(gameId)
         assert(game.numPlayers() == 0)
         assert(game.identity() == gameId)
     }
