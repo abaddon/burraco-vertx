@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
-import com.abaddon83.burraco.game.helpers.ValidationsTools.isValidUUID
+import com.abaddon83.burraco.game.helpers.ValidationsTools.validUUID
 import io.github.abaddon.kcqrs.core.IIdentity
 import java.util.*
 
@@ -15,7 +15,7 @@ data class GameIdentity private constructor(
         fun create(): GameIdentity = GameIdentity(UUID.randomUUID().toString())
 
         fun create(uuidString: String): GameIdentity {
-            require(isValidUUID(uuidString)) { "Invalid UUID value received" }
+            require(validUUID(uuidString)) { "Invalid UUID value received" }
             return GameIdentity(uuidString)
         }
     }

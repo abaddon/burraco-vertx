@@ -1,17 +1,14 @@
 package com.abaddon83.burraco.game.models.game
 
-import com.abaddon83.burraco.game.events.game.CardDealtWithPlayer
+import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.GameConfig
+import com.abaddon83.burraco.game.helpers.ValidationsTools.initialDeckSize
 import com.abaddon83.burraco.game.helpers.ValidationsTools.playerCards
-import com.abaddon83.burraco.game.helpers.ValidationsTools.playerIsContained
+import com.abaddon83.burraco.game.helpers.ValidationsTools.playersListContains
 import com.abaddon83.burraco.game.helpers.ValidationsTools.updatePlayerInPlayers
-import com.abaddon83.burraco.game.models.BurracoDeck
-import com.abaddon83.burraco.game.models.DiscardPile
-import com.abaddon83.burraco.game.models.PlayerDeck
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.player.Player
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
-import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -19,13 +16,12 @@ data class GameWaitingDealer private constructor(
     override val id: GameIdentity,
     override val version: Long,
     override val players: List<Player>,
-    val deck: BurracoDeck,
-    val playerDeck1: PlayerDeck,
-    val playerDeck2: PlayerDeck,
-    val discardCard: DiscardPile
+    val deck: List<Card>,
+    val playerDeck1: List<Card>,
+    val playerDeck2: List<Card>,
+    val discardCard: List<Card>
 ) : Game() {
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
-    override val uncommittedEvents: MutableCollection<IDomainEvent> = mutableListOf()
 
 
     companion object Factory {
@@ -34,31 +30,16 @@ data class GameWaitingDealer private constructor(
                 gameDraft.id,
                 gameDraft.version,
                 gameDraft.players,
-                deck = BurracoDeck.create(listOf()),
-                PlayerDeck(mutableListOf<Card>()),
-                PlayerDeck(mutableListOf<Card>()),
-                DiscardPile.create(listOf())
+                listOf(),
+                listOf(),
+                listOf(),
+                listOf()
             )
-//        fun create(identity: GameIdentity, players: List<Player>): BurracoGameWaitingDealer {
-//            return BurracoGameWaitingDealer(
-//                identity = identity,
-//                players = players,
-//                deck = BurracoDeck.create(listOf()),
-//                playerDeck1 = PlayerDeck(mutableListOf<Card>()),
-//                playerDeck2 = PlayerDeck(mutableListOf<Card>()),
-//                discardCard = null
-//            )
-//        }
     }
-
-//    fun startGame(): BurracoGameExecutionTurnBeginning {
-//        check(areCardsDealt()){"the dealer has not finished dealing the cards"}
-//        return applyAndQueueEvent(GameStarted(identity))
-//    }
 
     fun dealPlayerCard(playerIdentity: PlayerIdentity, card: Card): GameWaitingDealer {
         require(
-            playerIsContained(
+            playersListContains(
                 playerIdentity,
                 players
             )
@@ -68,97 +49,66 @@ data class GameWaitingDealer private constructor(
         return raiseEvent(CardDealtWithPlayer.create(id, playerIdentity, card)) as GameWaitingDealer
     }
 
-//    fun dealPlayerDeckCard(playerDeckId: Int, card: Card): GameWaitingDealer {
-//        check(playerDeckId in (0..1)) { "Player Deck id not valid" }
-//        val deckCards = when (playerDeckId) {
-//            0 -> playerDeck1.numCards()
-//            1 -> playerDeck2.numCards()
-//            else -> 100
-//        }
-//        check(deckCards < sizePlayerDeck(playerDeckId)) { "The player deck has already enough card" }
-//        return applyAndQueueEvent(CardAssignedToPlayerDeck(identity, playerDeckId, card))
-//    }
-//
-//    fun dealDiscardDeckCard(card: Card): GameWaitingDealer {
-//        check(discardCard == null) { "Discard card already defined" }
-//        return applyAndQueueEvent(CardAssignedToDiscardDeck(identity, card))
-//    }
-//
-//    fun dealDeckCard(card: Card): GameWaitingDealer {
-//        check(deck.numCards() < initialSizeDeck()) { "The Deck has already enough card" }
-//        return applyAndQueueEvent(CardAssignedToDeck(identity, card))
-//    }
+    fun dealFirstPlayerDeckCard(card: Card): GameWaitingDealer {
+        check(GameConfig.FIRST_PLAYER_DECK_SIZE[players.size]!! >= playerDeck1.size + 1) { "The First player deck has already enough card" }
+        return raiseEvent(CardDealtWithFirstPlayerDeck.create(id, card)) as GameWaitingDealer
+    }
 
-//    override fun applyEvent(event: Event): Game {
-//        log.info("apply event: ${event::class.simpleName.toString()}")
-//        return when (event) {
-//            is CardAssignedToPlayer -> apply(event)
-//            is CardAssignedToPlayerDeck -> apply(event)
-//            is CardAssignedToDeck -> apply(event)
-//            is CardAssignedToDiscardDeck -> apply(event)
-//            is GameStarted -> apply(event)
-//            else -> throw UnsupportedEventException(event::class.java)
-//        }
-//    }
+    fun dealSecondPlayerDeckCard(card: Card): GameWaitingDealer {
+        check(GameConfig.SECOND_PLAYER_DECK_SIZE >= playerDeck1.size + 1) { "The Second player deck has already enough card" }
+        return raiseEvent(CardDealtWithSecondPlayerDeck.create(id, card)) as GameWaitingDealer
+    }
+
+    fun dealDiscardDeckCard(card: Card): GameWaitingDealer {
+        check(GameConfig.DISCARD_DECK_SIZE >= discardCard.size + 1) { "Discard card already defined" }
+        return raiseEvent(CardDealtWithDiscardDeck.create(id, card)) as GameWaitingDealer
+    }
+
+    fun dealDeckCard(card: Card): GameWaitingDealer {
+        check(initialDeckSize(players.size) >= deck.size + 1) { "The Deck has already enough card" }
+        return raiseEvent(CardDealtWithDeck.create(id, card)) as GameWaitingDealer
+    }
+
+    fun startGame(): GameExecutionPickUpPhase {
+        val totalCards=listOf(deck.size, playerDeck1.size, playerDeck2.size, discardCard.size)
+            .plus(players.map { it.cards.size })
+            .fold(0) { initial, value -> initial + value }
+        check(totalCards == GameConfig.TOTAL_CARDS_REQUIRED){"the dealer has not finished dealing the cards"}
+        return raiseEvent(GameStarted.create(id)) as GameExecutionPickUpPhase
+    }
 
     private fun apply(event: CardDealtWithPlayer): GameWaitingDealer {
-        check(event.aggregateId == id) { "Game Identity mismatch" }
-        val updatedPlayers = updatePlayerInPlayers(
-            players,
-            event.playerId
-        ) { player -> player.copy(cards = player.cards.plus(event.card)) }
-        //check(updatedPlayers.sumOf { it.cards.size } == players.sumOf { it.cards.size } + 1) { "Player ${event.playerId} doesn't have the right number of cards" }
+        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        val updatedPlayers = updatePlayerInPlayers(players, event.playerId) {
+                player -> player.copy(cards = player.cards.plus(event.card))
+        }
         return copy(players = updatedPlayers)
     }
 
-//    private fun apply(event: CardAssignedToPlayerDeck): GameWaitingDealer {
-//        check(event.identity == identity) { "Game Identity mismatch" }
-//        check(event.playerDeckId.toInt() in 0..1) { "Game Identity mismatch" }
-//        return when (event.playerDeckId) {
-//            0 -> {
-//                val updatedPlayerDeck = playerDeck1.copy(cards = playerDeck1.cards.plus(event.card).toMutableList())
-//                copy(playerDeck1 = updatedPlayerDeck)
-//            }
-//            1 -> {
-//                val updatedPlayerDeck = playerDeck2.copy(cards = playerDeck2.cards.plus(event.card).toMutableList())
-//                copy(playerDeck2 = updatedPlayerDeck)
-//            }
-//            else -> {
-//                log.warn("event discarded, playerDesk invalid")
-//                this
-//            }
-//        }
-//    }
-//
-//    private fun apply(event: CardAssignedToDeck): GameWaitingDealer {
-//        check(event.identity == identity) { "Game Identity mismatch" }
-//        val updatedDeck = deck.copy(cards = deck.cards.plus(event.card).toMutableList())
-//        return copy(deck = updatedDeck)
-//    }
-//
-//    private fun apply(event: CardAssignedToDiscardDeck): GameWaitingDealer {
-//        check(event.identity == identity) { "Game Identity mismatch" }
-//        return copy(discardCard = event.card)
-//    }
-//
-//    private fun apply(event: GameStarted): BurracoGameExecutionTurnBeginning {
-//        check(event.identity == identity) { "Game Identity mismatch" }
-//        check(discardCard != null) { "Game Identity mismatch" }
-//        return BurracoGameExecutionTurnBeginning.create(
-//            identity = identity,
-//            players = players.map { player ->
-//                PlayerInGame.create(
-//                    playerIdentity = player.identity(),
-//                    cards = player.cards
-//                )
-//            },
-//            burracoDeck = deck,
-//            playerDeck1 = playerDeck1,
-//            playerDeck2 = playerDeck2,
-//            discardPile = DiscardPile.create(listOf(discardCard)),
-//            playerTurn = players.first().identity()
-//        )
-//    }
+    private fun apply(event: CardDealtWithFirstPlayerDeck): GameWaitingDealer {
+        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        return copy(playerDeck1 = playerDeck1.plus(event.card))
+    }
+
+    private fun apply(event: CardDealtWithSecondPlayerDeck): GameWaitingDealer {
+        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        return copy(playerDeck2 = playerDeck1.plus(event.card))
+    }
+
+    private fun apply(event: CardDealtWithDiscardDeck): GameWaitingDealer {
+        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        return copy(discardCard = discardCard.plus(event.card))
+    }
+
+    private fun apply(event: CardDealtWithDeck): GameWaitingDealer {
+        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        return copy(deck = deck.plus(event.card))
+    }
+
+    private fun apply(event: GameStarted): GameExecutionPickUpPhase {
+        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        return GameExecutionPickUpPhase.from(this)
+    }
 
 //    private fun areCardsDealt(): Boolean {
 //        val numPlayerDeck1Cards = playerDeck1.numCards()

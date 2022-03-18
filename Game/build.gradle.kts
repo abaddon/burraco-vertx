@@ -1,7 +1,9 @@
 group = "com.abaddon83.burraco.game"
 
 object Versions {
-    const val kcqrsVersion="0.0.3"
+    const val kcqrsCoreVersion="0.0.5"
+    const val kcqrsTestVersion="0.0.9"
+    const val kcqrsEventStoreDBVersion="0.0.5"
     const val slf4jVersion = "1.7.25"
     const val kotlinVersion = "1.6.0"
     const val kotlinCoroutineVersion = "1.6.0"
@@ -13,6 +15,7 @@ object Versions {
     const val ktormVersion ="3.2.0"
     const val mysqlConnectorVersion = "8.0.21"
     const val config4k = "0.4.2"
+    const val log4jVersion= "2.17.2"
 }
 
 val mainVerticleName = "com.abaddon83.burraco.game.MainVerticle"
@@ -42,6 +45,7 @@ application {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -49,8 +53,8 @@ dependencies {
     //implementation(project(":SharedComponents","default"))
 
     //kcqrs
-    implementation("io.github.abaddon.kcqrs:kcqrs-core:${Versions.kcqrsVersion}")
-    implementation("io.github.abaddon.kcqrs:kcqrs-EventStoreDB:${Versions.kcqrsVersion}")
+    implementation("io.github.abaddon.kcqrs:kcqrs-core:${Versions.kcqrsCoreVersion}")
+    implementation("io.github.abaddon.kcqrs:kcqrs-EventStoreDB:${Versions.kcqrsEventStoreDBVersion}")
 
     //Vertx
     implementation("io.vertx:vertx-config:${Versions.vertxVersion}")
@@ -66,7 +70,12 @@ dependencies {
     //Vertx service discovery
     implementation("io.vertx:vertx-service-discovery:${Versions.vertxVersion}")
 
-    testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsVersion}")
+    //Logs
+    implementation("org.apache.logging.log4j:log4j-api:${Versions.log4jVersion}")
+    implementation("org.apache.logging.log4j:log4j-core:${Versions.log4jVersion}")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4jVersion}")
+
+    testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
 }
 

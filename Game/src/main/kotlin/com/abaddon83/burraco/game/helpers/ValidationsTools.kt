@@ -9,9 +9,9 @@ object ValidationsTools {
     private val UUID_REGEX = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         .toRegex()
 
-    fun isValidUUID(value: String) = UUID_REGEX.containsMatchIn(value)
+    fun validUUID(value: String):Boolean = UUID_REGEX.containsMatchIn(value)
 
-    fun playerIsContained(playerIdentity: PlayerIdentity,players: List<Player>): Boolean = players.map { player -> player.id }.contains(playerIdentity)
+    fun playersListContains(playerIdentity: PlayerIdentity, players: List<Player>): Boolean = players.map { player -> player.id }.contains(playerIdentity)
 
     fun playerCards(playerIdentity: PlayerIdentity,players: List<Player>): List<Card>? = players
         .find { player -> player.id == playerIdentity }
@@ -24,5 +24,12 @@ object ValidationsTools {
                 else -> player
             }
         }
+
+    fun initialDeckSize(numPlayers: Int): Int = GameConfig.TOTAL_CARDS_REQUIRED
+            .minus(GameConfig.DISCARD_DECK_SIZE)
+            .minus(GameConfig.NUM_PLAYER_CARDS*numPlayers)
+            .minus(GameConfig.FIRST_PLAYER_DECK_SIZE[numPlayers]!!)
+            .minus(GameConfig.SECOND_PLAYER_DECK_SIZE)
+
 
 }

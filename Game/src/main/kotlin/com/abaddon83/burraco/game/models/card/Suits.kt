@@ -6,7 +6,7 @@ object Suits {
     val allSuit: List<Suit> = listOf(Heart, Tile, Clover, Pike)
 
     fun valueOf(value: String): Suit =
-        when (val suit = allSuit.plus(Jolly).find { it.javaClass.simpleName.toLowerCase() == value.toLowerCase() }) {
+        when (val suit = allSuit.plus(Jolly).find { it.javaClass.simpleName.lowercase() == value.lowercase() }) {
             is Suit -> suit
             else -> throw Exception("$value is not a valid Suit")
         }
