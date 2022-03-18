@@ -10,9 +10,8 @@ data class Deck private constructor(override val cards: List<Card>) : IDeck {
 
     fun removeFirstCard(card: Card) : Deck {
         check(cards.first() == card){"Unexpected card found on top of the Deck!"}
-        val updatedDeck = copy(cards= cards.subList(1,cards.size-1))
+        val updatedDeck = copy(cards= cards.subList(1,cards.size))
         check(updatedDeck.numCards() == numCards()-1)
-        check(updatedDeck.cards.first() != card)
         return updatedDeck
     }
 

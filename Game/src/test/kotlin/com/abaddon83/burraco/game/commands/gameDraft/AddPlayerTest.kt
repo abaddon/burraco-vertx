@@ -1,17 +1,19 @@
-package com.abaddon83.burraco.game.models.game
+package com.abaddon83.burraco.game.commands.gameDraft
 
-import com.abaddon83.burraco.game.commands.AddPlayer
 import com.abaddon83.burraco.game.events.game.GameEvent
 import com.abaddon83.burraco.game.events.game.PlayerAdded
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameDraft
+import com.abaddon83.burraco.game.models.game.GameIdentity
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.test.KcqrsAggregateTestSpecification
 
-internal class `Given a new game when a new player added then GameDraft created with a player` : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_Nothing_When_AddPlayer_Then_event : KcqrsAggregateTestSpecification<Game>(){
     companion object{
-        val AGGREGATE_ID =GameIdentity.create()
+        val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID=PlayerIdentity.create()
     }
     //Setup
@@ -22,18 +24,18 @@ internal class `Given a new game when a new player added then GameDraft created 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>()
 
-    override fun `when`(): ICommand<Game> =AddPlayer(aggregateId,PLAYER_ID)
+    override fun `when`(): ICommand<Game> = AddPlayer(aggregateId, PLAYER_ID)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        PlayerAdded.create(aggregateId,PLAYER_ID)
+        PlayerAdded.create(aggregateId, PLAYER_ID)
     )
 
     override fun expectedException(): Exception? = null
 }
 
-internal class `Given a game with a player when add the same player then exception raised` : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameDraftWith1Player_When_AddSamePlayer_Then_exception : KcqrsAggregateTestSpecification<Game>(){
     companion object{
-        val AGGREGATE_ID =GameIdentity.create()
+        val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID=PlayerIdentity.create()
     }
     //Setup
@@ -43,13 +45,13 @@ internal class `Given a game with a player when add the same player then excepti
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
-        PlayerAdded.create(aggregateId,PLAYER_ID)
+        PlayerAdded.create(aggregateId, PLAYER_ID)
     )
 
-    override fun `when`(): ICommand<Game> =AddPlayer(aggregateId,PLAYER_ID)
+    override fun `when`(): ICommand<Game> = AddPlayer(aggregateId, PLAYER_ID)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        PlayerAdded.create(aggregateId,PLAYER_ID)
+        PlayerAdded.create(aggregateId, PLAYER_ID)
     )
 
     override fun expectedException(): Exception? {
@@ -57,9 +59,9 @@ internal class `Given a game with a player when add the same player then excepti
     }
 }
 
-internal class `Given a game with 3 players when add a new player then GameDraft hass 4 players` : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameDraftWith3Player_When_AddNewPlayer_Then_event : KcqrsAggregateTestSpecification<Game>(){
     companion object{
-        val AGGREGATE_ID =GameIdentity.create()
+        val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
         val PLAYER_ID3=PlayerIdentity.create()
@@ -72,23 +74,23 @@ internal class `Given a game with 3 players when add a new player then GameDraft
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
-        PlayerAdded.create(aggregateId,PLAYER_ID1),
-        PlayerAdded.create(aggregateId,PLAYER_ID2),
-        PlayerAdded.create(aggregateId,PLAYER_ID3),
+        PlayerAdded.create(aggregateId, PLAYER_ID1),
+        PlayerAdded.create(aggregateId, PLAYER_ID2),
+        PlayerAdded.create(aggregateId, PLAYER_ID3),
     )
 
-    override fun `when`(): ICommand<Game> =AddPlayer(aggregateId,PLAYER_ID4)
+    override fun `when`(): ICommand<Game> = AddPlayer(aggregateId, PLAYER_ID4)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        PlayerAdded.create(aggregateId,PLAYER_ID4)
+        PlayerAdded.create(aggregateId, PLAYER_ID4)
     )
 
     override fun expectedException(): Exception? = null
 }
 
-internal class `Given a game with 4 players when add a new player then an exception is raised` : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameDraftWith4Player_When_AddNewPlayer_Then_exception : KcqrsAggregateTestSpecification<Game>(){
     companion object{
-        val AGGREGATE_ID =GameIdentity.create()
+        val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
         val PLAYER_ID3=PlayerIdentity.create()
@@ -102,13 +104,13 @@ internal class `Given a game with 4 players when add a new player then an except
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
-        PlayerAdded.create(aggregateId,PLAYER_ID1),
-        PlayerAdded.create(aggregateId,PLAYER_ID2),
-        PlayerAdded.create(aggregateId,PLAYER_ID3),
-        PlayerAdded.create(aggregateId,PLAYER_ID4),
+        PlayerAdded.create(aggregateId, PLAYER_ID1),
+        PlayerAdded.create(aggregateId, PLAYER_ID2),
+        PlayerAdded.create(aggregateId, PLAYER_ID3),
+        PlayerAdded.create(aggregateId, PLAYER_ID4),
     )
 
-    override fun `when`(): ICommand<Game> =AddPlayer(aggregateId,PLAYER_ID5)
+    override fun `when`(): ICommand<Game> = AddPlayer(aggregateId, PLAYER_ID5)
 
     override fun expected(): List<IDomainEvent> = listOf()
 

@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.game.commands
+package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameIdentity

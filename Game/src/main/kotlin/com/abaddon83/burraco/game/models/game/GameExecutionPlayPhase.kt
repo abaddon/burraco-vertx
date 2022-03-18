@@ -1,18 +1,25 @@
 package com.abaddon83.burraco.game.models.game
 
-import com.abaddon83.burraco.game.models.*
+import com.abaddon83.burraco.game.events.game.TrisDropped
+import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
+import com.abaddon83.burraco.game.helpers.ValidationsTools
+import com.abaddon83.burraco.game.helpers.ValidationsTools.cardsBelongPlayer
+import com.abaddon83.burraco.game.helpers.ValidationsTools.validPlayer
+import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.game.models.player.Player
+import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.game.models.player.PlayerInGame
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 data class GameExecutionPlayPhase private constructor(
     override val id: GameIdentity,
     override val version: Long,
-    override val players: List<Player>,
+    override val players: List<PlayerInGame>,
     val playerTurn: PlayerIdentity,
     val deck: Deck,
     val playerDeck1: PlayerDeck,
@@ -35,14 +42,14 @@ data class GameExecutionPlayPhase private constructor(
         )
     }
 
-//    fun dropOnTableATris(playerIdentity: PlayerIdentity, tris: BurracoTris): GameExecutionPlayPhase {
-//        val player = validatePlayerId(playerIdentity)
-//        validatePlayerTurn(playerIdentity)
-//        player.dropATris(tris)
-//        return applyAndQueueEvent(
-//            TrisDropped(identity = identity(), playerIdentity = player.identity(), tris = tris)
-//        )
-//    }
+    fun dropTris(playerIdentity: PlayerIdentity, cards: List<Card>): GameExecutionPlayPhase {
+        require(validPlayer(players,playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
+        require(cardsBelongPlayer(players,playerIdentity,cards)) {"Tris's cards don't belong to player ${playerIdentity.valueAsString()}"}
+        require(validTris(cards)){"It's not a valid tris"}
+
+        return raiseEvent(TrisDropped.create(id,playerIdentity,cards)) as GameExecutionPlayPhase
+    }
 //
 //    fun dropOnTableAScale(playerIdentity: PlayerIdentity, scale: BurracoScale): GameExecutionPlayPhase {
 //        val player = validatePlayerId(playerIdentity)
@@ -123,12 +130,15 @@ data class GameExecutionPlayPhase private constructor(
 //        )
 //    }
 //
-//    private fun apply(event: TrisDropped): GameExecutionPlayPhase {
-//        val player = players.find { p -> p.identity() == event.playerIdentity }!!
-//        return copy(
-//            players = UpdatePlayers(player.dropATris(event.tris))
-//        )
-//    }
+    private fun apply(event: TrisDropped): GameExecutionPlayPhase {
+    val updatedPlayers = ValidationsTools.updatePlayerInPlayers(players, event.playerIdentity) { player ->
+        player.copy(cards = player.cards.minus(event.cards))
+    }
+
+        return copy(
+            players = updatedPlayers
+        )
+    }
 //
 //    private fun apply(event: ScaleDropped): GameExecutionPlayPhase {
 //        val player = players.find { p -> p.identity() == event.playerIdentity }!!

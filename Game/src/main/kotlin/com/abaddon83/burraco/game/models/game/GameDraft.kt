@@ -4,7 +4,7 @@ import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.PlayerAdded
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.ValidationsTools.playersListContains
-import com.abaddon83.burraco.game.models.player.Player
+import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
 data class GameDraft constructor(
     override val id: GameIdentity,
     override val version: Long,
-    override val players: List<Player>
+    override val players: List<WaitingPlayer>
 ) : Game() {
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
@@ -28,7 +28,7 @@ data class GameDraft constructor(
         return raiseEvent(PlayerAdded.create(id, playerIdentity)) as GameDraft
     }
 
-    fun dealCards(requestedBy: PlayerIdentity): GameWaitingDealer {
+    fun requestDealCards(requestedBy: PlayerIdentity): GameWaitingDealer {
         require(playersListContains(requestedBy,players)) { "The player $requestedBy is not one of the players " }
         check(players.size in GameConfig.MIN_PLAYERS..GameConfig.MAX_PLAYERS) { "Not enough players to deal the playing cards, ( Min players required: ${GameConfig.MIN_PLAYERS})" }
 
@@ -36,12 +36,14 @@ data class GameDraft constructor(
     }
 
     private fun apply(event: PlayerAdded): GameDraft {
-        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        return copy(players = players.plus(Player(event.playerIdentity)))
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        val updatedPlayers=players.plus(WaitingPlayer(event.playerIdentity))
+        log.debug("New Player added, now there are ${updatedPlayers.size} players")
+        return copy(players = updatedPlayers )
     }
 
     private fun apply(event: CardDealingRequested): GameWaitingDealer {
-        log.info("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         return GameWaitingDealer.from(this)
     }
 
