@@ -1,11 +1,11 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.game.events.game.CardAddedToTris
 import com.abaddon83.burraco.game.events.game.TrisDropped
+import com.abaddon83.burraco.game.helpers.*
 import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
-import com.abaddon83.burraco.game.helpers.cardsBelongPlayer
-import com.abaddon83.burraco.game.helpers.updatePlayer
-import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.game.models.Tris
+import com.abaddon83.burraco.game.models.TrisIdentity
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
@@ -28,7 +28,6 @@ data class GameExecutionPlayPhase private constructor(
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
-        //game.testInvariants()
         fun from(game: GameExecutionPickUpPhase): GameExecutionPlayPhase = GameExecutionPlayPhase(
             id = game.id,
             version = game.version,
@@ -44,10 +43,44 @@ data class GameExecutionPlayPhase private constructor(
     fun dropTris(playerIdentity: PlayerIdentity, cards: List<Card>): GameExecutionPlayPhase {
         require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
-        require(players.cardsBelongPlayer(playerIdentity, cards)) { "Tris's cards don't belong to player ${playerIdentity.valueAsString()}" }
+        require(
+            players.cardsBelongPlayer(
+                playerIdentity,
+                cards
+            )
+        ) { "Tris's cards don't belong to player ${playerIdentity.valueAsString()}" }
         require(validTris(cards)) { "It's not a valid tris" }
 
         return raiseEvent(TrisDropped.create(id, playerIdentity, cards)) as GameExecutionPlayPhase
+    }
+
+    fun appendCardsOnATris(
+        playerIdentity: PlayerIdentity,
+        cards: List<Card>,
+        trisIdentity: TrisIdentity
+    ): GameExecutionPlayPhase {
+        require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
+        require(
+            players.cardsBelongPlayer(
+                playerIdentity,
+                cards
+            )
+        ) { "Cards to append to the tris ${trisIdentity.valueAsString()} don't belong to player ${playerIdentity.valueAsString()}" }
+        require(
+            players.trisBelongPlayer(
+                playerIdentity,
+                trisIdentity
+            )
+        ) { "Tris ${trisIdentity.valueAsString()} don't belong to player ${playerIdentity.valueAsString()}" }
+        require(
+            validTris(
+                players.tris(playerIdentity, trisIdentity)?.cards
+                    ?.plus(cards)
+                    .orEmpty()
+            )
+        ) { "Cards can't be added to Tris ${trisIdentity.valueAsString()}" }
+        return raiseEvent(CardAddedToTris.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
     }
 
     //
@@ -140,6 +173,19 @@ data class GameExecutionPlayPhase private constructor(
         }
         return copy(players = updatedPlayers)
     }
+
+    private fun apply(event: CardAddedToTris): GameExecutionPlayPhase {
+        val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
+            player.copy(
+                cards = player.cards.minus(event.cards),
+                listOfTris = player.listOfTris.updateTris(event.trisIdentity) { tris ->
+                    tris.copy(cards = tris.cards.plus(event.cards))
+                }
+            )
+        }
+        return copy(players = updatedPlayers)
+    }
+
 //
 //    private fun apply(event: ScaleDropped): GameExecutionPlayPhase {
 //        val player = players.find { p -> p.identity() == event.playerIdentity }!!
