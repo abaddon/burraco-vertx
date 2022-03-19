@@ -2,13 +2,12 @@ package com.abaddon83.burraco.helpers
 
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.GameConfig
-import com.abaddon83.burraco.game.helpers.ValidationsTools
+import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.GameIdentity
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
-import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 
 object DeckHelper{
 
@@ -43,8 +42,8 @@ object DeckHelper{
         val playerDeck2 =(1..GameConfig.SECOND_PLAYER_DECK_SIZE).map { CardDealtWithSecondPlayerDeck.create(gameId,availableCards.removeFirst()) }
         assert(playerDeck2.size == GameConfig.SECOND_PLAYER_DECK_SIZE)
         //deck
-        val deck = (1..ValidationsTools.initialDeckSize(players.size)).map { CardDealtWithDeck.create(gameId,availableCards.removeFirst()) }
-        assert(deck.size == ValidationsTools.initialDeckSize(players.size))
+        val deck = (1..deckSize(players.size)).map { CardDealtWithDeck.create(gameId,availableCards.removeFirst()) }
+        assert(deck.size == deckSize(players.size))
         assert(availableCards.isEmpty())
 
         val events=deck

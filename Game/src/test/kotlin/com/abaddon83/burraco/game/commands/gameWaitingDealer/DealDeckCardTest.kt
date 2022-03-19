@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
 import com.abaddon83.burraco.game.events.game.*
-import com.abaddon83.burraco.game.helpers.ValidationsTools.initialDeckSize
+import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
@@ -83,7 +83,7 @@ internal class Given_GameWaitingDealerWith4PlayersAnd41DeckCards_When_DealDeckCa
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1)
     ).plus(
-        (2..initialDeckSize(4)).map { CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
+        (2..deckSize(4)).map { CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
     )
 
     override fun `when`(): ICommand<Game> = DealDeckCard(aggregateId,Card(Suits.Clover, Ranks.Ace))
@@ -113,7 +113,7 @@ internal class Given_GameWaitingDealerWith4PlayersAnd42DeckCards_When_DealDeckCa
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1)
     ).plus(
-        (1..initialDeckSize(4)).map { CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
+        (1..deckSize(4)).map { CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
     )
 
     override fun `when`(): ICommand<Game> = DealDeckCard(aggregateId,Card(Suits.Clover, Ranks.Ace))

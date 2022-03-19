@@ -13,4 +13,10 @@ object GameConfig {
         Pair(4,AVAILABLE_PLAYER_DECK_SIZE[0])
     )
     const val SECOND_PLAYER_DECK_SIZE: Int = 11
+
+    fun deckSize(numPlayers: Int): Int = GameConfig.TOTAL_CARDS_REQUIRED
+        .minus(GameConfig.DISCARD_DECK_SIZE)
+        .minus(GameConfig.NUM_PLAYER_CARDS * numPlayers)
+        .minus(GameConfig.FIRST_PLAYER_DECK_SIZE[numPlayers]!!)
+        .minus(GameConfig.SECOND_PLAYER_DECK_SIZE)
 }

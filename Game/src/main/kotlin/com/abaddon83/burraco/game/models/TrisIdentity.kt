@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.game.models
 
-import com.abaddon83.burraco.game.helpers.ValidationsTools.validUUID
+import com.abaddon83.burraco.game.helpers.validUUID
 import io.github.abaddon.kcqrs.core.IIdentity
 import java.util.*
 
@@ -15,7 +15,7 @@ data class TrisIdentity private constructor(
         fun create(): TrisIdentity = TrisIdentity(UUID.randomUUID().toString())
 
         fun create(uuidString: String): TrisIdentity {
-            require(validUUID(uuidString)) { "Invalid UUID value received" }
+            require(uuidString.validUUID()) { "Invalid UUID value received" }
             return TrisIdentity(uuidString)
         }
     }

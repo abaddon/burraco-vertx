@@ -3,7 +3,7 @@ package com.abaddon83.burraco.game.models.game
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.PlayerAdded
 import com.abaddon83.burraco.game.helpers.GameConfig
-import com.abaddon83.burraco.game.helpers.ValidationsTools.playersListContains
+import com.abaddon83.burraco.game.helpers.contains
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
 import org.slf4j.Logger
@@ -21,7 +21,7 @@ data class GameDraft constructor(
     }
 
     fun addPlayer(playerIdentity: PlayerIdentity): GameDraft {
-        require(!playersListContains(playerIdentity,players)) { "The player ${playerIdentity.valueAsString()} is already a player of game ${this.id.valueAsString()}" }
+        require(!players.contains(playerIdentity)) { "The player ${playerIdentity.valueAsString()} is already a player of game ${this.id.valueAsString()}" }
         val playersCount = players.size+1
         check(GameConfig.MAX_PLAYERS >= playersCount) { "Maximum number of players reached, (Max: ${GameConfig.MAX_PLAYERS})" }
 
@@ -29,7 +29,7 @@ data class GameDraft constructor(
     }
 
     fun requestDealCards(requestedBy: PlayerIdentity): GameWaitingDealer {
-        require(playersListContains(requestedBy,players)) { "The player $requestedBy is not one of the players " }
+        require(players.contains(requestedBy)) { "The player $requestedBy is not one of the players " }
         check(players.size in GameConfig.MIN_PLAYERS..GameConfig.MAX_PLAYERS) { "Not enough players to deal the playing cards, ( Min players required: ${GameConfig.MIN_PLAYERS})" }
 
         return raiseEvent(CardDealingRequested.create(id, requestedBy)) as GameWaitingDealer

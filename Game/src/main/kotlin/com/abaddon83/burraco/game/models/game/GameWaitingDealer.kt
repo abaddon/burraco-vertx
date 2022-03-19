@@ -2,10 +2,10 @@ package com.abaddon83.burraco.game.models.game
 
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.GameConfig
-import com.abaddon83.burraco.game.helpers.ValidationsTools
-import com.abaddon83.burraco.game.helpers.ValidationsTools.initialDeckSize
-import com.abaddon83.burraco.game.helpers.ValidationsTools.playerCards
-import com.abaddon83.burraco.game.helpers.ValidationsTools.updatePlayerInPlayers
+import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
+import com.abaddon83.burraco.game.helpers.playerCards
+import com.abaddon83.burraco.game.helpers.updatePlayer
+import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
@@ -38,9 +38,9 @@ data class GameWaitingDealer private constructor(
     }
 
     fun dealPlayerCard(playerIdentity: PlayerIdentity, card: Card): GameWaitingDealer {
-        check(ValidationsTools.validPlayer(players, playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        check(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         val maxCards= GameConfig.NUM_PLAYER_CARDS
-        val numPlayerCards = playerCards(playerIdentity, players)!!.size + 1
+        val numPlayerCards = players.playerCards(playerIdentity)!!.size + 1
         check(maxCards >= numPlayerCards) { "Player ${playerIdentity.valueAsString()} has already enough card. (Max $maxCards)" }
         return raiseEvent(CardDealtWithPlayer.create(id, playerIdentity, card)) as GameWaitingDealer
     }
@@ -64,7 +64,7 @@ data class GameWaitingDealer private constructor(
     }
 
     fun dealDeckCard(card: Card): GameWaitingDealer {
-        val maxCards= initialDeckSize(players.size)
+        val maxCards= deckSize(players.size)
         check(maxCards >= deck.size + 1) { "The Deck has already enough card. (Max $maxCards)" }
         return raiseEvent(CardDealtWithDeck.create(id, card)) as GameWaitingDealer
     }
@@ -79,7 +79,7 @@ data class GameWaitingDealer private constructor(
 
     private fun apply(event: CardDealtWithPlayer): GameWaitingDealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        val updatedPlayers = updatePlayerInPlayers(players, event.playerId) {
+        val updatedPlayers = players.updatePlayer(event.playerId) {
                 player -> player.copy(cards = player.cards.plus(event.card))
         }
         log.debug("The Player ${event.playerId.valueAsString()} received a card, it has ${updatedPlayers.find { it.id == event.playerId }?.cards?.size} cards")

@@ -3,13 +3,13 @@ package com.abaddon83.burraco.game.models.game
 
 import com.abaddon83.burraco.game.events.game.CardPickedFromDeck
 import com.abaddon83.burraco.game.events.game.CardsPickedFromDiscardPile
-import com.abaddon83.burraco.game.helpers.ValidationsTools
+import com.abaddon83.burraco.game.helpers.updatePlayer
+import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
-import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -63,12 +63,7 @@ data class GameExecutionPickUpPhase private constructor(
 
     //When the turn start the player can pickUp a card from the Deck
     fun pickUpACardFromDeck(playerIdentity: PlayerIdentity): GameExecutionPlayPhase {
-        check(
-            ValidationsTools.validPlayer(
-                players,
-                playerIdentity
-            )
-        ) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        check(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         check(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
         check(deck.numCards() - 1 >= 0) { "Deck is empty" }
         return raiseEvent(CardPickedFromDeck.create(id, playerIdentity, deck.firstCard())) as GameExecutionPlayPhase
@@ -76,12 +71,7 @@ data class GameExecutionPickUpPhase private constructor(
 
     //When the turn start the player can pickUp all cards from the DiscardPile if it's not empty
     fun pickUpCardsFromDiscardPile(playerIdentity: PlayerIdentity): GameExecutionPlayPhase {
-        check(
-            ValidationsTools.validPlayer(
-                players,
-                playerIdentity
-            )
-        ) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        check(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         check(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
         return raiseEvent(
             CardsPickedFromDiscardPile.create(
@@ -93,7 +83,7 @@ data class GameExecutionPickUpPhase private constructor(
     }
 
     private fun apply(event: CardPickedFromDeck): GameExecutionPlayPhase {
-        val updatedPlayers = ValidationsTools.updatePlayerInPlayers(players, event.playerIdentity) { player: PlayerInGame ->
+        val updatedPlayers = players.updatePlayer(event.playerIdentity) { player: PlayerInGame ->
             player.copy(cards = player.cards.plus(event.card))
         }
         val updatedDeck = deck.removeFirstCard(event.card)
@@ -104,7 +94,7 @@ data class GameExecutionPickUpPhase private constructor(
 
     private fun apply(event: CardsPickedFromDiscardPile): GameExecutionPlayPhase {
         check(event.aggregateId == id) { "Game Identity mismatch" }
-        val updatedPlayers = ValidationsTools.updatePlayerInPlayers(players, event.playerIdentity) { player ->
+        val updatedPlayers = players.updatePlayer(event.playerIdentity) { player: PlayerInGame ->
             player.copy(cards = player.cards.plus(event.cards))
         }
         val updatedDiscardPile = discardPile.removeAllCards(event.cards)
