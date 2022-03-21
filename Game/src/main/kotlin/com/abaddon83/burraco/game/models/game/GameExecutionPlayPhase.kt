@@ -40,7 +40,7 @@ data class GameExecutionPlayPhase private constructor(
         )
     }
 
-    fun dropTris(playerIdentity: PlayerIdentity, cards: List<Card>): GameExecutionPlayPhase {
+    fun dropTris(playerIdentity: PlayerIdentity, trisIdentity: TrisIdentity, cards: List<Card>): GameExecutionPlayPhase {
         require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
         require(
@@ -51,7 +51,7 @@ data class GameExecutionPlayPhase private constructor(
         ) { "Tris's cards don't belong to player ${playerIdentity.valueAsString()}" }
         require(validTris(cards)) { "It's not a valid tris" }
 
-        return raiseEvent(TrisDropped.create(id, playerIdentity, cards)) as GameExecutionPlayPhase
+        return raiseEvent(TrisDropped.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
     }
 
     fun appendCardsOnATris(
@@ -165,10 +165,9 @@ data class GameExecutionPlayPhase private constructor(
 //
     private fun apply(event: TrisDropped): GameExecutionPlayPhase {
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
-            Tris
             player.copy(
                 cards = player.cards.minus(event.cards),
-                listOfTris = player.listOfTris.plus(Tris.create(event.cards))
+                listOfTris = player.listOfTris.plus(Tris.create(event.trisIdentity,event.cards))
             )
         }
         return copy(players = updatedPlayers)
