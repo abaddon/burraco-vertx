@@ -7,7 +7,7 @@ import com.abaddon83.burraco.game.models.player.PlayerIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
 import java.util.*
 
-data class CardAddedToTris private constructor(
+data class CardsAddedToTris private constructor(
     override val messageId: UUID,
     override val header: EventHeader,
     override val aggregateId: GameIdentity,
@@ -16,8 +16,8 @@ data class CardAddedToTris private constructor(
     val cards: List<Card>
 ) : GameEvent() {
     companion object Factory {
-        fun create(aggregateId: GameIdentity, playerIdentity: PlayerIdentity, trisIdentity: TrisIdentity, cards: List<Card>): CardAddedToTris =
-            CardAddedToTris(UUID.randomUUID(), EventHeader.create(AGGREGATE_TYPE_NAME), aggregateId, playerIdentity,trisIdentity, cards)
+        fun create(aggregateId: GameIdentity, playerIdentity: PlayerIdentity, trisIdentity: TrisIdentity, cards: List<Card>): CardsAddedToTris =
+            CardsAddedToTris(UUID.randomUUID(), EventHeader.create(AGGREGATE_TYPE_NAME), aggregateId, playerIdentity,trisIdentity, cards)
     }
 
 }

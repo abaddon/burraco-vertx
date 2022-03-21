@@ -17,7 +17,7 @@ import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.test.KcqrsAggregateTestSpecification
 
 
-internal class Given_GameExecutionPlayPhase_When_RightPlayerDropAValidTrisWithCardsNoBelongHim_Then_exception :
+internal class Given_GameExecutionPlayPhase_When_RightPlayerDropValidTrisWithCardsNoBelongHim_Then_exception :
     KcqrsAggregateTestSpecification<Game>() {
     companion object {
         val AGGREGATE_ID = GameIdentity.create()
@@ -62,7 +62,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerDropAValidTrisWithCa
         IllegalArgumentException("Tris's cards don't belong to player ${PLAYER_ID1.valueAsString()}")
 }
 
-internal class Given_GameExecutionPlayPhase_When_RightPlayerDropAValidTrisWithCards_Then_exception :
+internal class Given_GameExecutionPlayPhase_When_RightPlayerDropValidTrisWithCards_Then_event :
     KcqrsAggregateTestSpecification<Game>() {
     companion object {
         val AGGREGATE_ID = GameIdentity.create()
@@ -103,4 +103,86 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerDropAValidTrisWithCa
     )
 
     override fun expectedException(): Exception? = null
+}
+
+internal class Given_GameExecutionPlayPhase_When_RightPlayerDropInValidTrisWithCards_Then_exception :
+    KcqrsAggregateTestSpecification<Game>() {
+    companion object {
+        val AGGREGATE_ID = GameIdentity.create()
+        val PLAYER_ID1 = PlayerIdentity.create()
+        val PLAYER_ID2 = PlayerIdentity.create()
+        val PLAYER_ID3 = PlayerIdentity.create()
+        val PLAYER_ID4 = PlayerIdentity.create()
+        val TRIS_ID = TrisIdentity.create()
+        val FAKE_TRIS_CARDS = listOf(Card(Suits.Heart, Ranks.Ten), Card(Suits.Heart, Ranks.Six), Card(Suits.Clover, Ranks.Six))
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, FAKE_TRIS_CARDS)
+    }
+
+    //Setup
+    override val aggregateId: GameIdentity = AGGREGATE_ID
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.init(it as GameIdentity) }
+    override fun streamNameRoot(): String = "Stream1"
+
+    //Test
+    override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        PlayerAdded.create(aggregateId, PLAYER_ID1),
+        PlayerAdded.create(aggregateId, PLAYER_ID2),
+        PlayerAdded.create(aggregateId, PLAYER_ID3),
+        PlayerAdded.create(aggregateId, PLAYER_ID4),
+        CardDealingRequested.create(aggregateId, PLAYER_ID1)
+    ).plus(
+        gameDecksHelper.events()
+    ).plus(
+        listOf(
+            GameStarted.create(aggregateId),
+            CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck())
+        )
+    )
+
+    override fun `when`(): ICommand<Game> = DropATris(aggregateId, PLAYER_ID1, TRIS_ID, FAKE_TRIS_CARDS)
+
+    override fun expected(): List<IDomainEvent> = listOf()
+
+    override fun expectedException(): Exception? = IllegalArgumentException("It's not a valid tris")
+}
+
+internal class Given_GameExecutionPlayPhase_When_WrongPlayerDropValidTrisWithCards_Then_exception :
+    KcqrsAggregateTestSpecification<Game>() {
+    companion object {
+        val AGGREGATE_ID = GameIdentity.create()
+        val PLAYER_ID1 = PlayerIdentity.create()
+        val PLAYER_ID2 = PlayerIdentity.create()
+        val PLAYER_ID3 = PlayerIdentity.create()
+        val PLAYER_ID4 = PlayerIdentity.create()
+        val TRIS_ID = TrisIdentity.create()
+        val TRIS_CARDS = listOf(Card(Suits.Heart, Ranks.Six), Card(Suits.Heart, Ranks.Six), Card(Suits.Clover, Ranks.Six))
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID2, TRIS_CARDS)
+    }
+
+    //Setup
+    override val aggregateId: GameIdentity = AGGREGATE_ID
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.init(it as GameIdentity) }
+    override fun streamNameRoot(): String = "Stream1"
+
+    //Test
+    override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        PlayerAdded.create(aggregateId, PLAYER_ID1),
+        PlayerAdded.create(aggregateId, PLAYER_ID2),
+        PlayerAdded.create(aggregateId, PLAYER_ID3),
+        PlayerAdded.create(aggregateId, PLAYER_ID4),
+        CardDealingRequested.create(aggregateId, PLAYER_ID1)
+    ).plus(
+        gameDecksHelper.events()
+    ).plus(
+        listOf(
+            GameStarted.create(aggregateId),
+            CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck())
+        )
+    )
+
+    override fun `when`(): ICommand<Game> = DropATris(aggregateId, PLAYER_ID2, TRIS_ID, TRIS_CARDS)
+
+    override fun expected(): List<IDomainEvent> = listOf()
+
+    override fun expectedException(): Exception? = IllegalArgumentException("It's not the turn of the player ${PLAYER_ID2.valueAsString()}")
 }

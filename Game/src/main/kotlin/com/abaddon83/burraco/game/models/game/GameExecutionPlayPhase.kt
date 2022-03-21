@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
-import com.abaddon83.burraco.game.events.game.CardAddedToTris
+import com.abaddon83.burraco.game.events.game.CardsAddedToTris
 import com.abaddon83.burraco.game.events.game.TrisDropped
 import com.abaddon83.burraco.game.helpers.*
 import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
@@ -80,7 +80,7 @@ data class GameExecutionPlayPhase private constructor(
                     .orEmpty()
             )
         ) { "Cards can't be added to Tris ${trisIdentity.valueAsString()}" }
-        return raiseEvent(CardAddedToTris.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
+        return raiseEvent(CardsAddedToTris.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
     }
 
     //
@@ -173,7 +173,7 @@ data class GameExecutionPlayPhase private constructor(
         return copy(players = updatedPlayers)
     }
 
-    private fun apply(event: CardAddedToTris): GameExecutionPlayPhase {
+    private fun apply(event: CardsAddedToTris): GameExecutionPlayPhase {
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
             player.copy(
                 cards = player.cards.minus(event.cards),

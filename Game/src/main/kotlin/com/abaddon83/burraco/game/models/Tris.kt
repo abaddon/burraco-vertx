@@ -8,7 +8,7 @@ data class Tris private constructor(
     val cards: List<Card>
 ){
     companion object Factory{
-        fun create(id: TrisIdentity,cards: List<Card>): Tris {
+        fun create(id: TrisIdentity, cards: List<Card>): Tris {
             require(validTris(cards)){}
             return Tris(id,cards)
         }
