@@ -1,11 +1,10 @@
 package com.abaddon83.burraco.game.models.game
 
-import com.abaddon83.burraco.game.events.game.CardsAddedToTris
-import com.abaddon83.burraco.game.events.game.TrisDropped
+import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.*
+import com.abaddon83.burraco.game.helpers.StraightHelper.validStraight
 import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
-import com.abaddon83.burraco.game.models.Tris
-import com.abaddon83.burraco.game.models.TrisIdentity
+import com.abaddon83.burraco.game.models.*
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
@@ -21,10 +20,11 @@ data class GameExecutionPlayPhase private constructor(
     override val players: List<PlayerInGame>,
     val playerTurn: PlayerIdentity,
     val deck: Deck,
-    val playerDeck1: PlayerDeck,
-    val playerDeck2: PlayerDeck,
-    val discardPile: DiscardPile
-) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile) {
+    val playerDeck1: PlayerDeck?,
+    val playerDeck2: PlayerDeck?,
+    val discardPile: DiscardPile,
+    val teams: List<Team>
+) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile,teams) {
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
@@ -36,25 +36,25 @@ data class GameExecutionPlayPhase private constructor(
             deck = game.deck,
             playerDeck1 = game.playerDeck1,
             playerDeck2 = game.playerDeck2,
-            discardPile = game.discardPile
+            discardPile = game.discardPile,
+            teams = game.teams
         )
     }
 
-    fun dropTris(playerIdentity: PlayerIdentity, trisIdentity: TrisIdentity, cards: List<Card>): GameExecutionPlayPhase {
+    fun dropTris(playerIdentity: PlayerIdentity, tris: Tris): GameExecutionPlayPhase {
         require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
         require(
             players.cardsBelongPlayer(
                 playerIdentity,
-                cards
+                tris.cards
             )
         ) { "Tris's cards don't belong to player ${playerIdentity.valueAsString()}" }
-        require(validTris(cards)) { "It's not a valid tris" }
 
-        return raiseEvent(TrisDropped.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
+        return raiseEvent(TrisDropped.create(id, playerIdentity, tris)) as GameExecutionPlayPhase
     }
 
-    fun appendCardsOnATris(
+    fun appendCardsOnTris(
         playerIdentity: PlayerIdentity,
         cards: List<Card>,
         trisIdentity: TrisIdentity
@@ -83,53 +83,60 @@ data class GameExecutionPlayPhase private constructor(
         return raiseEvent(CardsAddedToTris.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
     }
 
-    //
-//    fun dropOnTableAScale(playerIdentity: PlayerIdentity, scale: BurracoScale): GameExecutionPlayPhase {
-//        val player = validatePlayerId(playerIdentity)
-//        validatePlayerTurn(playerIdentity)
-//        player.dropAScale(scale)
-//        return applyAndQueueEvent(
-//            ScaleDropped(identity = identity(), playerIdentity = player.identity(), scale = scale)
-//        )
-//    }
-//
-//    fun appendCardsOnABurracoDropped(
-//        playerIdentity: PlayerIdentity,
-//        cardsToAppend: List<Card>,
-//        burracoIdentity: BurracoIdentity
-//    ): GameExecutionPlayPhase {
-//        val player = validatePlayerId(playerIdentity)
-//        validatePlayerTurn(playerIdentity)
-//        player.appendACardOnBurracoDropped(burracoIdentity, cardsToAppend)
-//        return applyAndQueueEvent(
-//            CardAddedOnBurraco(
-//                identity = identity(),
-//                playerIdentity = player.identity(),
-//                cardsToAppend = cardsToAppend,
-//                burracoIdentity = burracoIdentity
-//            )
-//        )
-//    }
-//
-//    fun pickupMazzetto(playerIdentity: PlayerIdentity): GameExecutionPlayPhase {
-//        val player = validatePlayerId(playerIdentity)
-//        validatePlayerTurn(playerIdentity)
-//        log.debug("show cards: ${player.showMyCards()}")
-//        check(
-//            player.showMyCards().isEmpty()
-//        ) { warnMsg("The player cannot pick up a Mazzetto if he still has cards ( num cards: ${player.showMyCards().size})") }
-//        check(!player.isMazzettoTaken()) { warnMsg("The player cannot pick up a Mazzetto he already taken") }
-//
-//        val mazzetto = firstMazzettoAvailable()
-//
-//        return applyAndQueueEvent(
-//            MazzettoPickedUp(
-//                identity = identity(),
-//                playerIdentity = player.identity(),
-//                mazzettoDeck = mazzetto.getCardList()
-//            )
-//        )
-//    }
+
+    fun dropStraight(playerIdentity: PlayerIdentity, straight: Straight): GameExecutionPlayPhase {
+        require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
+        require(
+            players.cardsBelongPlayer(
+                playerIdentity,
+                straight.cards
+            )
+        ) { "Straight's cards don't belong to player ${playerIdentity.valueAsString()}" }
+
+        return raiseEvent(StraightDropped.create(id, playerIdentity, straight)) as GameExecutionPlayPhase
+    }
+
+    fun appendCardsOnStraight(
+        playerIdentity: PlayerIdentity,
+        cards: List<Card>,
+        straightIdentity: StraightIdentity
+    ): GameExecutionPlayPhase {
+        require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
+        require(
+            players.cardsBelongPlayer(
+                playerIdentity,
+                cards
+            )
+        ) { "Cards to append to the straight ${straightIdentity.valueAsString()} don't belong to player ${playerIdentity.valueAsString()}" }
+        require(
+            players.straightBelongPlayer(
+                playerIdentity,
+                straightIdentity
+            )
+        ) { "Straight ${straightIdentity.valueAsString()} don't belong to player ${playerIdentity.valueAsString()}" }
+        require(
+            validStraight(
+                players.straight(playerIdentity, straightIdentity)?.cards
+                    ?.plus(cards)
+                    .orEmpty()
+            )
+        ) { "Cards can't be added to straight ${straightIdentity.valueAsString()}" }
+        return raiseEvent(CardsAddedToStraight.create(id, playerIdentity, straightIdentity, cards)) as GameExecutionPlayPhase
+    }
+
+    fun pickupPlayerDeck(playerIdentity: PlayerIdentity): GameExecutionPlayPhase {
+        require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
+        require(players.playerCards(playerIdentity).isNullOrEmpty()){"Player ${playerIdentity.valueAsString()} still has cards in their hand" }
+        require(playerDeckAvailable().isNotEmpty()){"No more player deck available"}
+        require(!(teams.playerTeam(playerIdentity)?.playerDeckPickedUp ?: false)){"Player ${playerIdentity.valueAsString()}'s team has already pickedUp its playerDeck"}
+
+        return raiseEvent(CardsPickedFromPlayerDeckDuringTurn.create(id, playerIdentity, playerDeckAvailable())) as GameExecutionPlayPhase
+
+    }
+
 //
 //    fun dropCardOnDiscardPile(playerIdentity: PlayerIdentity, card: Card): BurracoGameExecutionTurnEnd {
 //        val player = validatePlayerId(playerIdentity)
@@ -138,17 +145,7 @@ data class GameExecutionPlayPhase private constructor(
 //        return applyAndQueueEvent(eventCardDroppedIntoDiscardPile)
 //    }
 //
-//    override fun applyEvent(event: Event): Game {
-//        log.info("apply event: ${event::class.simpleName.toString()}")
-//        return when (event) {
-//            is CardDroppedIntoDiscardPile -> apply(event)
-//            is TrisDropped -> apply(event)
-//            is ScaleDropped -> apply(event)
-//            is CardAddedOnBurraco -> apply(event)
-//            is MazzettoPickedUp -> apply(event)
-//            else -> throw UnsupportedEventException(event::class.java)
-//        }
-//    }
+
 //
 //    private fun apply(event: CardDroppedIntoDiscardPile): BurracoGameExecutionTurnEnd {
 //        val player = players.find { p -> p.identity() == event.playerIdentity }!!
@@ -164,16 +161,21 @@ data class GameExecutionPlayPhase private constructor(
 //    }
 //
     private fun apply(event: TrisDropped): GameExecutionPlayPhase {
+        check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
             player.copy(
                 cards = player.cards.minus(event.cards),
                 listOfTris = player.listOfTris.plus(Tris.create(event.trisIdentity,event.cards))
             )
         }
+        log.debug("Tris has ${updatedPlayers.tris(event.playerIdentity,event.trisIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
         return copy(players = updatedPlayers)
     }
 
     private fun apply(event: CardsAddedToTris): GameExecutionPlayPhase {
+        check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
             player.copy(
                 cards = player.cards.minus(event.cards),
@@ -182,23 +184,96 @@ data class GameExecutionPlayPhase private constructor(
                 }
             )
         }
+        log.debug("Tris has ${updatedPlayers.tris(event.playerIdentity,event.trisIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
         return copy(players = updatedPlayers)
     }
 
-//
-//    private fun apply(event: ScaleDropped): GameExecutionPlayPhase {
-//        val player = players.find { p -> p.identity() == event.playerIdentity }!!
-//        return copy(
-//            players = UpdatePlayers(player.dropAScale(event.scale))
-//        )
-//    }
-//
-//    private fun apply(event: CardAddedOnBurraco): GameExecutionPlayPhase {
-//        val player = players.find { p -> p.identity() == event.playerIdentity }!!
-//        return copy(
-//            players = UpdatePlayers(player.appendACardOnBurracoDropped(event.burracoIdentity, event.cardsToAppend))
-//        )
-//    }
+    private fun apply(event: StraightDropped): GameExecutionPlayPhase {
+        check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
+            player.copy(
+                cards = player.cards.minus(event.cards),
+                listOfStraight = player.listOfStraight.plus(Straight.create(event.straightIdentity,event.cards))
+            )
+        }
+        log.debug("Straight has ${updatedPlayers.straight(event.playerIdentity,event.straightIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        return copy(players = updatedPlayers)
+    }
+
+    private fun apply(event: CardsAddedToStraight): GameExecutionPlayPhase {
+        check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
+            player.copy(
+                cards = player.cards.minus(event.cards),
+                listOfStraight = player.listOfStraight.updateStraight(event.straightIdentity) { straight ->
+                    straight.copy(cards = straight.cards.plus(event.cards))
+                }
+            )
+        }
+
+        log.debug("Straight has ${updatedPlayers.straight(event.playerIdentity,event.straightIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        return copy(players = updatedPlayers)
+    }
+
+
+    private fun apply(event: CardsPickedFromPlayerDeckDuringTurn): GameExecutionPlayPhase {
+        check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+
+        val updatedPlayers = players.updatePlayer(event.playerIdentity) { player: PlayerInGame ->
+            player.copy(cards = player.cards.plus(event.cards))
+        }
+
+        //TODO to review, there is an hidden event :(
+        val updatedTeams: List<Team> = when(teams.playerTeam(event.playerIdentity)){
+            is Team -> teams.updateTeam(event.playerIdentity){ team ->
+                team.copy(playerDeckPickedUp = true)
+            }
+            else -> {
+                if(players.size == 3)
+                    teams.buildTeams(event.playerIdentity,players.map { it.id })
+                else {
+                    assert(false) { "Something bad happened" }
+                    teams
+                }
+            }
+        }
+
+        val updatedAggregate= when(playerDeck1){
+            is PlayerDeck -> copy(playerDeck1 = null, players = updatedPlayers, teams = updatedTeams)
+
+            else -> {
+                when(playerDeck2){
+                    is PlayerDeck -> copy(playerDeck2 = null, players = updatedPlayers, teams = updatedTeams)
+                    else -> {
+                        log.error("Event ${event.messageId} is wrong! The event is ignored ")
+                        this
+                    }
+                }
+            }
+        }
+        log.debug("PlayerDeck1 has ${updatedAggregate.playerDeck1?.numCards()?:0} cards, PlayerDeck2 has ${updatedAggregate.playerDeck2?.numCards()?:0} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        return updatedAggregate
+    }
+
+
+
+
+    private fun playerDeckAvailable(): List<Card>{
+        return when(playerDeck1){
+            is PlayerDeck -> playerDeck1.cards
+            else -> {
+                when(playerDeck2){
+                    is PlayerDeck -> playerDeck2.cards
+                    else -> listOf()
+                }
+            }
+        }
+    }
+
+
 //
 //    private fun apply(event: MazzettoPickedUp): GameExecutionPlayPhase {
 //        val player = players.find { p -> p.identity() == event.playerIdentity }!!

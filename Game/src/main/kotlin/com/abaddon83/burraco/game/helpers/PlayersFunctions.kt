@@ -1,5 +1,7 @@
 package com.abaddon83.burraco.game.helpers
 
+import com.abaddon83.burraco.game.models.Straight
+import com.abaddon83.burraco.game.models.StraightIdentity
 import com.abaddon83.burraco.game.models.Tris
 import com.abaddon83.burraco.game.models.TrisIdentity
 import com.abaddon83.burraco.game.models.card.Card
@@ -35,3 +37,9 @@ fun Iterable<PlayerInGame>.trisBelongPlayer(playerIdentity: PlayerIdentity, tris
 
 fun Iterable<PlayerInGame>.tris(playerIdentity: PlayerIdentity, trisIdentity: TrisIdentity): Tris? =
     this.find { it.id == playerIdentity }?.listOfTris?.find { it.id == trisIdentity }
+
+fun Iterable<PlayerInGame>.straightBelongPlayer(playerIdentity: PlayerIdentity, straightIdentity: StraightIdentity): Boolean =
+    this.count { it.id == playerIdentity && it.listOfStraight.count { straight -> straight.id == straightIdentity } == 1 } == 1
+
+fun Iterable<PlayerInGame>.straight(playerIdentity: PlayerIdentity, straightIdentity: StraightIdentity): Straight? =
+    this.find { it.id == playerIdentity }?.listOfStraight?.find { it.id == straightIdentity }

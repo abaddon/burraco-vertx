@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.game.models.Team
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
@@ -13,9 +14,10 @@ abstract class GameExecution(
     override val players: List<PlayerInGame>,
     private val playerTurn: PlayerIdentity,
     private val deck: Deck,
-    private val playerDeck1: PlayerDeck,
-    private val playerDeck2: PlayerDeck,
-    private val discardPile: DiscardPile
+    private val playerDeck1: PlayerDeck?,
+    private val playerDeck2: PlayerDeck?,
+    private val discardPile: DiscardPile,
+    private val teams: List<Team>
 ) : Game() {
 
 //    //READ Methods

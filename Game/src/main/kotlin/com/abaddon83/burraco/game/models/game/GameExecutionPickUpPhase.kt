@@ -3,8 +3,10 @@ package com.abaddon83.burraco.game.models.game
 
 import com.abaddon83.burraco.game.events.game.CardPickedFromDeck
 import com.abaddon83.burraco.game.events.game.CardsPickedFromDiscardPile
+import com.abaddon83.burraco.game.helpers.playerCards
 import com.abaddon83.burraco.game.helpers.updatePlayer
 import com.abaddon83.burraco.game.helpers.validPlayer
+import com.abaddon83.burraco.game.models.Team
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
@@ -19,46 +21,45 @@ data class GameExecutionPickUpPhase private constructor(
     override val players: List<PlayerInGame>,
     val playerTurn: PlayerIdentity,
     val deck: Deck,
-    val playerDeck1: PlayerDeck,
-    val playerDeck2: PlayerDeck,
-    val discardPile: DiscardPile
-) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile) {
+    val playerDeck1: PlayerDeck?,
+    val playerDeck2: PlayerDeck?,
+    val discardPile: DiscardPile,
+    val teams: List<Team>
+) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile, teams) {
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
-        fun from(game: GameWaitingDealer): GameExecutionPickUpPhase = GameExecutionPickUpPhase(
-            id = game.id,
-            version = game.version,
-            players = game.players.map { PlayerInGame.from(it) },
-            playerTurn = game.players.first().id,
-            deck = Deck.create(game.deck),
-            playerDeck1 = PlayerDeck.create(game.playerDeck1),
-            playerDeck2 = PlayerDeck.create(game.playerDeck2),
-            discardPile = DiscardPile.create(game.discardDeck)
-        )
-
-//        fun create(
-//            identity: GameIdentity,
-//            players: List<PlayerInGame>,
-//            burracoDeck: Deck,
-//            playerDeck1: PlayerDeck,
-//            playerDeck2: PlayerDeck,
-//            discardPile: DiscardPile,
-//            playerTurn: PlayerIdentity
-//        ): GameExecutionInitialPhase {
-//            val game = GameExecutionInitialPhase(
-//                identity = identity,
-//                players = players,
-//                burracoDeck = burracoDeck,
-//                playerDeck1 = playerDeck1,
-//                playerDeck2 = playerDeck2,
-//                discardPile = discardPile,
-//                playerTurn = playerTurn
-//            )
-//            game.testInvariants()
-//            return game
-//        }
-
+        fun from(game: GameWaitingDealer): GameExecutionPickUpPhase {
+            val teams: List<Team> =when(game.players.size){
+                4 -> listOf(
+                    Team(listOf(game.players[0]!!.id,game.players[2]!!.id)),
+                    Team(listOf(game.players[1]!!.id,game.players[3]!!.id))
+                )
+                3 -> listOf(
+                    Team(listOf()),
+                    Team(listOf())
+                )
+                2-> listOf(
+                    Team(listOf(game.players[0]!!.id)),
+                    Team(listOf(game.players[1]!!.id))
+                )
+                else -> {
+                    assert(false){"Unexpected number of players"}
+                    listOf()
+                }
+            }
+            return GameExecutionPickUpPhase(
+                id = game.id,
+                version = game.version,
+                players = game.players.map { PlayerInGame.from(it) },
+                playerTurn = game.players.first().id,
+                deck = Deck.create(game.deck),
+                playerDeck1 = PlayerDeck.create(game.playerDeck1),
+                playerDeck2 = PlayerDeck.create(game.playerDeck2),
+                discardPile = DiscardPile.create(game.discardDeck),
+                teams = teams
+            )
+        }
     }
 
     //When the turn start the player can pickUp a card from the Deck
@@ -83,24 +84,39 @@ data class GameExecutionPickUpPhase private constructor(
     }
 
     private fun apply(event: CardPickedFromDeck): GameExecutionPlayPhase {
+        check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player: PlayerInGame ->
             player.copy(cards = player.cards.plus(event.card))
         }
         val updatedDeck = deck.removeFirstCard(event.card)
         val updatedAggregate = copy(deck = updatedDeck, players = updatedPlayers)
-
+        log.debug(
+            "Desk has ${updatedDeck.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${
+                updatedPlayers.playerCards(
+                    event.playerIdentity
+                )?.size
+            } cards"
+        )
         return GameExecutionPlayPhase.from(updatedAggregate)
     }
 
     private fun apply(event: CardsPickedFromDiscardPile): GameExecutionPlayPhase {
         check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player: PlayerInGame ->
             player.copy(cards = player.cards.plus(event.cards))
         }
         val updatedDiscardPile = discardPile.removeAllCards(event.cards)
 
         val updatedAggregate = copy(discardPile = updatedDiscardPile, players = updatedPlayers)
-
+        log.debug(
+            "Discard Desk has ${updatedDiscardPile.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${
+                updatedPlayers.playerCards(
+                    event.playerIdentity
+                )?.size
+            } cards"
+        )
         return GameExecutionPlayPhase.from(updatedAggregate)
     }
 }

@@ -21,4 +21,8 @@ data class GameDecksHelper(
 
     fun getCardsFromDiscardDeck(): List<Card> = discardDeckEvents.map { it.card }
 
+    fun getCardsFromPlayerDeck1(): List<Card> = playerDeck1Events.map { it.card }
+
+    fun getCardsFromPlayerDeck2(): List<Card> = playerDeck2Events.map { it.card }
+
 }
