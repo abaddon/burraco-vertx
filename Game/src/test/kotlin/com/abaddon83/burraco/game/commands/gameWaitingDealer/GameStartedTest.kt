@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
-import com.abaddon83.burraco.game.commands.gameExecutionPickUpPhase.Given_GameExecutionPickUpPhase_When_RightPlayerPickUpACardFromDeck_Then_event
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.GameEvent
 import com.abaddon83.burraco.game.events.game.GameStarted
@@ -12,7 +11,6 @@ import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.game.models.game.GameIdentity
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
-import com.abaddon83.burraco.helpers.DeckHelper
 import com.abaddon83.burraco.helpers.DeckHelper.generateFakeDealerEvents
 import com.abaddon83.burraco.helpers.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity

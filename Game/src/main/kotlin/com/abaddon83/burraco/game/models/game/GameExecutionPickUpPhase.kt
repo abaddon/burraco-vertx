@@ -111,7 +111,7 @@ data class GameExecutionPickUpPhase private constructor(
 
         val updatedAggregate = copy(discardPile = updatedDiscardPile, players = updatedPlayers)
         log.debug(
-            "Discard Desk has ${updatedDiscardPile.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${
+            "Discard Pile has ${updatedDiscardPile.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${
                 updatedPlayers.playerCards(
                     event.playerIdentity
                 )?.size

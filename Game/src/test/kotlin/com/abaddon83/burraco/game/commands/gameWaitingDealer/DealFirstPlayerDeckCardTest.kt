@@ -1,6 +1,9 @@
 package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
-import com.abaddon83.burraco.game.events.game.*
+import com.abaddon83.burraco.game.events.game.CardDealingRequested
+import com.abaddon83.burraco.game.events.game.CardDealtWithFirstPlayerDeck
+import com.abaddon83.burraco.game.events.game.GameEvent
+import com.abaddon83.burraco.game.events.game.PlayerAdded
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits

@@ -27,6 +27,34 @@ data class GameExecutionPlayPhase private constructor(
 ) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile,teams) {
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
+    //TODO Verify if the players' remaining cards are enough to discard a card at the end of the turn
+    /*
+        - If team need to pickup discardPile: remaining card >=0
+        - If team has at least a burraco and discardPile pickedUp: remaining card >=1
+        - If team doesn't have a burraco and discardPile pickedUp: remaining card >=2
+    */
+
+    private fun validRemainingCards(playerIdentity: PlayerIdentity, cardsToDrop: List<Card>): Boolean {
+
+        val minCardsAcceptable=when(val team = teams.playerTeam(playerIdentity)){
+            is Team ->{
+                if (!team.playerDeckPickedUp) /*Team need to pickup a discardPile*/
+                    0
+                else{ /*Team pickedup the discardPile*/
+                    if(players.filter { team.members.contains(it.id) }.hasAtLeastABurraco()) /*Team has a burraco*/
+                        1
+                    else /*Team doesn't have a burraco*/
+                        2
+                }
+            }
+            else -> {
+                /*Team need to pickup a discardPile*/
+                0
+            }
+        }
+        return players.playerCards(playerIdentity)!!.minus(cardsToDrop).size >= minCardsAcceptable
+    }
+
     companion object Factory {
         fun from(game: GameExecutionPickUpPhase): GameExecutionPlayPhase = GameExecutionPlayPhase(
             id = game.id,
@@ -50,6 +78,7 @@ data class GameExecutionPlayPhase private constructor(
                 tris.cards
             )
         ) { "Tris's cards don't belong to player ${playerIdentity.valueAsString()}" }
+        require(validRemainingCards(playerIdentity,tris.cards)) {"Not enough cards remaining on the player's hand"}
 
         return raiseEvent(TrisDropped.create(id, playerIdentity, tris)) as GameExecutionPlayPhase
     }
@@ -80,6 +109,8 @@ data class GameExecutionPlayPhase private constructor(
                     .orEmpty()
             )
         ) { "Cards can't be added to Tris ${trisIdentity.valueAsString()}" }
+        require(validRemainingCards(playerIdentity,cards)) {"Not enough cards remaining on the player's hand"}
+
         return raiseEvent(CardsAddedToTris.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
     }
 
@@ -93,6 +124,7 @@ data class GameExecutionPlayPhase private constructor(
                 straight.cards
             )
         ) { "Straight's cards don't belong to player ${playerIdentity.valueAsString()}" }
+        require(validRemainingCards(playerIdentity,straight.cards)) {"Not enough cards remaining on the player's hand"}
 
         return raiseEvent(StraightDropped.create(id, playerIdentity, straight)) as GameExecutionPlayPhase
     }
@@ -123,6 +155,8 @@ data class GameExecutionPlayPhase private constructor(
                     .orEmpty()
             )
         ) { "Cards can't be added to straight ${straightIdentity.valueAsString()}" }
+        require(validRemainingCards(playerIdentity,cards)) {"Not enough cards remaining on the player's hand"}
+
         return raiseEvent(CardsAddedToStraight.create(id, playerIdentity, straightIdentity, cards)) as GameExecutionPlayPhase
     }
 
@@ -134,32 +168,21 @@ data class GameExecutionPlayPhase private constructor(
         require(!(teams.playerTeam(playerIdentity)?.playerDeckPickedUp ?: false)){"Player ${playerIdentity.valueAsString()}'s team has already pickedUp its playerDeck"}
 
         return raiseEvent(CardsPickedFromPlayerDeckDuringTurn.create(id, playerIdentity, playerDeckAvailable())) as GameExecutionPlayPhase
-
     }
 
-//
-//    fun dropCardOnDiscardPile(playerIdentity: PlayerIdentity, card: Card): BurracoGameExecutionTurnEnd {
-//        val player = validatePlayerId(playerIdentity)
-//        validatePlayerTurn(playerIdentity)
-//        val eventCardDroppedIntoDiscardPile = CardDroppedIntoDiscardPile(identity, player.identity(), card = card)
-//        return applyAndQueueEvent(eventCardDroppedIntoDiscardPile)
-//    }
-//
+    fun dropCardOnDiscardPile(playerIdentity: PlayerIdentity, card: Card): GameExecutionPlayPhase {
+        require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
+        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
+        require(
+            players.cardsBelongPlayer(
+                playerIdentity,
+                listOf(card)
+            )
+        ) { "Cards to discard don't belong to player ${playerIdentity.valueAsString()}" }
 
-//
-//    private fun apply(event: CardDroppedIntoDiscardPile): BurracoGameExecutionTurnEnd {
-//        val player = players.find { p -> p.identity() == event.playerIdentity }!!
-//        return BurracoGameExecutionTurnEnd.create(
-//            identity = identity(),
-//            players = UpdatePlayers(player.dropACard(event.card)),
-//            playerTurn = playerTurn,
-//            burracoDeck = burracoDeck,
-//            playerDeck1 = playerDeck1,
-//            playerDeck2 = playerDeck2,
-//            discardPile = discardPile.addCard(event.card)
-//        )
-//    }
-//
+        return raiseEvent(CardsDiscarded.create(id, playerIdentity, card)) as GameExecutionPlayPhase
+    }
+
     private fun apply(event: TrisDropped): GameExecutionPlayPhase {
         check(event.aggregateId == id) { "Game Identity mismatch" }
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
@@ -226,7 +249,7 @@ data class GameExecutionPlayPhase private constructor(
             player.copy(cards = player.cards.plus(event.cards))
         }
 
-        //TODO to review, there is an hidden event :(
+        //TODO to review, there is an hidden event  :(
         val updatedTeams: List<Team> = when(teams.playerTeam(event.playerIdentity)){
             is Team -> teams.updateTeam(event.playerIdentity){ team ->
                 team.copy(playerDeckPickedUp = true)
@@ -240,7 +263,6 @@ data class GameExecutionPlayPhase private constructor(
                 }
             }
         }
-
         val updatedAggregate= when(playerDeck1){
             is PlayerDeck -> copy(playerDeck1 = null, players = updatedPlayers, teams = updatedTeams)
 
@@ -258,6 +280,17 @@ data class GameExecutionPlayPhase private constructor(
         return updatedAggregate
     }
 
+    private fun apply(event: CardsDiscarded): GameExecutionPlayPhase {
+        check(event.aggregateId == id) { "Game Identity mismatch" }
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
+            player.copy(cards = player.cards.minus(event.card))
+        }
+        val updatedAggregate = copy(players = updatedPlayers, discardPile = discardPile.addCard(event.card))
+
+        log.debug("DiscardPile has ${updatedAggregate.discardPile.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        return updatedAggregate
+    }
 
 
 

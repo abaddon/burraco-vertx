@@ -2,11 +2,8 @@ package com.abaddon83.burraco.game.commands.gameExecutionPlayPhase
 
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.game.models.StraightIdentity
-import com.abaddon83.burraco.game.models.Tris
-import com.abaddon83.burraco.game.models.TrisIdentity
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
-import com.abaddon83.burraco.game.models.game.GameExecutionPickUpPhase
 import com.abaddon83.burraco.game.models.game.GameExecutionPlayPhase
 import com.abaddon83.burraco.game.models.game.GameIdentity
 import com.abaddon83.burraco.game.models.player.PlayerIdentity

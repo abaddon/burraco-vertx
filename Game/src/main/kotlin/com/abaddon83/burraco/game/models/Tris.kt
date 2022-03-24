@@ -5,8 +5,9 @@ import com.abaddon83.burraco.game.models.card.Card
 
 data class Tris private constructor(
     val id: TrisIdentity,
-    val cards: List<Card>
-){
+    override val cards: List<Card>
+): Burraco{
+
     companion object Factory{
         fun create(id: TrisIdentity, cards: List<Card>): Tris {
             require(validTris(cards)){}

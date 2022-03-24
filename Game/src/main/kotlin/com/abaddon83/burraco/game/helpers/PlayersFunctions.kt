@@ -43,3 +43,6 @@ fun Iterable<PlayerInGame>.straightBelongPlayer(playerIdentity: PlayerIdentity, 
 
 fun Iterable<PlayerInGame>.straight(playerIdentity: PlayerIdentity, straightIdentity: StraightIdentity): Straight? =
     this.find { it.id == playerIdentity }?.listOfStraight?.find { it.id == straightIdentity }
+
+fun <TPlayer : PlayerInGame> Iterable<TPlayer>.hasAtLeastABurraco(): Boolean =
+    this.map { player -> player.hasAtLeastABurraco() }.contains(true)

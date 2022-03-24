@@ -4,8 +4,8 @@ import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.PlayerAdded
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.contains
-import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
