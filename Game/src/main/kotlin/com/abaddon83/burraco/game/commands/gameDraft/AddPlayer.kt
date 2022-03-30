@@ -11,7 +11,7 @@ data class AddPlayer(
     val playerIdentity: PlayerIdentity
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): Game = when (currentAggregate) {
+    override fun execute(currentAggregate: Game?): GameDraft = when (currentAggregate) {
         is GameDraft -> currentAggregate.addPlayer(playerIdentity)
         else -> throw UnsupportedOperationException("Aggregate in a wrong status")
     }

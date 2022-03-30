@@ -16,7 +16,7 @@ data class DropStraight(
     val cards: List<Card>
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): Game = when (currentAggregate) {
+    override fun execute(currentAggregate: Game?): GameExecutionPlayPhase = when (currentAggregate) {
         is GameExecutionPlayPhase -> currentAggregate.dropStraight(playerID, Straight.create(straightID,cards))
         else -> throw UnsupportedOperationException("Aggregate in a wrong status")
     }

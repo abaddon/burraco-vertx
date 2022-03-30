@@ -1,5 +1,8 @@
 package com.abaddon83.burraco.game.helpers
 
+import com.abaddon83.burraco.game.models.card.Ranks
+import com.abaddon83.burraco.game.models.card.Suits
+
 object GameConfig {
     const val MAX_PLAYERS: Int = 4
     const val MIN_PLAYERS: Int = 2
@@ -13,6 +16,23 @@ object GameConfig {
         Pair(4,AVAILABLE_PLAYER_DECK_SIZE[0])
     )
     const val SECOND_PLAYER_DECK_SIZE: Int = 11
+
+    val SCORE: Map<Ranks.Rank,Int> = mapOf(
+        Pair(Ranks.Jolly,10),
+        Pair(Ranks.Two,20),
+        Pair(Ranks.Ace,15),
+        Pair(Ranks.King,10),
+        Pair(Ranks.Queen,10),
+        Pair(Ranks.Jack,10),
+        Pair(Ranks.Ten,10),
+        Pair(Ranks.Nine,10),
+        Pair(Ranks.Eight,10),
+        Pair(Ranks.Seven,5),
+        Pair(Ranks.Six,5),
+        Pair(Ranks.Five,5),
+        Pair(Ranks.Four,5),
+        Pair(Ranks.Three,5)
+    )
 
     fun deckSize(numPlayers: Int): Int = GameConfig.TOTAL_CARDS_REQUIRED
         .minus(GameConfig.DISCARD_DECK_SIZE)

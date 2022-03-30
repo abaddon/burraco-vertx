@@ -1,5 +1,7 @@
 package com.abaddon83.burraco.game.models.card
 
+import com.abaddon83.burraco.game.helpers.GameConfig.SCORE
+
 data class Card(
     val suit: Suits.Suit,
     val rank: Ranks.Rank
@@ -14,7 +16,11 @@ data class Card(
                 throw Exception("The $label is not a valid Card",e)
             }
         }
+
+        fun jolly():Card = Card(Suits.Jolly,Ranks.Jolly)
     }
+
+    fun score(): Int = SCORE.getOrDefault(rank,0)
 
     override fun toString(): String {
 

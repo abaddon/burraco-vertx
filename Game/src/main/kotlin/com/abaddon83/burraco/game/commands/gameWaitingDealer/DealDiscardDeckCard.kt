@@ -11,7 +11,7 @@ data class DealDiscardDeckCard(
     val card: Card
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): Game = when (currentAggregate) {
+    override fun execute(currentAggregate: Game?): GameWaitingDealer = when (currentAggregate) {
         is GameWaitingDealer -> currentAggregate.dealDiscardDeckCard(card)
         else -> throw UnsupportedOperationException("Aggregate in a wrong status")
     }

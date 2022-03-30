@@ -29,6 +29,21 @@ data class GameExecutionPickUpPhase private constructor(
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
+
+        fun from(game: GameExecutionEndPhase): GameExecutionPickUpPhase {
+            return GameExecutionPickUpPhase(
+                id = game.id,
+                version = game.version,
+                players = game.players,
+                playerTurn = game.playerTurn,
+                deck = game.deck,
+                playerDeck1 = game.playerDeck1,
+                playerDeck2 = game.playerDeck2,
+                discardPile = game.discardPile,
+                teams = game.teams
+            )
+        }
+
         fun from(game: GameWaitingDealer): GameExecutionPickUpPhase {
             val teams: List<Team> =when(game.players.size){
                 4 -> listOf(

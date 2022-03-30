@@ -11,7 +11,7 @@ data class PickUpPlayerDeckDuringTurn(
     val playerID: PlayerIdentity,
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): Game = when (currentAggregate) {
+    override fun execute(currentAggregate: Game?): GameExecutionPlayPhase = when (currentAggregate) {
         is GameExecutionPlayPhase -> currentAggregate.pickupPlayerDeck(playerID)
         else -> throw UnsupportedOperationException("Aggregate in a wrong status")
     }

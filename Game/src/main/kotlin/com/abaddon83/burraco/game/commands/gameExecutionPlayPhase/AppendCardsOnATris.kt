@@ -15,7 +15,7 @@ data class AppendCardsOnATris(
     val cards: List<Card>
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): Game = when (currentAggregate) {
+    override fun execute(currentAggregate: Game?): GameExecutionPlayPhase = when (currentAggregate) {
         is GameExecutionPlayPhase -> currentAggregate.appendCardsOnTris(playerID, cards, trisIdentity)
         else -> throw UnsupportedOperationException("Aggregate in a wrong status")
     }

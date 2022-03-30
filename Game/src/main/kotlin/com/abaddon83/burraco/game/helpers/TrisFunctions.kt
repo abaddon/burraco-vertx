@@ -13,3 +13,7 @@ fun Iterable<Tris>.updateTris(
             else -> tris
         }
     }
+
+fun Iterable<Tris>.score(): Int =
+    this.fold(0){current, tris -> current+tris.score()}
+
