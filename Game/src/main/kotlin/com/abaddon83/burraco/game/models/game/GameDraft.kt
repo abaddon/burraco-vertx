@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.game.models.game
 
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
+import com.abaddon83.burraco.game.events.game.GameCreated
 import com.abaddon83.burraco.game.events.game.PlayerAdded
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.contains
@@ -17,7 +18,12 @@ data class GameDraft constructor(
     override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
-        fun init(id: GameIdentity): GameDraft = GameDraft(id, 0, listOf())
+        fun empty(): GameDraft = GameDraft(GameIdentity.empty(), 0, listOf())
+    }
+
+    fun createGame(gameIdentity: GameIdentity): GameDraft {
+        check(this.id == GameIdentity.empty()){"Current game with id ${this.id} is already created"}
+        return raiseEvent(GameCreated.create(gameIdentity)) as GameDraft
     }
 
     fun addPlayer(playerIdentity: PlayerIdentity): GameDraft {
@@ -33,6 +39,11 @@ data class GameDraft constructor(
         check(players.size in GameConfig.MIN_PLAYERS..GameConfig.MAX_PLAYERS) { "Not enough players to deal the playing cards, ( Min players required: ${GameConfig.MIN_PLAYERS})" }
 
         return raiseEvent(CardDealingRequested.create(id, requestedBy)) as GameWaitingDealer
+    }
+
+    private fun apply(event: GameCreated): GameDraft {
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        return copy(id = event.aggregateId )
     }
 
     private fun apply(event: PlayerAdded): GameDraft {

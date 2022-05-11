@@ -1,9 +1,6 @@
 package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
-import com.abaddon83.burraco.game.events.game.CardDealingRequested
-import com.abaddon83.burraco.game.events.game.CardDealtWithDeck
-import com.abaddon83.burraco.game.events.game.GameEvent
-import com.abaddon83.burraco.game.events.game.PlayerAdded
+import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
@@ -26,11 +23,12 @@ internal class Given_GameDraft_When_DealDeckCard_Then_exceptio : KcqrsAggregateT
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2)
     )
@@ -49,11 +47,12 @@ internal class Given_GameWaitingDealer_When_DealDeckCard_Then_event : KcqrsAggre
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
@@ -75,11 +74,12 @@ internal class Given_GameWaitingDealerWith4PlayersAnd41DeckCards_When_DealDeckCa
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
@@ -105,11 +105,12 @@ internal class Given_GameWaitingDealerWith4PlayersAnd42DeckCards_When_DealDeckCa
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),

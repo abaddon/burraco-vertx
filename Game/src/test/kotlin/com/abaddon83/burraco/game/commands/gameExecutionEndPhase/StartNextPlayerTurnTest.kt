@@ -38,11 +38,12 @@ internal class Given_GameExecutionEndPhase_and_GameNotEnded_When_StartNextPlayer
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.empty() }
     override fun streamNameRoot(): String = "Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         PlayerAdded.create(aggregateId, PLAYER_ID3),
@@ -118,11 +119,12 @@ internal class Given_GameExecutionEndPhase_and_GamEnded_When_StartNextPlayerTurn
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.empty() }
     override fun streamNameRoot(): String = "Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         PlayerAdded.create(aggregateId, PLAYER_ID3),

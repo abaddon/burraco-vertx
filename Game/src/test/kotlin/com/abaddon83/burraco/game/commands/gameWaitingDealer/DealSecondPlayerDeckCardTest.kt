@@ -1,9 +1,6 @@
 package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
-import com.abaddon83.burraco.game.events.game.CardDealingRequested
-import com.abaddon83.burraco.game.events.game.CardDealtWithSecondPlayerDeck
-import com.abaddon83.burraco.game.events.game.GameEvent
-import com.abaddon83.burraco.game.events.game.PlayerAdded
+import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
@@ -25,11 +22,12 @@ internal class Given_GameDraft_When_DealSecondPlayerDeckCard_Then_exception : Kc
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2)
     )
@@ -50,11 +48,12 @@ internal class Given_GameWaitingDealer_When_DealSecondPlayerDeckCard_Then_event 
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
@@ -78,11 +77,12 @@ internal class Given_GameWaitingDealerWith2PlayersAndSecondPlayerDeckWith10Cards
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
@@ -115,11 +115,12 @@ internal class Given_GameWaitingDealerWith2PlayersAndSecondPlayerDeckWith11Cards
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
@@ -151,11 +152,12 @@ internal class Given_GameWaitingDealerWith3PlayersAndSecondPlayerDeckWith11Cards
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),

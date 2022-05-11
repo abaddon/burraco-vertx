@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.commands.gameDraft
 
+import com.abaddon83.burraco.game.events.game.GameCreated
 import com.abaddon83.burraco.game.events.game.GameEvent
 import com.abaddon83.burraco.game.events.game.PlayerAdded
 import com.abaddon83.burraco.game.models.game.Game
@@ -11,18 +12,20 @@ import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.test.KcqrsAggregateTestSpecification
 
-internal class Given_Nothing_When_AddPlayer_Then_event : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_an_emptyGame_When_AddPlayer_Then_event : KcqrsAggregateTestSpecification<Game>(){
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID=PlayerIdentity.create()
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
-    override fun given(): List<IDomainEvent> = listOf<GameEvent>()
+    override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId)
+    )
 
     override fun `when`(): ICommand<Game> = AddPlayer(aggregateId, PLAYER_ID)
 
@@ -40,11 +43,12 @@ internal class Given_GameDraftWith1Player_When_AddSamePlayer_Then_exception : Kc
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID)
     )
 
@@ -69,11 +73,12 @@ internal class Given_GameDraftWith3Player_When_AddNewPlayer_Then_event : KcqrsAg
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         PlayerAdded.create(aggregateId, PLAYER_ID3),
@@ -99,11 +104,12 @@ internal class Given_GameDraftWith4Player_When_AddNewPlayer_Then_exception : Kcq
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.init(it as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
+        GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         PlayerAdded.create(aggregateId, PLAYER_ID3),

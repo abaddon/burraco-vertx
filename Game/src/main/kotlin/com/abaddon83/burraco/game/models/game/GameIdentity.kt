@@ -18,6 +18,8 @@ data class GameIdentity private constructor(
             require(uuidString.validUUID()) { "Invalid UUID value received" }
             return GameIdentity(uuidString)
         }
+
+        fun empty(): GameIdentity = GameIdentity("00000000-0000-0000-0000-000000000000")
     }
 
 }
