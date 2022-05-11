@@ -1,21 +1,23 @@
-//package com.abaddon83.burraco.game.ports
-//
-//import com.abaddon83.burraco.game.commands.DomainError
-//import com.abaddon83.burraco.common.models.valueObjects.Card
-//import com.abaddon83.burraco.common.models.identities.GameIdentity
-//import com.abaddon83.burraco.common.models.identities.PlayerIdentity
-//import com.abaddon83.utils.functionals.Validated
-//import com.abaddon83.burraco.game.commands.DomainResult
-//import io.vertx.core.Promise
-//
-//
-//typealias Outcome = Validated<DomainError, DomainResult>
-//
-//interface CommandControllerPort {
-//
-//    val eventStore: EventStorePort
-//
-//    fun createNewBurracoGame(gameIdentity: GameIdentity): Promise<Outcome>{
+package com.abaddon83.burraco.game.ports
+
+import com.abaddon83.burraco.game.DomainError
+import com.abaddon83.burraco.game.DomainResult
+import com.abaddon83.burraco.game.helpers.Validated
+import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameIdentity
+import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
+import io.vertx.core.Promise
+
+
+typealias Outcome = Validated<DomainError, DomainResult>
+
+interface CommandControllerPort: IAggregateCommandHandler<Game> {
+
+    //val eventStore: EventStorePort
+
+//    fun createGame(gameIdentity: GameIdentity): Promise<Outcome>{
 //        val promise = Promise.promise<Outcome>()
 //        promise.fail(NotImplementedError("This command is not available through this interface"))
 //        return promise
@@ -66,4 +68,4 @@
 //        promise.fail(NotImplementedError("This command is not available through this interface"))
 //        return promise
 //    }
-//}
+}
