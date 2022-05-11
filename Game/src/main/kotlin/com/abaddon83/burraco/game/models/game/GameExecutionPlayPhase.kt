@@ -229,7 +229,7 @@ data class GameExecutionPlayPhase private constructor(
             }
             else -> {
                 if(players.size == 3)
-                    teams.buildTeams(event.playerIdentity,players.map { it.id })
+                    TeamsHelper.buildTeamsWith3Players(event.playerIdentity,players.map { it.id })
                 else {
                     assert(false) { "Something bad happened" }
                     teams

@@ -1,7 +1,6 @@
 package com.abaddon83.burraco.game.helpers
 
 import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 
 object GameConfig {
     const val MAX_PLAYERS: Int = 4
@@ -18,7 +17,7 @@ object GameConfig {
     const val SECOND_PLAYER_DECK_SIZE: Int = 11
 
     val SCORE: Map<Ranks.Rank,Int> = mapOf(
-        Pair(Ranks.Jolly,10),
+        Pair(Ranks.Jolly,30),
         Pair(Ranks.Two,20),
         Pair(Ranks.Ace,15),
         Pair(Ranks.King,10),

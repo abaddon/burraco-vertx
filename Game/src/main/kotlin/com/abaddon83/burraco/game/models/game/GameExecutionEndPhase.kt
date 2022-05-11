@@ -4,7 +4,6 @@ import com.abaddon83.burraco.game.events.game.GameEnded
 import com.abaddon83.burraco.game.events.game.NextPlayerTurnStarted
 import com.abaddon83.burraco.game.helpers.playerCards
 import com.abaddon83.burraco.game.helpers.playerTeam
-import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.game.models.Team
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
@@ -13,16 +12,6 @@ import com.abaddon83.burraco.game.models.player.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-//import com.abaddon83.burraco.game.models.burracoGameExecutions.playerInGames.PlayerInGame
-//import com.abaddon83.burraco.game.models.burracoGameendeds.BurracoGameEnded
-//import com.abaddon83.burraco.game.models.game.GameExecution
-//import com.abaddon83.burraco.game.models.*
-//import com.abaddon83.burraco.game.models.decks.Deck
-//import com.abaddon83.burraco.game.models.decks.DiscardPile
-//import com.abaddon83.burraco.game.models.decks.PlayerDeck
-//import com.abaddon83.burraco.game.models.game.Game
-//import com.abaddon83.burraco.game.models.game.GameIdentity
 
 
 data class GameExecutionEndPhase private constructor(
@@ -52,19 +41,13 @@ data class GameExecutionEndPhase private constructor(
         )
     }
 
-    fun startNextPlayerTurn(playerIdentity: PlayerIdentity): GameExecutionPickUpPhase {
-        require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
-        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
+    fun startNextPlayerTurn(): GameExecutionPickUpPhase {
         check(!gameFinished()) { "The game is ended, the nex player can't start his/her turn" }
-
         return raiseEvent(NextPlayerTurnStarted.create(id, nextPlayerTurn())) as GameExecutionPickUpPhase
     }
 
-    fun endGame(playerIdentity: PlayerIdentity): GameTerminated {
-        require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
-        require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
-        check(gameFinished()) { "The game is ended, the nex player can't start his/her turn" }
-
+    fun endGame(): GameTerminated {
+        check(gameFinished()) { "The game is not ended" }
         return raiseEvent(GameEnded.create(id)) as GameTerminated
     }
 

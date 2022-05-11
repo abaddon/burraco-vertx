@@ -64,7 +64,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerDropValidCardOnDisca
     override fun expectedException(): Exception? = null
 }
 
-internal class Given_GameExecutionPlayPhase_When_RightPlayerDropInValidCardOnDiscardPile_Then_event :
+internal class Given_GameExecutionPlayPhase_When_RightPlayerDropInValidCardOnDiscardPile_Then_exception :
     KcqrsAggregateTestSpecification<Game>() {
     companion object {
         val AGGREGATE_ID = GameIdentity.create()
@@ -115,7 +115,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerDropInValidCardOnDis
     override fun expectedException(): Exception? = IllegalArgumentException("Cards to discard don't belong to player ${PLAYER_ID1.valueAsString()}")
 }
 
-internal class Given_GameExecutionPlayPhase_When_WrongPlayerDropValidCardOnDiscardPile_Then_event :
+internal class Given_GameExecutionPlayPhase_When_WrongPlayerDropValidCardOnDiscardPile_Then_exception :
     KcqrsAggregateTestSpecification<Game>() {
     companion object {
         val AGGREGATE_ID = GameIdentity.create()
@@ -158,88 +158,3 @@ internal class Given_GameExecutionPlayPhase_When_WrongPlayerDropValidCardOnDisca
 
     override fun expectedException(): Exception? = IllegalArgumentException("It's not the turn of the player ${PLAYER_ID2.valueAsString()}")
 }
-
-//internal class Given_GameExecutionPlayPhase_When_RightPlayerAddValidCardsToStraightNoBelongHim_Then_exception :
-//    KcqrsAggregateTestSpecification<Game>() {
-//    companion object {
-//        val AGGREGATE_ID = GameIdentity.create()
-//        val PLAYER_ID1 = PlayerIdentity.create()
-//        val PLAYER_ID2 = PlayerIdentity.create()
-//        val PLAYER_ID3 = PlayerIdentity.create()
-//        val PLAYER_ID4 = PlayerIdentity.create()
-//        val STRAIGHT_ID = StraightIdentity.create()
-//        val STRAIGHT_CARDS = listOf(Card(Suits.Tile, Ranks.Three), Card(Suits.Tile, Ranks.Four), Card(Suits.Tile, Ranks.Five))
-//        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS)
-//    }
-//
-//    //Setup
-//    override val aggregateId: GameIdentity = AGGREGATE_ID
-//    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.init(it as GameIdentity) }
-//    override fun streamNameRoot(): String = "Stream1"
-//
-//    //Test
-//    override fun given(): List<IDomainEvent> = listOf<GameEvent>(
-//        PlayerAdded.create(aggregateId, PLAYER_ID1),
-//        PlayerAdded.create(aggregateId, PLAYER_ID2),
-//        PlayerAdded.create(aggregateId, PLAYER_ID3),
-//        PlayerAdded.create(aggregateId, PLAYER_ID4),
-//        CardDealingRequested.create(aggregateId, PLAYER_ID1)
-//    ).plus(
-//        gameDecksHelper.events()
-//    ).plus(
-//        listOf(
-//            GameStarted.create(aggregateId),
-//            CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-//            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS))
-//        )
-//    )
-//
-//    override fun `when`(): ICommand<Game> = AppendCardsOnStraight(aggregateId, PLAYER_ID1, STRAIGHT_ID, listOf(Card(Suits.Tile, Ranks.Six)))
-//
-//    override fun expected(): List<IDomainEvent> = listOf()
-//
-//    override fun expectedException(): Exception? =
-//        IllegalArgumentException("Cards to append to the straight ${STRAIGHT_ID.valueAsString()} don't belong to player ${PLAYER_ID1.valueAsString()}")
-//}
-//
-//internal class Given_GameExecutionPlayPhase_When_WrongPlayerAddValidCardsToStraight_Then_exception :
-//    KcqrsAggregateTestSpecification<Game>() {
-//    companion object {
-//        val AGGREGATE_ID = GameIdentity.create()
-//        val PLAYER_ID1 = PlayerIdentity.create()
-//        val PLAYER_ID2 = PlayerIdentity.create()
-//        val PLAYER_ID3 = PlayerIdentity.create()
-//        val PLAYER_ID4 = PlayerIdentity.create()
-//        val STRAIGHT_ID = StraightIdentity.create()
-//        val STRAIGHT_CARDS = listOf(Card(Suits.Heart, Ranks.Three), Card(Suits.Heart, Ranks.Four), Card(Suits.Heart, Ranks.Five))
-//        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID2, STRAIGHT_CARDS)
-//    }
-//
-//    //Setup
-//    override val aggregateId: GameIdentity = AGGREGATE_ID
-//    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.init(it as GameIdentity) }
-//    override fun streamNameRoot(): String = "Stream1"
-//
-//    //Test
-//    override fun given(): List<IDomainEvent> = listOf<GameEvent>(
-//        PlayerAdded.create(aggregateId, PLAYER_ID1),
-//        PlayerAdded.create(aggregateId, PLAYER_ID2),
-//        PlayerAdded.create(aggregateId, PLAYER_ID3),
-//        PlayerAdded.create(aggregateId, PLAYER_ID4),
-//        CardDealingRequested.create(aggregateId, PLAYER_ID1)
-//    ).plus(
-//        gameDecksHelper.events()
-//    ).plus(
-//        listOf(
-//            GameStarted.create(aggregateId),
-//            CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-//            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS))
-//        )
-//    )
-//
-//    override fun `when`(): ICommand<Game> = AppendCardsOnStraight(aggregateId, PLAYER_ID2, STRAIGHT_ID, listOf(Card(Suits.Heart, Ranks.Six)))
-//
-//    override fun expected(): List<IDomainEvent> = listOf()
-//
-//    override fun expectedException(): Exception? = IllegalArgumentException("It's not the turn of the player ${PLAYER_ID2.valueAsString()}")
-//}

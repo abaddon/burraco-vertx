@@ -3,7 +3,6 @@ package com.abaddon83.burraco.game.models
 import com.abaddon83.burraco.game.helpers.StraightHelper.sortStraight
 import com.abaddon83.burraco.game.helpers.StraightHelper.validStraight
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
 import kotlin.math.absoluteValue
 
 data class Straight private constructor(

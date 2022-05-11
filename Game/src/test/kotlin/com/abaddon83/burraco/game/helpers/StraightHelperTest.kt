@@ -5,7 +5,8 @@ import com.abaddon83.burraco.game.models.StraightIdentity
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 internal class StraightHelperTest{
