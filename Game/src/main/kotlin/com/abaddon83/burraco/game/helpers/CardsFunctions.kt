@@ -4,7 +4,7 @@ import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 
 
-fun <TCard : Card> Iterable<TCard>.removeCards(cardsToRemove: List<Card>): List<Card> =
+fun Iterable<Card>.removeCards(cardsToRemove: List<Card>): List<Card> =
     when(cardsToRemove.isNotEmpty()){
         true -> this
             .minus(cardsToRemove.first())
@@ -12,7 +12,7 @@ fun <TCard : Card> Iterable<TCard>.removeCards(cardsToRemove: List<Card>): List<
         false -> this.toList()
     }
 
-fun <TCard : Card> Iterable<TCard>.containsJolly(): Boolean = this.map { it.rank }.contains(Ranks.Jolly)
+fun Iterable<Card>.containsJolly(): Boolean = this.map { it.rank }.contains(Ranks.Jolly)
 
 
-fun <TCard : Card> Iterable<TCard>.score(): Int = this.fold(0){ current, card -> current+card.score()}
+fun Iterable<Card>.score(): Int = this.fold(0){ current, card -> current+card.score()}

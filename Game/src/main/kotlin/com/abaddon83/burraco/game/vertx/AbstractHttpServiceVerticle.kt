@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.game.vertx
 
-import io.vertx.core.AbstractVerticle
 import io.vertx.core.CompositeFuture
 import io.vertx.core.Promise
 import io.vertx.core.http.HttpServer
@@ -26,16 +25,16 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
     /**
      * Automatically unpublish the service when it stops
      */
-    override fun stop(endPromise: Promise<Void>?) {
+    override fun stop(stopFuture: Promise<Void>?) {
         log.info("Stopping " + this::class.qualifiedName)
 
         CompositeFuture.all(unpublishRecord().future(), shutdownServer().future()).onComplete {
             if(it.succeeded()) {
                 log.info("Stopped " + this::class.qualifiedName)
-                endPromise?.complete()
+                stopFuture?.complete()
             }else {
                 log.error("Stopping failed" + this::class.qualifiedName)
-                endPromise?.fail(it.cause())
+                stopFuture?.fail(it.cause())
             }
         }
     }
@@ -52,7 +51,7 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
         val done = Promise.promise<Any>()
         log.info("Publishing service:")
         val record = HttpEndpoint.createRecord(name, host, port, root)
-        discovery.publish(record).onComplete { ar ->
+        discovery.publish(record).onComplete {
             log.info("$name published")
             done.complete()
         }.onFailure { failure ->

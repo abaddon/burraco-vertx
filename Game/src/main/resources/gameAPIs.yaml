@@ -33,15 +33,13 @@ paths:
           $ref: '#/components/responses/HealthCheckResponse'
 
   /game/burraco:
-    post:
+    get:
       operationId: 'newGame'
       summary: 'New Burraco game'
       description: 'Public API to create a new game'
       tags:
         - Game
         - Public
-      requestBody:
-        $ref: '#/components/requestBodies/NewGameRequest'
       responses:
         '200':
           $ref: '#/components/responses/NewGameResponse'

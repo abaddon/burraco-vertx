@@ -47,16 +47,16 @@ data class GameExecutionPickUpPhase private constructor(
         fun from(game: GameWaitingDealer): GameExecutionPickUpPhase {
             val teams: List<Team> =when(game.players.size){
                 4 -> listOf(
-                    Team(listOf(game.players[0]!!.id,game.players[2]!!.id)),
-                    Team(listOf(game.players[1]!!.id,game.players[3]!!.id))
+                    Team(listOf(game.players[0].id, game.players[2].id)),
+                    Team(listOf(game.players[1].id, game.players[3].id))
                 )
                 3 -> listOf(
                     Team(listOf()),
                     Team(listOf())
                 )
                 2-> listOf(
-                    Team(listOf(game.players[0]!!.id)),
-                    Team(listOf(game.players[1]!!.id))
+                    Team(listOf(game.players[0].id)),
+                    Team(listOf(game.players[1].id))
                 )
                 else -> {
                     assert(false){"Unexpected number of players"}
