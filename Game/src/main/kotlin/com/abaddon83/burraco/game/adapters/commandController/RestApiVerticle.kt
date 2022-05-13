@@ -7,19 +7,15 @@ import com.abaddon83.burraco.game.ports.CommandControllerPort
 import com.abaddon83.burraco.game.vertx.AbstractHttpServiceVerticle
 import io.vertx.core.Promise
 import io.vertx.core.http.HttpHeaders
-import io.vertx.ext.web.Route
-import io.vertx.ext.web.RoutingContext
-import io.vertx.ext.web.openapi.Operation
+import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.openapi.RouterBuilder
-import io.vertx.kotlin.coroutines.dispatcher
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import io.vertx.ext.web.validation.ValidationHandler
 import org.slf4j.LoggerFactory
 
 class RestApiVerticle(
     private val restApiConfig: RestApiConfig,
     private val controllerAdapter: CommandControllerPort
-    ) : AbstractHttpServiceVerticle() {
+) : AbstractHttpServiceVerticle() {
 
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
@@ -35,15 +31,21 @@ class RestApiVerticle(
 //        endPromise?.complete()
 //    }
 
+    private fun validationHandler(routerBuilder: RouterBuilder): ValidationHandler =
+        ValidationHandler
+            .builder(routerBuilder.schemaParser)
+            .build()
+
     private fun startHttpServer(startPromise: Promise<Void>?) {
         val apiDefinitionUrl = this.javaClass.classLoader.getResource("gameAPIs.yaml")
         val healthCheck = HealthCheck(vertx)
         RouterBuilder.create(vertx, apiDefinitionUrl.toString())
             .onSuccess { routerBuilder ->
-                routerBuilder.operation("healthCheck").handler(healthCheck.build())
-                routerBuilder.operation("newGame").handler(NewGameRoutingHandler(controllerAdapter))
-//                routerBuilder.operation("addPlayer").handler(AddPlayerRoutingHandler(controllerAdapter))
-//                routerBuilder.operation("initGame").handler(InitGameRoutingHandler(controllerAdapter))
+                val routerBuilderValidated=routerBuilder.rootHandler(validationHandler(routerBuilder))
+                routerBuilderValidated.operation("healthCheck").handler(healthCheck.build())
+                routerBuilderValidated.operation("newGame").handler(NewGameRoutingHandler(controllerAdapter,))
+                routerBuilderValidated.operation("addPlayer").handler(AddPlayerRoutingHandler(controllerAdapter))
+                routerBuilder.operation("requestDealCards").handler(RequestDealCardsRoutingHandler(controllerAdapter))
 //                routerBuilder.operation("startGame").handler(StartGameRoutingHandler(controllerAdapter))
 
                 //generate the router
@@ -55,9 +57,7 @@ class RestApiVerticle(
                         .response()
                         .setStatusCode(404)
                         .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                        .end(
-                            //ErrorSchema(404,routingContext.failure()?.message ?: "Not Found").toJson()
-                        )
+                        .end(errorResponse(400, routingContext.failure().message ?: "Not Found"))
                 }
                 //generate the 400 error handler
                 router.errorHandler(400) { routingContext ->
@@ -65,9 +65,7 @@ class RestApiVerticle(
                         .response()
                         .setStatusCode(400)
                         .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                        .end(
-                            //ErrorSchema(400,routingContext.failure()?.message ?: "Validation Exception").toJson()
-                        )
+                        .end(errorResponse(400, routingContext.failure().message ?: "Validation Exception"))
                 }
 
                 //server creation
@@ -89,10 +87,16 @@ class RestApiVerticle(
 //                                }
 //                        }
                     }
-                    //.onFailure(startPromise::fail)
+                //.onFailure(startPromise::fail)
             }
-            //.onFailure(startPromise::fail)
+        //.onFailure(startPromise::fail)
     }
+
+    private fun errorResponse(httpCode: Int, message: String): String =
+        JsonObject()
+            .put("code", httpCode)
+            .put("message", message)
+            .encode()
 }
 
 //private fun Operation.coroutineHandler(fn: suspend (RoutingContext) -> Unit) = handler {

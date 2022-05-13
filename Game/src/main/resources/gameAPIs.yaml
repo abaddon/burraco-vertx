@@ -66,10 +66,10 @@ paths:
         '200':
           $ref: '#/components/responses/GameResponse'
 
-  /games/{gameId}/init:
+  /games/{gameId}/requestDealCards:
     post:
-      operationId: 'initGame'
-      summary: 'Initialise the Game'
+      operationId: 'requestDealCards'
+      summary: 'Request deal cards'
       description: 'Public API to Initialise the game'
       tags:
         - Game
@@ -83,7 +83,7 @@ paths:
             type: string
             format: uuid
       requestBody:
-        $ref: '#/components/requestBodies/InitGameRequest'
+        $ref: '#/components/requestBodies/RequestDealCardsRequest'
       responses:
         '200':
           $ref: '#/components/responses/GameResponse'
@@ -179,7 +179,7 @@ components:
               playerId:
                 $ref: "#/components/schemas/PlayerId"
 
-    InitGameRequest:
+    RequestDealCardsRequest:
       description: 'Add player request.'
       content:
         application/json:

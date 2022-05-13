@@ -77,6 +77,7 @@ dependencies {
 
     testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
+    testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")
 }
 
 jacoco {
