@@ -34,7 +34,7 @@ val gitVersion: groovy.lang.Closure<String> by extra
 val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
 val details = versionDetails()
 
-val lastTag=details.lastTag//.substring(1)
+val lastTag=details.lastTag.substring(1)
 val snapshotTag= {
     println(lastTag)
     val list=lastTag.split(".")
