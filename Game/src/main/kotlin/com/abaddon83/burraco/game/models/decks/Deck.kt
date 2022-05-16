@@ -1,20 +1,19 @@
 package com.abaddon83.burraco.game.models.decks
 
-import com.abaddon83.burraco.common.models.valueObjects.Card
+import com.abaddon83.burraco.game.models.card.Card
 
+data class Deck private constructor(override val cards: List<Card>) : IDeck {
 
-interface Deck{
-    val cards: MutableList<Card>
-
-    fun numCards(): Int = cards.size
-
-    fun grabFirstCard(): Card = cards.removeAt(0) //.first()
-
-    fun grabAllCards(): List<Card> {
-        val grabbedCards = cards.toList()
-        cards.removeAll(grabbedCards)
-        assert(cards.size == 0)
-        return grabbedCards
+    fun removeFirstCard(card: Card) : Deck {
+        check(cards.first() == card){"Unexpected card found on top of the Deck!"}
+        val updatedDeck = copy(cards= cards.subList(1,cards.size))
+        check(updatedDeck.numCards() == numCards()-1)
+        return updatedDeck
     }
 
+    fun firstCard(): Card = cards.first()
+
+    companion object Factory {
+        fun create(cards: List<Card>): Deck = Deck(cards.toMutableList())
+    }
 }

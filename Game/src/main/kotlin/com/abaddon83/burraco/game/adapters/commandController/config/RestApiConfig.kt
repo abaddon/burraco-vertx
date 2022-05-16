@@ -1,7 +1,6 @@
 package com.abaddon83.burraco.game.adapters.commandController.config
 
 import io.vertx.core.http.HttpServerOptions
-import kotlinx.serialization.json.*
 
 data class RestApiConfig(
     val serviceName: String,
@@ -13,15 +12,15 @@ data class RestApiConfig(
             .setHost(http.address)
     }
 
-    fun toJson(): JsonObject =
-        buildJsonObject {
-            put("serviceName", Json.parseToJsonElement(serviceName))
-            putJsonObject("http") {
-                put("port", http.port)
-                put("address", http.address)
-                put("root", http.root)
-            }
-        }
+//    fun toJson(): JsonObject =
+//        buildJsonObject {
+//            put("serviceName", Json.parseToJsonElement(serviceName))
+//            putJsonObject("http") {
+//                put("port", http.port)
+//                put("address", http.address)
+//                put("root", http.root)
+//            }
+//        }
 }
 
 data class RestApiHttpConfig(

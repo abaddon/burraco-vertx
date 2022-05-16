@@ -39,6 +39,7 @@ data class BurracoScale(
         fun create(cards: List<Card>): BurracoScale {
             return BurracoScale(identity = BurracoIdentity.create(), burracoCards = cards)
         }
+
         private fun validateSequence(cards: List<Card>, suit: Suits.Suit): List<Card> {
             val jollies = getJollies(cards, suit)
             val aces = cards.filter { c -> c.rank == Ranks.Ace }

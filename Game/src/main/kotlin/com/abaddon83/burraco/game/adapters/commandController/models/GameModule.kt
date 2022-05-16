@@ -1,32 +1,27 @@
 package com.abaddon83.burraco.game.adapters.commandController.models
-import com.abaddon83.burraco.game.models.BurracoGame
-import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnBeginning
-import com.abaddon83.burraco.game.models.burracoGameExecutions.BurracoGameExecutionTurnExecution
-import com.abaddon83.burraco.game.models.burracoGameWaitingPlayers.BurracoGameWaitingPlayers
-import java.util.*
+import com.abaddon83.burraco.game.models.game.*
 
 data class GameModule(
-    val gameId: UUID,
-    val type: String,
+    val gameId: String,
     val status: String,
-    val players: List<UUID>
+    val players: List<String>
 ): Module() {
     companion object {
-        fun from(game: BurracoGame): GameModule {
+        fun from(game: Game): GameModule {
             return GameModule(
-                game.identity().id,
-                "BURRACO",
+                game.id.valueAsString(),
                 getStatus(game),
-                game.players.map { player -> player.identity().id  }
+                game.players.map { player -> player.id.valueAsString()  }
             )
         }
 
-        private fun getStatus(game: BurracoGame): String{
+        private fun getStatus(game: Game): String{
             return when(game){
-                is BurracoGameWaitingPlayers -> "DRAFT"
-                is BurracoGameExecutionTurnBeginning -> "STARTED"
-                is BurracoGameExecutionTurnExecution -> "RUNNING"
-                else -> "ENDED"
+                is GameDraft -> "DRAFT"
+                is GameWaitingDealer -> "STARTED"
+                is GameExecution -> "RUNNING"
+                is GameTerminated -> "ENDED"
+                else -> "UNKNOWN"
             }
         }
     }
