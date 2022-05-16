@@ -4,7 +4,7 @@ on:
   push:
     branches: [ 'feature/**' ]
     tags:
-      - [0-9]+.[0-9]+.[0-9]+
+      - v[0-9]+.[0-9]+.[0-9]+
 
 env:
   OWNER: ${{ github.actor }}
