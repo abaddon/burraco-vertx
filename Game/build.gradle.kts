@@ -24,21 +24,24 @@ val doOnChange = "./gradlew classes"
 
 plugins {
     kotlin("jvm") version "1.6.0"
-    //id("com.github.johnrengelman.shadow") version "6.1.0"
-    //id("com.palantir.git-version") version "0.13.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.palantir.git-version") version "0.13.0"
     jacoco
     application
 }
 
-//val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
-//val details = versionDetails()
-//val lastTag=details.lastTag.substring(1)
-//val snapshotTag= {
-//    val list=lastTag.split(".")
-//    val third=(list.last().toInt() + 1).toString()
-//    "${list[0]}.${list[1]}.$third-SNAPSHOT"
-//}
-//version = if(details.isCleanTag) lastTag else snapshotTag()
+val gitVersion: groovy.lang.Closure<String> by extra
+val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
+val details = versionDetails()
+
+val lastTag=details.lastTag//.substring(1)
+val snapshotTag= {
+    println(lastTag)
+    val list=lastTag.split(".")
+    val third=(list.last().toInt() + 1).toString()
+    "${list[0]}.${list[1]}.$third-SNAPSHOT"
+}
+version = if(details.isCleanTag) lastTag else snapshotTag()
 
 application {
     mainClass.set(mainVerticleName)
@@ -50,7 +53,6 @@ repositories {
 }
 
 dependencies {
-    //implementation(project(":SharedComponents","default"))
 
     //kcqrs
     implementation("io.github.abaddon.kcqrs:kcqrs-core:${Versions.kcqrsCoreVersion}")
@@ -99,17 +101,17 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-//tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-//    archiveClassifier.set("all")
-//    manifest {
-//        attributes(mapOf(
-//            "Main-Verticle" to mainVerticleName
-//            ))
-//    }
-//    mergeServiceFiles {
-//        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
-//    }
-//}
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    archiveClassifier.set("all")
+    manifest {
+        attributes(mapOf(
+            "Main-Verticle" to mainVerticleName
+            ))
+    }
+    mergeServiceFiles {
+        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
+    }
+}
 
 tasks.withType<Test> {
     useJUnitPlatform()
