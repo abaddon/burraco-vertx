@@ -9,15 +9,6 @@ import org.slf4j.LoggerFactory
 class DummyExternalEventPublisherAdapter : ExternalEventPublisherPort {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     override suspend fun publish(aggregate: Dealer, event: DealerEvent) {
-        when (event) {
-            is DealerEvent -> {
-                log.debug("event published: $event")
-
-            }
-            else -> {
-                log.error("event not recognised: $event")
-
-            }
-        }
+        log.debug("event published: $event")
     }
 }

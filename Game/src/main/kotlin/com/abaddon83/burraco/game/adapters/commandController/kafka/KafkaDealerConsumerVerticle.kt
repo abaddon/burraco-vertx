@@ -13,6 +13,6 @@ class KafkaDealerConsumerVerticle(
 ) : KafkaConsumerVerticle(kafkaConfig) {
 
     override fun loadHandlers(): EventRouterHandler = EventRouterHandler()
-        .addHandler("DeckCardDealt", AddCardDeckHandler(controllerAdapter))
+        .addHandler("DeckCardDealt", AddCardDeckHandler(controllerAdapter, vertx))
 
 }

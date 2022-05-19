@@ -1,0 +1,157 @@
+# Version catalog is a central place for you to declare and version dependencies
+# https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
+# https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
+
+[versions]
+kotlin = "2.1.20"
+kotlinxDatetime = "0.6.1"
+kotlinxSerializationJSON = "1.7.3"
+kotlinxCoroutines = "1.10.2"
+kcqrs-core = "0.0.7"
+kcqrs-eventStoreDB = "0.0.8"
+kcqrs-test = "0.0.10"
+vertx = "4.5.14"
+jackson = "2.18.4"
+log4j = "2.24.3"
+hoplite = "2.9.0"
+testcontainer = "1.21.0"
+shadow = "8.1.1"
+
+[libraries]
+kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinxDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJSON" }
+kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinxCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+
+kcqrs-core = { module = "io.github.abaddon.kcqrs:kcqrs-core", version.ref = "kcqrs-core" }
+kcqrs-EventStoreDB = { module = "io.github.abaddon.kcqrs:kcqrs-EventStoreDB", version.ref = "kcqrs-eventStoreDB" }
+kcqrs-test = { module = "io.github.abaddon.kcqrs:kcqrs-test", version.ref = "kcqrs-test" }
+
+
+vertx-config = { module = "io.vertx:vertx-config", version.ref = "vertx" }
+vertx-lang-kotlin = { module = "io.vertx:vertx-lang-kotlin", version.ref = "vertx" }
+vertx-lang-kotlin-coroutines = { module = "io.vertx:vertx-lang-kotlin-coroutines", version.ref = "vertx" }
+vertx-kafka-client = { module = "io.vertx:vertx-kafka-client", version.ref = "vertx" }
+vertx-web-openapi = { module = "io.vertx:vertx-web-openapi", version.ref = "vertx" }
+vertx-web-client = { module = "io.vertx:vertx-web-client", version.ref = "vertx" }
+vertx-tcp-eventbus-bridge = { module = "io.vertx:vertx-tcp-eventbus-bridge", version.ref = "vertx" }
+vertx-health-check = { module = "io.vertx:vertx-health-check", version.ref = "vertx" }
+vertx-service-discovery = { module = "io.vertx:vertx-service-discovery", version.ref = "vertx" }
+vertx-junit5 = { module = "io.vertx:vertx-junit5", version.ref = "vertx" }
+
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson"}
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+
+hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "hoplite" }
+hoplite-yaml = { module = "com.sksamuel.hoplite:hoplite-yaml", version.ref = "hoplite" }
+
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainer" }
+testcontainer-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainer" }
+testcontainer-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainer" }
+
+
+# Libraries can be bundled together for easier import
+[bundles]
+kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutines"]
+common = [
+    "kotlinxDatetime",
+    "kotlinxSerialization",
+    "kotlinxCoroutines",
+    "kcqrs-core",
+    "vertx-config",
+    "vertx-lang-kotlin",
+    "vertx-lang-kotlin-coroutines",
+    "vertx-service-discovery",
+    "jackson-databind",
+    "jackson-annotations",
+    "log4j-api",
+    "log4j-core",
+    "log4j-slf4j-impl"
+]
+commonTest = ["vertx-junit5"]
+
+kafkaAdapter = [
+    "kotlinxDatetime",
+    "kotlinxSerialization",
+    "kotlinxCoroutines",
+    "kcqrs-core",
+    "vertx-config",
+    "vertx-lang-kotlin",
+    "vertx-lang-kotlin-coroutines",
+    "vertx-kafka-client",
+    "log4j-api",
+    "log4j-core",
+    "log4j-slf4j-impl",
+    "hoplite-core",
+    "hoplite-yaml",
+    "jackson-databind",
+    "jackson-annotations"
+]
+kafkaAdapterTest = ["vertx-junit5", "testcontainer-junit"]
+
+game = [
+    "kotlinxDatetime",
+    "kotlinxSerialization",
+    "kotlinxCoroutines",
+    "kcqrs-core",
+    "kcqrs-EventStoreDB",
+    "vertx-config",
+    "vertx-web-openapi",
+    "vertx-health-check",
+    "vertx-lang-kotlin",
+    "vertx-lang-kotlin-coroutines",
+    "vertx-kafka-client",
+    "vertx-service-discovery",
+    "log4j-api",
+    "log4j-core",
+    "log4j-slf4j-impl",
+    "hoplite-core",
+    "hoplite-yaml",
+]
+gameTest = [
+    "vertx-junit5",
+    "vertx-web-client",
+    "testcontainers",
+    "testcontainer-kafka",
+    "testcontainer-junit",
+    "kcqrs-test"
+]
+
+dealer = [
+    "kotlinxDatetime",
+    "kotlinxSerialization",
+    "kotlinxCoroutines",
+    "kcqrs-core",
+    "kcqrs-EventStoreDB",
+    "vertx-config",
+    "vertx-web-openapi",
+    "vertx-health-check",
+    "vertx-lang-kotlin",
+    "vertx-lang-kotlin-coroutines",
+    "vertx-tcp-eventbus-bridge",
+    "vertx-kafka-client",
+    "vertx-service-discovery",
+    "log4j-api",
+    "log4j-core",
+    "log4j-slf4j-impl",
+    "hoplite-core",
+    "hoplite-yaml",
+]
+dealerTest = [
+    "vertx-junit5",
+    "vertx-web-client",
+    "kotlinxCoroutinesTest",
+    "testcontainers",
+    "testcontainer-kafka",
+    "testcontainer-junit",
+    "kcqrs-test"
+]
+
+[plugins]
+kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+shadowPlugin = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }

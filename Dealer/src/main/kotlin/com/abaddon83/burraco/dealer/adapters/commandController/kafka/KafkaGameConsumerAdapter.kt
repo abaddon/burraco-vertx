@@ -15,19 +15,20 @@ import io.github.abaddon.kcqrs.core.persistence.IAggregateRepository
 class KafkaGameConsumerAdapter(
     kafkaConfig: KafkaConsumerConfig,
     private val commandController: CommandControllerPort
-) : KafkaConsumerVerticle(kafkaConfig){
+) : KafkaConsumerVerticle(kafkaConfig) {
 
     override fun loadHandlers(): EventRouterHandler = EventRouterHandler()
-        .addHandler("CardsRequestedToDealer", CardsRequestedToDealerHandler(commandController))
+        .addHandler("CardsRequestedToDealer", CardsRequestedToDealerHandler(commandController, vertx))
 
-    companion object{
+    companion object {
         fun build(
             kafkaConfig: KafkaConsumerConfig,
             repository: IAggregateRepository<Dealer>,
             dealerEventPublisher: ExternalEventPublisherPort
-        ): KafkaGameConsumerAdapter{
-            val commandController = CommandControllerAdapter(AggregateDealerCommandHandler(repository, dealerEventPublisher))
-            return KafkaGameConsumerAdapter(kafkaConfig,commandController)
+        ): KafkaGameConsumerAdapter {
+            val commandController =
+                CommandControllerAdapter(AggregateDealerCommandHandler(repository, dealerEventPublisher))
+            return KafkaGameConsumerAdapter(kafkaConfig, commandController)
         }
     }
 
