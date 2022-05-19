@@ -50,7 +50,7 @@ object DeckHelper{
             .toMutableList()
 
         //discardPile
-        val discardPileEvent = listOf(CardDealtWithDiscardDeck.create(gameId, discardDeckCard ?: availableCards.removeFirst()))
+        val discardPileEvent = listOf(CardAddedDiscardDeck.create(gameId, discardDeckCard ?: availableCards.removeFirst()))
         assert(discardPileEvent.size == GameConfig.DISCARD_DECK_SIZE)
 
         //players
@@ -59,12 +59,12 @@ object DeckHelper{
                 playerIdentitySelected -> {
                     val numCards = GameConfig.NUM_PLAYER_CARDS - cardsSelected.size
                     cardsSelected
-                        .map { card -> CardDealtWithPlayer.create(gameId,playerIdentity,card) }
+                        .map { card -> CardAddedPlayer.create(gameId,playerIdentity,card) }
                         .plus(
-                            (1..numCards).map { CardDealtWithPlayer.create(gameId,playerIdentity,availableCards.removeFirst()) }
+                            (1..numCards).map { CardAddedPlayer.create(gameId,playerIdentity,availableCards.removeFirst()) }
                         )
                     }
-                else -> (1..GameConfig.NUM_PLAYER_CARDS).map { CardDealtWithPlayer.create(gameId,playerIdentity,availableCards.removeFirst()) }
+                else -> (1..GameConfig.NUM_PLAYER_CARDS).map { CardAddedPlayer.create(gameId,playerIdentity,availableCards.removeFirst()) }
             }
 
         }.flatten()
@@ -74,16 +74,16 @@ object DeckHelper{
         val playerDeck1RemainingCards= GameConfig.FIRST_PLAYER_DECK_SIZE[players.size]!! - playerDeck1Selected.size
         assert(playerDeck1RemainingCards >= 0)
         val playerDeck1 =playerDeck1Selected
-            .map { card -> CardDealtWithFirstPlayerDeck.create(gameId,card) }
-            .plus((1..playerDeck1RemainingCards).map { CardDealtWithFirstPlayerDeck.create(gameId,availableCards.removeFirst()) })
+            .map { card -> CardAddedFirstPlayerDeck.create(gameId,card) }
+            .plus((1..playerDeck1RemainingCards).map { CardAddedFirstPlayerDeck.create(gameId,availableCards.removeFirst()) })
         assert(playerDeck1.size == GameConfig.FIRST_PLAYER_DECK_SIZE[players.size]!!)
 
         //playerDeck2
-        val playerDeck2 =(1..GameConfig.SECOND_PLAYER_DECK_SIZE).map { CardDealtWithSecondPlayerDeck.create(gameId,availableCards.removeFirst()) }
+        val playerDeck2 =(1..GameConfig.SECOND_PLAYER_DECK_SIZE).map { CardAddedSecondPlayerDeck.create(gameId,availableCards.removeFirst()) }
         assert(playerDeck2.size == GameConfig.SECOND_PLAYER_DECK_SIZE)
 
         //deck
-        val deck = (1..deckSize(players.size)).map { CardDealtWithDeck.create(gameId,availableCards.removeFirst()) }
+        val deck = (1..deckSize(players.size)).map { CardAddedDeck.create(gameId,availableCards.removeFirst()) }
         assert(deck.size == deckSize(players.size))
         assert(availableCards.isEmpty())
 

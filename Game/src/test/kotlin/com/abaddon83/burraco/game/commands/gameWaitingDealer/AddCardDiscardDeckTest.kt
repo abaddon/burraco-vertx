@@ -1,7 +1,6 @@
 package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
 import com.abaddon83.burraco.game.events.game.*
-import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
@@ -14,7 +13,7 @@ import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.test.KcqrsAggregateTestSpecification
 
-internal class Given_GameDraft_When_DealDeckCard_Then_exceptio : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameDraft_When_AddCardDiscardDeck_Then_exception : KcqrsAggregateTestSpecification<Game>(){
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
@@ -33,17 +32,19 @@ internal class Given_GameDraft_When_DealDeckCard_Then_exceptio : KcqrsAggregateT
         PlayerAdded.create(aggregateId, PLAYER_ID2)
     )
 
-    override fun `when`(): ICommand<Game> = DealDeckCard(aggregateId, CARD)
+    override fun `when`(): ICommand<Game> = AddCardDiscardDeck(aggregateId, CARD)
 
     override fun expected(): List<IDomainEvent> = listOf()
 
     override fun expectedException(): Exception? = UnsupportedOperationException("Aggregate in a wrong status")
 }
 
-internal class Given_GameWaitingDealer_When_DealDeckCard_Then_event : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameWaitingDealer_When_AddCardDiscardDeck_Then_event : KcqrsAggregateTestSpecification<Game>(){
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
+        val PLAYER_ID2=PlayerIdentity.create()
+        val CARD= Card(Suits.Clover, Ranks.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -54,23 +55,25 @@ internal class Given_GameWaitingDealer_When_DealDeckCard_Then_event : KcqrsAggre
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
         GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
-        PlayerAdded.create(aggregateId,PlayerIdentity.create()),
+        PlayerAdded.create(aggregateId, PLAYER_ID2),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
     )
 
-    override fun `when`(): ICommand<Game> = DealDeckCard(aggregateId,Card(Suits.Clover, Ranks.Ace))
+    override fun `when`(): ICommand<Game> = AddCardDiscardDeck(aggregateId, CARD)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace))
+        CardAddedDiscardDeck.create(aggregateId, CARD)
     )
 
     override fun expectedException(): Exception? = null
 }
 
-internal class Given_GameWaitingDealerWith4PlayersAnd41DeckCards_When_DealDeckCard_Then_event : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameWaitingDealerWith1CardDiscardDeck_When_AddCardDiscardDeck_Then_exception : KcqrsAggregateTestSpecification<Game>(){
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
+        val PLAYER_ID2=PlayerIdentity.create()
+        val CARD= Card(Suits.Clover, Ranks.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -81,48 +84,14 @@ internal class Given_GameWaitingDealerWith4PlayersAnd41DeckCards_When_DealDeckCa
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
         GameCreated.create(aggregateId),
         PlayerAdded.create(aggregateId, PLAYER_ID1),
-        PlayerAdded.create(aggregateId,PlayerIdentity.create()),
-        PlayerAdded.create(aggregateId,PlayerIdentity.create()),
-        PlayerAdded.create(aggregateId,PlayerIdentity.create()),
-        CardDealingRequested.create(aggregateId, PLAYER_ID1)
-    ).plus(
-        (2..deckSize(4)).map { CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
+        PlayerAdded.create(aggregateId, PLAYER_ID2),
+        CardDealingRequested.create(aggregateId, PLAYER_ID1),
+        CardAddedDiscardDeck.create(aggregateId, CARD)
     )
 
-    override fun `when`(): ICommand<Game> = DealDeckCard(aggregateId,Card(Suits.Clover, Ranks.Ace))
-
-    override fun expected(): List<IDomainEvent> = listOf(
-        CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace))
-    )
-
-    override fun expectedException(): Exception? = null
-}
-
-internal class Given_GameWaitingDealerWith4PlayersAnd42DeckCards_When_DealDeckCard_Then_exception : KcqrsAggregateTestSpecification<Game>(){
-    companion object{
-        val AGGREGATE_ID = GameIdentity.create()
-        val PLAYER_ID1=PlayerIdentity.create()
-    }
-    //Setup
-    override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
-    override fun streamNameRoot(): String ="Stream1"
-
-    //Test
-    override fun given(): List<IDomainEvent> = listOf<GameEvent>(
-        GameCreated.create(aggregateId),
-        PlayerAdded.create(aggregateId, PLAYER_ID1),
-        PlayerAdded.create(aggregateId,PlayerIdentity.create()),
-        PlayerAdded.create(aggregateId,PlayerIdentity.create()),
-        PlayerAdded.create(aggregateId,PlayerIdentity.create()),
-        CardDealingRequested.create(aggregateId, PLAYER_ID1)
-    ).plus(
-        (1..deckSize(4)).map { CardDealtWithDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
-    )
-
-    override fun `when`(): ICommand<Game> = DealDeckCard(aggregateId,Card(Suits.Clover, Ranks.Ace))
+    override fun `when`(): ICommand<Game> = AddCardDiscardDeck(aggregateId, CARD)
 
     override fun expected(): List<IDomainEvent> = listOf()
 
-    override fun expectedException(): Exception? = IllegalStateException("The Deck has already enough card. (Max 41)")
+    override fun expectedException(): Exception? = IllegalStateException("The Discard deck has already enough card. (Max 1)")
 }

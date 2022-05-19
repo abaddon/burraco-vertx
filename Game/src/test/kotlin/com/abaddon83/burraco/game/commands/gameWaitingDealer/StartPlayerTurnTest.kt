@@ -15,7 +15,7 @@ import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.test.KcqrsAggregateTestSpecification
 
-internal class Given_GameDraft_When_StartGame_Then_exception : KcqrsAggregateTestSpecification<Game>() {
+internal class Given_GameDraft_When_StartPlayerTurn_Then_exception : KcqrsAggregateTestSpecification<Game>() {
     companion object {
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1 = PlayerIdentity.create()
@@ -35,14 +35,14 @@ internal class Given_GameDraft_When_StartGame_Then_exception : KcqrsAggregateTes
         PlayerAdded.create(aggregateId, PLAYER_ID2)
     )
 
-    override fun `when`(): ICommand<Game> = StartGame(aggregateId)
+    override fun `when`(): ICommand<Game> = StartPlayerTurn(aggregateId)
 
     override fun expected(): List<IDomainEvent> = listOf()
 
     override fun expectedException(): Exception? = UnsupportedOperationException("Aggregate in a wrong status")
 }
 
-internal class Given_GameWaitingDealer_When_StartGame_Then_exception : KcqrsAggregateTestSpecification<Game>() {
+internal class Given_GameWaitingDealer_When_StartPlayerTurn_Then_exception : KcqrsAggregateTestSpecification<Game>() {
     companion object {
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1 = PlayerIdentity.create()
@@ -61,7 +61,7 @@ internal class Given_GameWaitingDealer_When_StartGame_Then_exception : KcqrsAggr
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
     )
 
-    override fun `when`(): ICommand<Game> = StartGame(aggregateId)
+    override fun `when`(): ICommand<Game> = StartPlayerTurn(aggregateId)
 
     override fun expected(): List<IDomainEvent> = listOf()
 
@@ -69,7 +69,7 @@ internal class Given_GameWaitingDealer_When_StartGame_Then_exception : KcqrsAggr
         IllegalStateException("The dealer has not finished dealing the cards")
 }
 
-internal class Given_GameWaitingDealerWithAllCardsDealt_When_StartGame_Then_event : KcqrsAggregateTestSpecification<Game>() {
+internal class Given_GameWaitingDealerWithAllCardsDealt_When_StartPlayerTurn_Then_event : KcqrsAggregateTestSpecification<Game>() {
     companion object {
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1 = PlayerIdentity.create()
@@ -96,7 +96,7 @@ internal class Given_GameWaitingDealerWithAllCardsDealt_When_StartGame_Then_even
         gameDecksHelper.events()
     )
 
-    override fun `when`(): ICommand<Game> = StartGame(aggregateId)
+    override fun `when`(): ICommand<Game> = StartPlayerTurn(aggregateId)
 
     override fun expected(): List<IDomainEvent> = listOf(
         GameStarted.create(aggregateId)

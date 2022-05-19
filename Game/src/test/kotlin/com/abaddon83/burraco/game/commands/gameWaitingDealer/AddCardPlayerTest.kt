@@ -13,7 +13,7 @@ import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.test.KcqrsAggregateTestSpecification
 
-internal class Given_GameWaitingDealer_When_DealPlayerCard_Then_event: KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameWaitingDealer_When_AddCard_Then_eventPlayer: KcqrsAggregateTestSpecification<Game>(){
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
@@ -33,16 +33,16 @@ internal class Given_GameWaitingDealer_When_DealPlayerCard_Then_event: KcqrsAggr
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
     )
 
-    override fun `when`(): ICommand<Game> = DealPlayerCard(aggregateId, PLAYER_ID1, CARD)
+    override fun `when`(): ICommand<Game> = AddCardPlayer(aggregateId, PLAYER_ID1, CARD)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, CARD)
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, CARD)
     )
 
     override fun expectedException(): Exception? = null
 }
 
-internal class Given_GameWaitingDealerWithPlayerWith10Cards_When_DealPlayerCard_Then_event : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameWaitingDealerWithPlayerWith10Cards_When_AddCard_Then_eventPlayer : KcqrsAggregateTestSpecification<Game>(){
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
@@ -60,28 +60,28 @@ internal class Given_GameWaitingDealerWithPlayerWith10Cards_When_DealPlayerCard_
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ace)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Two)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Three)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Four)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Five)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Six)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Seven)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Eight)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Nine)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ten)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ace)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Two)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Three)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Four)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Five)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Six)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Seven)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Eight)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Nine)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ten)),
     )
 
-    override fun `when`(): ICommand<Game> = DealPlayerCard(aggregateId, PLAYER_ID1, CARD)
+    override fun `when`(): ICommand<Game> = AddCardPlayer(aggregateId, PLAYER_ID1, CARD)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, CARD)
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, CARD)
     )
 
     override fun expectedException(): Exception? = null
 }
 
-internal class Given_GameWaitingDealerWithPlayerWith11Cards_When_DealPlayerCard_Then_exception : KcqrsAggregateTestSpecification<Game>(){
+internal class Given_GameWaitingDealerWithPlayerWith11Cards_When_AddCard_Then_exceptionPlayer : KcqrsAggregateTestSpecification<Game>(){
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
@@ -99,20 +99,20 @@ internal class Given_GameWaitingDealerWithPlayerWith11Cards_When_DealPlayerCard_
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ace)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Two)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Three)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Four)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Five)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Six)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Seven)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Eight)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Nine)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ten)),
-        CardDealtWithPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Jack)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ace)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Two)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Three)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Four)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Five)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Six)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Seven)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Eight)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Nine)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Ten)),
+        CardAddedPlayer.create(aggregateId, PLAYER_ID1, Card(Suits.Heart, Ranks.Jack)),
     )
 
-    override fun `when`(): ICommand<Game> = DealPlayerCard(aggregateId, PLAYER_ID1, CARD)
+    override fun `when`(): ICommand<Game> = AddCardPlayer(aggregateId, PLAYER_ID1, CARD)
 
     override fun expected(): List<IDomainEvent> = listOf()
 

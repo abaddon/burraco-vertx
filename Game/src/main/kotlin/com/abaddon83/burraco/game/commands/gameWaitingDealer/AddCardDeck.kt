@@ -6,13 +6,13 @@ import com.abaddon83.burraco.game.models.game.GameIdentity
 import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import io.github.abaddon.kcqrs.core.domain.messages.commands.Command
 
-data class DealDiscardDeckCard(
+data class AddCardDeck(
     override val aggregateID: GameIdentity,
     val card: Card
 ) : Command<Game>(aggregateID) {
 
     override fun execute(currentAggregate: Game?): GameWaitingDealer = when (currentAggregate) {
-        is GameWaitingDealer -> currentAggregate.dealDiscardDeckCard(card)
+        is GameWaitingDealer -> currentAggregate.addCardDeck(card)
         else -> throw UnsupportedOperationException("Aggregate in a wrong status")
     }
 }

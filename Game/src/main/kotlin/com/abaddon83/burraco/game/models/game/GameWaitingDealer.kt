@@ -37,36 +37,36 @@ data class GameWaitingDealer private constructor(
             )
     }
 
-    fun dealPlayerCard(playerIdentity: PlayerIdentity, card: Card): GameWaitingDealer {
+    fun addCardPlayer(playerIdentity: PlayerIdentity, card: Card): GameWaitingDealer {
         check(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         val maxCards= GameConfig.NUM_PLAYER_CARDS
         val numPlayerCards = players.playerCards(playerIdentity)!!.size + 1
         check(maxCards >= numPlayerCards) { "Player ${playerIdentity.valueAsString()} has already enough card. (Max $maxCards)" }
-        return raiseEvent(CardDealtWithPlayer.create(id, playerIdentity, card)) as GameWaitingDealer
+        return raiseEvent(CardAddedPlayer.create(id, playerIdentity, card)) as GameWaitingDealer
     }
 
-    fun dealFirstPlayerDeckCard(card: Card): GameWaitingDealer {
+    fun addCardFirstPlayerDeck(card: Card): GameWaitingDealer {
         val maxCards= GameConfig.FIRST_PLAYER_DECK_SIZE[players.size]!!
         check(maxCards >= playerDeck1.size + 1) { "The First player deck has already enough card. (Max $maxCards)" }
-        return raiseEvent(CardDealtWithFirstPlayerDeck.create(id, card)) as GameWaitingDealer
+        return raiseEvent(CardAddedFirstPlayerDeck.create(id, card)) as GameWaitingDealer
     }
 
-    fun dealSecondPlayerDeckCard(card: Card): GameWaitingDealer {
+    fun addCardSecondPlayerDeck(card: Card): GameWaitingDealer {
         val maxCards= GameConfig.SECOND_PLAYER_DECK_SIZE
         check(maxCards >= playerDeck2.size + 1) { "The Second player deck has already enough card. (Max $maxCards)" }
-        return raiseEvent(CardDealtWithSecondPlayerDeck.create(id, card)) as GameWaitingDealer
+        return raiseEvent(CardAddedSecondPlayerDeck.create(id, card)) as GameWaitingDealer
     }
 
-    fun dealDiscardDeckCard(card: Card): GameWaitingDealer {
+    fun addCardDiscardDeck(card: Card): GameWaitingDealer {
         val maxCards= GameConfig.DISCARD_DECK_SIZE
         check(maxCards >= discardDeck.size + 1) { "The Discard deck has already enough card. (Max $maxCards)" }
-        return raiseEvent(CardDealtWithDiscardDeck.create(id, card)) as GameWaitingDealer
+        return raiseEvent(CardAddedDiscardDeck.create(id, card)) as GameWaitingDealer
     }
 
-    fun dealDeckCard(card: Card): GameWaitingDealer {
+    fun addCardDeck(card: Card): GameWaitingDealer {
         val maxCards= deckSize(players.size)
         check(maxCards >= deck.size + 1) { "The Deck has already enough card. (Max $maxCards)" }
-        return raiseEvent(CardDealtWithDeck.create(id, card)) as GameWaitingDealer
+        return raiseEvent(CardAddedDeck.create(id, card)) as GameWaitingDealer
     }
 
     fun startGame(): GameExecutionPickUpPhase {
@@ -77,7 +77,7 @@ data class GameWaitingDealer private constructor(
         return raiseEvent(GameStarted.create(id)) as GameExecutionPickUpPhase
     }
 
-    private fun apply(event: CardDealtWithPlayer): GameWaitingDealer {
+    private fun apply(event: CardAddedPlayer): GameWaitingDealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayers = players.updatePlayer(event.playerId) {
                 player -> player.copy(cards = player.cards.plus(event.card))
@@ -86,28 +86,28 @@ data class GameWaitingDealer private constructor(
         return copy(players = updatedPlayers)
     }
 
-    private fun apply(event: CardDealtWithFirstPlayerDeck): GameWaitingDealer {
+    private fun apply(event: CardAddedFirstPlayerDeck): GameWaitingDealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayerDeck1=playerDeck1.plus(event.card)
         log.debug("The Player2 deck received a card, it has ${updatedPlayerDeck1.size} cards")
         return copy(playerDeck1 = updatedPlayerDeck1)
     }
 
-    private fun apply(event: CardDealtWithSecondPlayerDeck): GameWaitingDealer {
+    private fun apply(event: CardAddedSecondPlayerDeck): GameWaitingDealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayerDeck2 = playerDeck2.plus(event.card)
         log.debug("The Player2 deck received a card, it has ${updatedPlayerDeck2.size} cards")
         return copy(playerDeck2 = updatedPlayerDeck2)
     }
 
-    private fun apply(event: CardDealtWithDiscardDeck): GameWaitingDealer {
+    private fun apply(event: CardAddedDiscardDeck): GameWaitingDealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedDiscardDeck = discardDeck.plus(event.card)
         log.debug("The Discard deck received a card, it has ${updatedDiscardDeck.size} cards")
         return copy(discardDeck = updatedDiscardDeck)
     }
 
-    private fun apply(event: CardDealtWithDeck): GameWaitingDealer {
+    private fun apply(event: CardAddedDeck): GameWaitingDealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedDeck=deck.plus(event.card)
         log.debug("The Deck received a card, it has ${updatedDeck.size} cards")

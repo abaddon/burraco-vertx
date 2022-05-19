@@ -12,6 +12,7 @@ import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
+import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -45,24 +46,6 @@ data class GameExecutionPickUpPhase private constructor(
         }
 
         fun from(game: GameWaitingDealer): GameExecutionPickUpPhase {
-            val teams: List<Team> =when(game.players.size){
-                4 -> listOf(
-                    Team(listOf(game.players[0].id, game.players[2].id)),
-                    Team(listOf(game.players[1].id, game.players[3].id))
-                )
-                3 -> listOf(
-                    Team(listOf()),
-                    Team(listOf())
-                )
-                2-> listOf(
-                    Team(listOf(game.players[0].id)),
-                    Team(listOf(game.players[1].id))
-                )
-                else -> {
-                    assert(false){"Unexpected number of players"}
-                    listOf()
-                }
-            }
             return GameExecutionPickUpPhase(
                 id = game.id,
                 version = game.version,
@@ -72,10 +55,23 @@ data class GameExecutionPickUpPhase private constructor(
                 playerDeck1 = PlayerDeck.create(game.playerDeck1),
                 playerDeck2 = PlayerDeck.create(game.playerDeck2),
                 discardPile = DiscardPile.create(game.discardDeck),
-                teams = teams
+                teams = createTeams(game.players)
             )
         }
+
+        private fun createTeams(players: List<WaitingPlayer>): List<Team> = when (players.size) {
+            4 -> listOf(
+                Team(listOf(players[0].id, players[2].id)),
+                Team(listOf(players[1].id, players[3].id))
+            )
+            2 -> listOf(
+                Team(listOf(players[0].id)),
+                Team(listOf(players[1].id))
+            )
+            else -> listOf()
+        }
     }
+
 
     //When the turn start the player can pickUp a card from the Deck
     fun pickUpACardFromDeck(playerIdentity: PlayerIdentity): GameExecutionPlayPhase {

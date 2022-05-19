@@ -4,11 +4,11 @@ import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.card.Card
 
 data class GameDecksHelper(
-    val playersCardsEvents: List<CardDealtWithPlayer>,
-    val deckEvents :List<CardDealtWithDeck>,
-    val playerDeck1Events:  List<CardDealtWithFirstPlayerDeck>,
-    val playerDeck2Events: List<CardDealtWithSecondPlayerDeck>,
-    val discardDeckEvents: List<CardDealtWithDiscardDeck>
+    val playersCardsEvents: List<CardAddedPlayer>,
+    val deckEvents :List<CardAddedDeck>,
+    val playerDeck1Events:  List<CardAddedFirstPlayerDeck>,
+    val playerDeck2Events: List<CardAddedSecondPlayerDeck>,
+    val discardDeckEvents: List<CardAddedDiscardDeck>
 ) {
 
     fun events(): List<GameEvent> =deckEvents

@@ -12,9 +12,7 @@
 #### GameDraft Commands
 - [x] CreateGame
 - [x] AddPlayer
-- [ ] RemovePlayer
-- [ ] StartGame
-- [ ] CreateTeams
+- [x] RemovePlayer
 - [x] RequestDealCards
 
 #### GameWaitingDealer Commands
@@ -23,7 +21,7 @@
 - [x] DealSecondPlayerDeckCard
 - [x] DealDiscardDeckCard
 - [x] DealDeckCard
-- [ ] startPlayerTurn
+- [x] StartPlayerTurn
 
 #### GameExecutionPickUpPhase Commands
 - [x] PickUpACardFromDeck
@@ -35,8 +33,7 @@
 - [x] AppendCardsOnATris
 - [x] AppendCardsOnStraight
 - [x] PickUpPlayerDeckDuringTurn
-- [ ] create teams
-- [ ] DropCardOnDiscardPile
+- [x] DropCardOnDiscardPile
 
 #### GameExecutionEndPhase Commands
 - [x] StartNextPlayerTurn

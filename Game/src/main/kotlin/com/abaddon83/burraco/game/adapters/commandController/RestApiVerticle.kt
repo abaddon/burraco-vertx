@@ -4,7 +4,7 @@ import com.abaddon83.burraco.game.HealthCheck
 import com.abaddon83.burraco.game.adapters.commandController.config.RestApiConfig
 import com.abaddon83.burraco.game.adapters.commandController.handlers.*
 import com.abaddon83.burraco.game.ports.CommandControllerPort
-import com.abaddon83.burraco.game.vertx.AbstractHttpServiceVerticle
+import com.abaddon83.burraco.shared.vertx.AbstractHttpServiceVerticle
 import io.vertx.core.Promise
 import io.vertx.core.http.HttpHeaders
 import io.vertx.core.json.JsonObject

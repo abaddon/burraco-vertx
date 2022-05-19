@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.game.vertx
+package com.abaddon83.burraco.shared.vertx
 
 import io.vertx.core.*
 import io.vertx.core.impl.ConcurrentHashSet
