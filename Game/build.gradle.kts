@@ -2,7 +2,7 @@ group = "com.abaddon83.burraco.game"
 
 object Versions {
     const val kcqrsCoreVersion="0.0.7"
-    const val kcqrsTestVersion="0.0.9"
+    const val kcqrsTestVersion="0.0.10"
     const val kcqrsEventStoreDBVersion="0.0.7"
     const val slf4jVersion = "1.7.25"
     const val kotlinVersion = "1.6.0"
