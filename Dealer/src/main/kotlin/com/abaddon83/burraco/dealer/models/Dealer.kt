@@ -1,10 +1,7 @@
 package com.abaddon83.burraco.dealer.models
 
 
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayer
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck1
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck2
-import com.abaddon83.burraco.dealer.events.DeckCreated
+import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.helpers.*
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
@@ -18,6 +15,7 @@ data class Dealer private constructor(
     val players: List<Player>,
     val playerDeck1NumCards: Int,
     val playerDeck2NumCards: Int,
+    val discardDeck: Int,
     val deckNumCards:Int,
     val cardsAvailable: List<Card>
 ) : AggregateRoot() {
@@ -30,7 +28,7 @@ data class Dealer private constructor(
 
 
     companion object Factory {
-        fun empty(): Dealer = Dealer(DealerIdentity.empty(), 0, GameIdentity.empty(), listOf(),0,0,0, listOf())
+        fun empty(): Dealer = Dealer(DealerIdentity.empty(), 0, GameIdentity.empty(), listOf(),0,0,0,0, listOf())
     }
 
     fun createDeck(dealerIdentity: DealerIdentity, gameIdentity: GameIdentity, players: List<PlayerIdentity>): Dealer {
@@ -64,6 +62,21 @@ data class Dealer private constructor(
         require(this.gameIdentity == gameId) { "Game ${gameId.valueAsString()} is different" }
 
         return raiseEvent(CardDealtToPlayerDeck2.create(id,gameId, cardsAvailable.first())) as Dealer
+    }
+
+    fun dealCardToDiscardDeck(gameId: GameIdentity): Dealer {
+        check(this.id != DealerIdentity.empty()) { "Current dealer with id ${this.id.valueAsString()} is not yet created" }
+        check(discardDeck < MAX_DISCARD_DECK_CARD) {"The discard deck has the maximum number of cards (${discardDeck})"}
+        require(this.gameIdentity == gameId) { "Game ${gameId.valueAsString()} is different" }
+
+        return raiseEvent(CardDealtToDiscardDeck.create(id,gameId, cardsAvailable.first())) as Dealer
+    }
+
+    fun dealCardToDeck(gameId: GameIdentity): Dealer {
+        check(this.id != DealerIdentity.empty()) { "Current dealer with id ${this.id.valueAsString()} is not yet created" }
+        require(this.gameIdentity == gameId) { "Game ${gameId.valueAsString()} is different" }
+
+        return raiseEvent(CardDealtToDeck.create(id,gameId, cardsAvailable.first())) as Dealer
     }
 
 
@@ -105,6 +118,26 @@ data class Dealer private constructor(
             playerDeck2NumCards = this.playerDeck2NumCards+1
         )
         log.debug("Card dealt to PlayerDeck1, now there are ${newDealer.cardsAvailable.size} cards and PlayerDeck1 has ${newDealer.playerDeck2NumCards} cards")
+        return newDealer
+    }
+
+    private fun apply(event: CardDealtToDiscardDeck): Dealer {
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        val newDealer = copy(
+            cardsAvailable = cardsAvailable.removeCards(listOf(event.card)),
+            discardDeck = this.discardDeck+1
+        )
+        log.debug("Card dealt to Discard deck, now there are ${newDealer.cardsAvailable.size} cards and Discard deck has ${newDealer.discardDeck} cards")
+        return newDealer
+    }
+
+    private fun apply(event: CardDealtToDeck): Dealer {
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        val newDealer = copy(
+            cardsAvailable = cardsAvailable.removeCards(listOf(event.card)),
+            deckNumCards = this.deckNumCards+1
+        )
+        log.debug("Card dealt to Discard deck, now there are ${newDealer.cardsAvailable.size} cards and Deck has ${newDealer.deckNumCards} cards")
         return newDealer
     }
 

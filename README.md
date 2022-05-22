@@ -41,13 +41,12 @@
 
 ### Dealer
 #### Commands
-- [ ] create Deck
-- [ ] deck shuffle
-- [ ] Deal player card
-- [ ] Deal player deck 1 card
-- [ ] Deal player deck 2 card
-- [ ] Deal discard deck card
-- [ ] Deal deck card
+- [x] create Deck
+- [x] Deal player card
+- [x] Deal player deck 1 card
+- [x] Deal player deck 2 card
+- [x] Deal discard deck card
+- [x] Deal deck card
 
 ### Player
 #### Commands
