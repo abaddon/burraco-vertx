@@ -3,6 +3,9 @@ package com.abaddon83.burraco.dealer.models
 
 import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.helpers.*
+import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_DISCARD_DECK_CARD
+import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
+import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import org.slf4j.Logger
@@ -21,9 +24,7 @@ data class Dealer private constructor(
 ) : AggregateRoot() {
     val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     override val uncommittedEvents: MutableCollection<IDomainEvent> = mutableListOf()
-    private val MAX_PLAYER_CARD: Int =11
-    private val MAX_PLAYER_DECK_CARD= listOf(11,18)
-    private val MAX_DISCARD_DECK_CARD= 1
+
 
 
 
@@ -33,6 +34,7 @@ data class Dealer private constructor(
 
     fun createDeck(dealerIdentity: DealerIdentity, gameIdentity: GameIdentity, players: List<PlayerIdentity>): Dealer {
         check(this.id == DealerIdentity.empty()) { "Current dealer with id ${this.id.valueAsString()} is already created" }
+        check(players.size in 2..4) { "The number of Players is wrong, current number of player: ${players.size}" }
         val cards = CardsHelper.allRanksWithJollyCards()
             .plus(CardsHelper.allRanksWithJollyCards())
             .shuffled()
