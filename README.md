@@ -7,6 +7,9 @@
 ### Event Storming - Big Picture
 ![big picture schema](./documents/eventStormingBigPicture.jpg)
 
+### Hexagonal Architecture
+![big picture schema](./documents/hexagonalArchitecture.jpg)
+
 ## Bounded contexts
 ### Game
 #### GameDraft Commands

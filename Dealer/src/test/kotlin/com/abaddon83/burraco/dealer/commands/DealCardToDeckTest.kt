@@ -8,7 +8,9 @@ import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.models.DealerIdentity
 import com.abaddon83.burraco.dealer.models.GameIdentity
 import com.abaddon83.burraco.dealer.models.PlayerIdentity
+import com.abaddon83.burraco.testHelpers.DummyDealerEventAdapter
 import io.github.abaddon.kcqrs.core.IIdentity
+import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.test.KcqrsAggregateTestSpecification
@@ -31,6 +33,8 @@ internal class Given_existingDealer_When_DealCardToDeck_Then_event : KcqrsAggreg
     override val aggregateId: DealerIdentity = AGGREGATE_ID
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer ={ Dealer.empty() }
     override fun streamNameRoot(): String ="Stream1"
+    override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
+        CommandHandler<Dealer>(eventRepository, DummyDealerEventAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(
@@ -63,6 +67,8 @@ internal class Given_nothing_When_DealCardToDeck_Then_exception : KcqrsAggregate
     override val aggregateId: DealerIdentity = AGGREGATE_ID
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer ={ Dealer.empty() }
     override fun streamNameRoot(): String ="Stream1"
+    override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
+        CommandHandler<Dealer>(eventRepository, DummyDealerEventAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(
@@ -95,6 +101,8 @@ internal class Given_existingDealer_When_DealCardToDeckWithWrongGamId_Then_excep
     override val aggregateId: DealerIdentity = AGGREGATE_ID
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer ={ Dealer.empty() }
     override fun streamNameRoot(): String ="Stream1"
+    override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
+        CommandHandler<Dealer>(eventRepository, DummyDealerEventAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(
@@ -127,6 +135,8 @@ internal class Given_existingDealerWithDealCardToDeck_When_DealCardToDeck_Then_e
     override val aggregateId: DealerIdentity = AGGREGATE_ID
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer ={ Dealer.empty() }
     override fun streamNameRoot(): String ="Stream1"
+    override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
+        CommandHandler<Dealer>(eventRepository, DummyDealerEventAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(

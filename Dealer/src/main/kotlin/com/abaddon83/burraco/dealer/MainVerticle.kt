@@ -3,7 +3,7 @@
 //import com.abaddon83.burraco.dealer.adapters.eventBrokerConsumerAdapter.KafkaConsumerGameAdapter
 //import com.abaddon83.burraco.dealer.adapters.eventBrokerConsumerAdapter.config.KafkaConsumerConfig
 //import com.abaddon83.burraco.dealer.adapters.eventBrokerProducerAdapter.KafkaEventBrokerProducerAdapter
-//import com.abaddon83.burraco.dealer.adapters.eventBrokerProducerAdapter.config.KafkaProducerConfig
+//import com.abaddon83.burraco.dealer.adapters.eventAdapters.KafkaProducerConfig
 //import io.vertx.core.*
 //import io.vertx.servicediscovery.Record
 //import io.vertx.servicediscovery.ServiceDiscovery

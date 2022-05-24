@@ -22,7 +22,7 @@ data class Dealer private constructor(
     val deckNumCards:Int,
     val cardsAvailable: List<Card>
 ) : AggregateRoot() {
-    val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     override val uncommittedEvents: MutableCollection<IDomainEvent> = mutableListOf()
 
 

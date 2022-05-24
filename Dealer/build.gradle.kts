@@ -16,6 +16,7 @@ object Versions {
     const val mysqlConnectorVersion = "8.0.21"
     const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
+    const val testContainerVersion="1.16.3"
 }
 
 val mainVerticleName = "com.abaddon83.burraco.dealer.MainVerticle"
@@ -77,10 +78,14 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:${Versions.log4jVersion}")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4jVersion}")
 
+    //Test
     testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
     testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutineVersion}")
+    testImplementation("org.testcontainers:testcontainers:${Versions.testContainerVersion}")
+    testImplementation("org.testcontainers:junit-jupiter:${Versions.testContainerVersion}")
+    testImplementation("org.testcontainers:kafka:${Versions.testContainerVersion}")
 }
 
 jacoco {

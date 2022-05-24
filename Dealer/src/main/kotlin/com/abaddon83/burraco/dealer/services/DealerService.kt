@@ -1,7 +1,6 @@
 package com.abaddon83.burraco.dealer.services
 
 import com.abaddon83.burraco.dealer.commands.*
-import com.abaddon83.burraco.dealer.helpers.Validated
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_DISCARD_DECK_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
@@ -13,11 +12,14 @@ import com.abaddon83.burraco.dealer.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.ports.DomainError
 import com.abaddon83.burraco.dealer.ports.DomainResult
 import com.abaddon83.burraco.dealer.ports.ExceptionError
-import com.abaddon83.burraco.dealer.ports.Outcome
 import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
 import io.github.abaddon.kcqrs.core.domain.Result
 
-typealias DealerServiceResult = Result<Exception, Dealer>
+
+sealed class DealerServiceResult<out TDomainError: DomainError, out DomainResult> {
+    data class Invalid<TDomainError: DomainError>(val err: TDomainError): DealerServiceResult<TDomainError, Nothing>()
+    data class Valid<DomainResult>(val value: DomainResult): DealerServiceResult<Nothing, DomainResult>()
+}
 
 class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<Dealer>) {
 
@@ -27,29 +29,29 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,
         players: List<PlayerIdentity>
-    ): Outcome = try {
+    ): DealerServiceResult<DomainError,DomainResult> = try {
         //create deck
         when (val createDecksResult = dealerCommandHandler.handle(CreateDecks(dealerIdentity, gameIdentity, players))) {
-            is Result.Invalid -> Validated.Invalid(ExceptionError(createDecksResult.err))
+            is Result.Invalid -> DealerServiceResult.Invalid(ExceptionError(createDecksResult.err))
             //deal players cards
             is Result.Valid -> when (val dealPlayersCardsResult =
                 dealPlayersCards(dealerIdentity, gameIdentity, players, MAX_PLAYER_CARD, players)) {
-                is Result.Invalid -> Validated.Invalid(ExceptionError(dealPlayersCardsResult.err))
+                is Result.Invalid -> DealerServiceResult.Invalid(ExceptionError(dealPlayersCardsResult.err))
                 //deal playerDeck1
                 is Result.Valid -> when (val dealPlayerDeck1Result =
                     dealPlayerDeck1(dealerIdentity, gameIdentity, MAX_PLAYER_DECK_CARD[players.size % 2])) {
-                    is Result.Invalid -> Validated.Invalid(ExceptionError(dealPlayerDeck1Result.err))
+                    is Result.Invalid -> DealerServiceResult.Invalid(ExceptionError(dealPlayerDeck1Result.err))
                     //deal playerDeck2
                     is Result.Valid -> when (val dealPlayerDeck2Result =
                         dealPlayerDeck2(dealerIdentity, gameIdentity, MAX_PLAYER_DECK_CARD[0])) {
-                        is Result.Invalid -> Validated.Invalid(ExceptionError(dealPlayerDeck2Result.err))
+                        is Result.Invalid -> DealerServiceResult.Invalid(ExceptionError(dealPlayerDeck2Result.err))
                         //deal discard Deck
                         is Result.Valid -> when (val dealDiscardDeckResult =
                             dealDiscardDeck(dealerIdentity, gameIdentity)) {
-                            is Result.Invalid -> Validated.Invalid(ExceptionError(dealDiscardDeckResult.err))
+                            is Result.Invalid -> DealerServiceResult.Invalid(ExceptionError(dealDiscardDeckResult.err))
                             //deal Deck
                             is Result.Valid -> when (val dealDeckResult = dealDeck(dealerIdentity, gameIdentity)) {
-                                is Result.Invalid -> Validated.Invalid(ExceptionError(dealDeckResult.err))
+                                is Result.Invalid -> DealerServiceResult.Invalid(ExceptionError(dealDeckResult.err))
                                 is Result.Valid -> {
                                     val dealer = dealDeckResult.value
                                     dealer.players.forEach { player -> check(player.numCardsDealt == MAX_PLAYER_CARD) }
@@ -61,7 +63,7 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
                                     val expectedDeckCards =
                                         totalCards - dealer.players.sumOf { it.numCardsDealt } - dealer.playerDeck1NumCards - dealer.playerDeck2NumCards - dealer.discardDeck
                                     check(dealer.deckNumCards == expectedDeckCards)
-                                    Validated.Valid(DomainResult(dealer.uncommittedEvents, dealer))
+                                    DealerServiceResult.Valid(DomainResult(dealer.uncommittedEvents, dealer))
                                 }
                             }
                         }
@@ -70,14 +72,14 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
             }
         }
     } catch (e: Exception) {
-        Validated.Invalid(ExceptionError(e))
+        DealerServiceResult.Invalid(ExceptionError(e))
     }
 
 
     private suspend fun dealDeck(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity
-    ): DealerServiceResult =
+    ): Result<Exception, Dealer> =
         when (val result = dealerCommandHandler.handle(DealCardToDeck(dealerIdentity, gameIdentity))) {
             is Result.Invalid -> result
             is Result.Valid -> {
@@ -91,7 +93,7 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
     private suspend fun dealDiscardDeck(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity
-    ): DealerServiceResult =
+    ): Result<Exception, Dealer> =
         dealerCommandHandler.handle(
             DealCardToDiscardDeck(dealerIdentity, gameIdentity)
         )
@@ -100,7 +102,7 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,
         remainingCards: Int,
-    ): DealerServiceResult =
+    ): Result<Exception, Dealer> =
         when (val result = dealerCommandHandler.handle(DealCardToPlayerDeck1(dealerIdentity, gameIdentity))) {
             is Result.Invalid -> result
             is Result.Valid -> {
@@ -117,7 +119,7 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,
         remainingCards: Int,
-    ): DealerServiceResult =
+    ): Result<Exception, Dealer> =
         when (val result = dealerCommandHandler.handle(DealCardToPlayerDeck2(dealerIdentity, gameIdentity))) {
             is Result.Invalid -> result
             is Result.Valid -> {
@@ -136,7 +138,7 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
         playerIdentities: List<PlayerIdentity>,
         remainingCards: Int,
         playerRemaining: List<PlayerIdentity>
-    ): DealerServiceResult {
+    ): Result<Exception, Dealer> {
 
         val currentPlayer = playerRemaining.first()
         return when (val result = dealPlayersCard(dealerIdentity, gameIdentity, currentPlayer)) {
@@ -166,7 +168,7 @@ class DealerService(private val dealerCommandHandler: IAggregateCommandHandler<D
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,
         playerIdentity: PlayerIdentity
-    ): DealerServiceResult =
+    ): Result<Exception, Dealer> =
         dealerCommandHandler.handle(
             DealCardToPlayer(dealerIdentity, gameIdentity, playerIdentity)
         )
