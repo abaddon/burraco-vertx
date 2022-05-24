@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.dealer.adapters.eventAdapters
+package com.abaddon83.burraco.dealer.adapters.eventAdapters.kafka
 
 import com.abaddon83.burraco.dealer.ports.EventsPort
 import com.abaddon83.burraco.dealer.ports.EventsPortResult

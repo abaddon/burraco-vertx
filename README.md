@@ -8,7 +8,7 @@
 ![big picture schema](./documents/eventStormingBigPicture.jpg)
 
 ### Hexagonal Architecture
-![big picture schema](./documents/hexagonalArchitecture.jpg)
+![Hexagonal Architecture](./documents/hexagonalArchitecture.jpg)
 
 ## Bounded contexts
 ### Game
