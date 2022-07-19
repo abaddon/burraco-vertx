@@ -63,7 +63,7 @@ class KafkaGameEventCommandAdapter(
 
     private suspend fun executeCommand(kafkaGameEvent: KafkaGameEvent): CommandPortResult<DomainError, DomainResult> =
         when (kafkaGameEvent.eventName) {
-            "is GameInitialised" -> {
+            "GameInitialised" -> {
                 val dealerIdentity: DealerIdentity = TODO()
                 val gameIdentity: GameIdentity = TODO()
                 val players: List<PlayerIdentity> = TODO()

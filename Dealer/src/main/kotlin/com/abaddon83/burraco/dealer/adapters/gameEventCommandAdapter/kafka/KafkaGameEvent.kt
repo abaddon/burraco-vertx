@@ -3,7 +3,7 @@ package com.abaddon83.burraco.dealer.adapters.gameEventCommandAdapter.kafka
 import io.vertx.core.json.Json
 import org.apache.kafka.clients.consumer.ConsumerRecord
 
-data class KafkaGameEvent(
+data class KafkaGameEvent private constructor(
     val eventName: String,
     val key: String,
     val entityName: String,
