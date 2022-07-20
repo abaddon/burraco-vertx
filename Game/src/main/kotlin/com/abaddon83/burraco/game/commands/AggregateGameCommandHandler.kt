@@ -26,6 +26,7 @@ class AggregateGameCommandHandler(
                     val saveResult = repository.save(newAggregate, UUID.randomUUID(), updateHeaders)
                     when (saveResult) {
                         is Result.Valid -> publish(newAggregate.uncommittedEvents())
+                        else -> null
                     }
                     saveResult
                 } catch (ex: IllegalArgumentException){
