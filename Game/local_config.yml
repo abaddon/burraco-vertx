@@ -1,0 +1,21 @@
+restHttpService:
+  serviceName: game-service
+  http:
+    port: 8080
+    address: "0.0.0.0"
+    root: "/"
+
+gameEventPublisher:
+  topic: game_event
+  properties:
+    bootstrap.servers: "localhost:9093"
+    key.serializer: "org.apache.kafka.common.serialization.StringSerializer"
+    value.serializer: "org.apache.kafka.common.serialization.StringSerializer"
+    acks: 1
+
+eventStoreDBRepository:
+  streamName: "game_stream"
+  maxReadPageSize: 100
+  maxWritePageSize: 200
+  eventStoreDB:
+    connectionString: "esdb://127.0.0.1:2113?tls=false&tlsVerifyCert=false"

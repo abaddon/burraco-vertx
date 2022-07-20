@@ -10,7 +10,6 @@ class HealthCheck(val vertx: Vertx) {
     var healthCheckHandler = HealthCheckHandler.create(vertx)
 
     fun build(): HealthCheckHandler {;
-
         // Register another procedure with a timeout (2s). If the procedure does not complete in
         // the given time, the check fails.
         healthCheckHandler.register(

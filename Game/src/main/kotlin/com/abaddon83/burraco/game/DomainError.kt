@@ -29,7 +29,7 @@ data class ExceptionError(
     override fun toMap():Map<String,*> =
         mapOf(
             "exception" to exception::class.simpleName,
-            "message" to exception.message.orEmpty(),
-            "stackTrace" to exception.stackTraceToString()
+            "message" to exception.message.orEmpty()//,
+            //"stackTrace" to exception.stackTraceToString()
         )
 }

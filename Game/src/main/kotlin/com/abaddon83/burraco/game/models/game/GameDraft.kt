@@ -50,26 +50,26 @@ data class GameDraft constructor(
 
     private fun apply(event: GameCreated): GameDraft {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        return copy(id = event.aggregateId )
+        return copy(id = event.aggregateId,version = version + 1 )
     }
 
     private fun apply(event: PlayerAdded): GameDraft {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayers=players.plus(WaitingPlayer(event.playerIdentity))
         log.debug("New Player added, now there are ${updatedPlayers.size} players")
-        return copy(players = updatedPlayers )
+        return copy(players = updatedPlayers,version = version + 1 )
     }
 
     private fun apply(event: PlayerRemoved): GameDraft {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val updatedPlayers=players.minus(WaitingPlayer(event.playerIdentity))
         log.debug("Player removed, now there are ${updatedPlayers.size} players")
-        return copy(players = updatedPlayers )
+        return copy(players = updatedPlayers,version = version + 1 )
     }
 
     private fun apply(event: CardDealingRequested): GameWaitingDealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        return GameWaitingDealer.from(this)
+        return GameWaitingDealer.from(this.copy(version = version + 1))
     }
 
 }

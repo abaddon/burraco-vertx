@@ -16,6 +16,8 @@ object Versions {
     const val mysqlConnectorVersion = "8.0.21"
     const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
+    const val testcontainers="1.17.3"
+    const val hopliteVersion="2.3.3"
 }
 
 val mainVerticleName = "com.abaddon83.burraco.game.MainVerticle"
@@ -54,6 +56,10 @@ repositories {
 
 dependencies {
 
+    //Config
+    implementation("com.sksamuel.hoplite:hoplite-core:${Versions.hopliteVersion}")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:${Versions.hopliteVersion}")
+
     //kcqrs
     implementation("io.github.abaddon.kcqrs:kcqrs-core:${Versions.kcqrsCoreVersion}")
     implementation("io.github.abaddon.kcqrs:kcqrs-EventStoreDB:${Versions.kcqrsEventStoreDBVersion}")
@@ -80,6 +86,11 @@ dependencies {
     testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
     testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")
+    testImplementation("org.testcontainers:testcontainers:${Versions.testcontainers}")
+    testImplementation("org.testcontainers:kafka:${Versions.testcontainers}")
+    testImplementation("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
+
+
 }
 
 jacoco {
