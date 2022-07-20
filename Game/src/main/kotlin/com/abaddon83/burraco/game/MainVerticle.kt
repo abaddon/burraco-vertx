@@ -11,7 +11,7 @@ import io.vertx.core.*
 import org.slf4j.LoggerFactory
 
 class MainVerticle : AbstractVerticle() {
-    private val configPath= "src/burraco-vertx/Game/local_config.yml"
+    private val configPath= "Game/local_config.yml"
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
     companion object {
