@@ -4,6 +4,7 @@ import com.abaddon83.burraco.game.DomainError
 import com.abaddon83.burraco.game.DomainResult
 import com.abaddon83.burraco.game.GameError
 import com.abaddon83.burraco.game.helpers.Validated
+import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameIdentity
 import com.abaddon83.burraco.game.models.player.PlayerIdentity
@@ -15,49 +16,22 @@ typealias Outcome = Validated<DomainError, DomainResult>
 interface CommandControllerPort {
     val gameCommandHandler: IAggregateCommandHandler<Game>
 
-    suspend fun createGame(): Outcome =
-        Validated.Invalid(GameError("This command is not available through this interface"))
+    suspend fun createGame(): Outcome
 
-    suspend fun addPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome =
-        Validated.Invalid(GameError("This command is not available through this interface"))
+    suspend fun addPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome
 
-    suspend fun requestDealCards(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome =
-        Validated.Invalid(GameError("This command is not available through this interface"))
+    suspend fun requestDealCards(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome
 
-//    fun startGame(burracoGameIdentity: GameIdentity): Promise<Outcome>{
-//        val promise = Promise.promise<Outcome>()
-//        promise.fail(NotImplementedError("This command is not available through this interface"))
-//        return promise
-//    }
-//    fun pickUpCardFromDeck(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Promise<Outcome>{
-//        val promise = Promise.promise<Outcome>()
-//        promise.fail(NotImplementedError("This command is not available through this interface"))
-//        return promise
-//    }
-//    fun dropCardOnDiscardPile(burracoGameIdentity: GameIdentity, playerIdentity: PlayerIdentity, cardToDrop: Card): Promise<Outcome>{
-//        val promise = Promise.promise<Outcome>()
-//        promise.fail(NotImplementedError("This command is not available through this interface"))
-//        return promise
-//    }
-//
-//    fun applyCardToPlayer(identity: GameIdentity, playerIdentity: PlayerIdentity, card: Card): Promise<Outcome>{
-//        val promise = Promise.promise<Outcome>()
-//        promise.fail(NotImplementedError("This command is not available through this interface"))
-//        return promise
-//    }
-//    fun applyCardToPlayerDeck(identity: GameIdentity, playerDeckId: Int, card: Card): Promise<Outcome>{
-//        val promise = Promise.promise<Outcome>()
-//        promise.fail(NotImplementedError("This command is not available through this interface"))
-//        return promise
-//    }
-//    fun applyCardToDiscardDeck(identity: GameIdentity, card: Card): Promise<Outcome>{
-//        val promise = Promise.promise<Outcome>()
-//        promise.fail(NotImplementedError("This command is not available through this interface"))
-//        return promise
-//    }
-//    fun applyCardToDeck(identity: GameIdentity, card: Card): Promise<Outcome>{
-//        val promise = Promise.promise<Outcome>()
-//        promise.fail(NotImplementedError("This command is not available through this interface"))
-//        return promise
-//    }
+    suspend fun addCardPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity, card: Card): Outcome
+
+    suspend fun addCardFirstPlayerDeck(gameIdentity: GameIdentity, card: Card): Outcome
+
+    suspend fun addCardSecondPlayerDeck(gameIdentity: GameIdentity, card: Card): Outcome
+
+    suspend fun addCardDiscardDeck(gameIdentity: GameIdentity, card: Card): Outcome
+
+    suspend fun addCardDeck(gameIdentity: GameIdentity, card: Card): Outcome
+
+    suspend fun startPlayerTurn(gameIdentity: GameIdentity): Outcome
+
 }
