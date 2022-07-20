@@ -8,7 +8,7 @@ internal class ServiceConfigTest {
     @Test
     fun `test`() {
         val serviceConfig =
-            ServiceConfig.load("/Users/stefanolonghi/Documents/src/burraco-vertx/Game/src/test/resources/dev.yml")
+            ServiceConfig.load("src/test/resources/dev.yml")
 
         assertEquals("game-service", serviceConfig.restHttpService.serviceName)
         assertEquals(8080, serviceConfig.restHttpService.http.port)
