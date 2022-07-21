@@ -31,9 +31,8 @@ class RestHttpServiceVerticle(
     }
 
     private fun startHttpServer(startPromise: Promise<Void>?) {
-        val apiDefinitionUrl = this.javaClass.classLoader.getResource("gameAPIs.yaml")
         val healthCheck = HealthCheck(vertx)
-        RouterBuilder.create(vertx, apiDefinitionUrl.toString())
+        RouterBuilder.create(vertx, restHttpServiceConfig.openApiPath)
             .onFailure { ex ->
                 log.error("OpenApi not loaded", ex)
                 startPromise?.fail(ex)

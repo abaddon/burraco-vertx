@@ -119,12 +119,14 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     archiveClassifier.set("all")
     manifest {
         attributes(mapOf(
-            "Main-Verticle" to mainVerticleName
+            "Main-Class" to "io.vertx.core.Starter",
+            "Main-Verticle" to mainVerticleName,
+            "Multi-Release" to "true"
         ))
     }
-    mergeServiceFiles {
-        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
-    }
+//    mergeServiceFiles {
+//        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
+//    }
 }
 
 tasks.withType<Test> {

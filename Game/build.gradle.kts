@@ -16,7 +16,7 @@ object Versions {
     const val mysqlConnectorVersion = "8.0.21"
     const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
-    const val testcontainers="1.17.3"
+    const val testContainerVersion="1.17.3"
     const val hopliteVersion="2.3.3"
 }
 
@@ -90,11 +90,10 @@ dependencies {
     testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
     testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")
-    testImplementation("org.testcontainers:testcontainers:${Versions.testcontainers}")
-    testImplementation("org.testcontainers:kafka:${Versions.testcontainers}")
-    testImplementation("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
-
-
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutineVersion}")
+    testImplementation("org.testcontainers:testcontainers:${Versions.testContainerVersion}")
+    testImplementation("org.testcontainers:junit-jupiter:${Versions.testContainerVersion}")
+    testImplementation("org.testcontainers:kafka:${Versions.testContainerVersion}")
 }
 
 jacoco {
@@ -120,12 +119,14 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     archiveClassifier.set("all")
     manifest {
         attributes(mapOf(
-            "Main-Verticle" to mainVerticleName
-            ))
+            "Main-Class" to "io.vertx.core.Starter",
+            "Main-Verticle" to mainVerticleName,
+            "Multi-Release" to "true"
+        ))
     }
-    mergeServiceFiles {
-        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
-    }
+//    mergeServiceFiles {
+//        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
+//    }
 }
 
 tasks.withType<Test> {

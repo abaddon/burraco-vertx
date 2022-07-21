@@ -147,7 +147,7 @@ internal class RestHttpServiceVerticleTest {
         @BeforeAll
         @JvmStatic
         fun beforeAll(testContext: VertxTestContext) {
-            val restApiConfig = RestHttpServiceConfig("test", RestApiHttpConfig(PORT, ADDRESS, ROOT))
+            val restApiConfig = RestHttpServiceConfig("test","./gameAPIs.yaml", RestApiHttpConfig(PORT, ADDRESS, ROOT))
             val verticle =
                 RestHttpServiceVerticle(
                     restApiConfig, controllerAdapter = DummyCommandControllerAdapter(

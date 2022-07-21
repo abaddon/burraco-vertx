@@ -5,14 +5,20 @@ import com.abaddon83.burraco.dealer.adapters.commandController.kafka.KafkaGameCo
 import io.vertx.core.*
 import org.slf4j.LoggerFactory
 
-class MainVerticle : AbstractVerticle() {
-    private val configPath= "Dealer/local_config.yml"
+class MainVerticle(
+    private val configPath: String
+) : AbstractVerticle() {
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            Launcher.executeCommand("run", MainVerticle::class.java.name)
+            val vertx=Vertx.vertx()
+            val configPath= when(args[0]){
+                is String -> args[0]
+                else -> "Dealer/local_config.yml"
+            }
+            vertx.deployVerticle(MainVerticle(configPath))
         }
     }
 
