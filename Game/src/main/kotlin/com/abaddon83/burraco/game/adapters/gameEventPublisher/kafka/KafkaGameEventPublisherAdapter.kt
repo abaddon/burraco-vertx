@@ -1,41 +1,40 @@
 package com.abaddon83.burraco.game.adapters.gameEventPublisher.kafka
 
+import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
+import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
+import com.abaddon83.burraco.common.externalEvents.ExternalEvent
+import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealer
+import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.GameEvent
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import com.abaddon83.burraco.game.ports.GameEventPublisherPort
-import io.vertx.core.AbstractVerticle
+
 import io.vertx.core.Vertx
-import io.vertx.kafka.client.producer.KafkaProducer
-import io.vertx.kafka.client.producer.KafkaProducerRecord
-import io.vertx.kotlin.coroutines.CoroutineVerticle
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import io.vertx.core.impl.logging.Logger
+import io.vertx.core.impl.logging.LoggerFactory
 
-
-class KafkaGameEventPublisherAdapter(vertx: Vertx, kafkaConfig: KafkaProducerConfig) : GameEventPublisherPort {
+class KafkaGameEventPublisherAdapter(
+    vertx: Vertx,
+    kafkaConfig: KafkaProducerConfig
+): KafkaProducerVerticle<GameEvent,Game>(vertx, kafkaConfig), GameEventPublisherPort {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
-    private val producer: KafkaProducer<String, String> = KafkaProducer.create(vertx, kafkaConfig.producerConfig());
-    private val topic: String = kafkaConfig.topic();
-
-    override suspend fun publish(event: GameEvent) {
-        val kafkaEvent = KafkaEvent.from(event)
-        kafkaEvent?.let { kevent ->
-            val record =
-                KafkaProducerRecord.create(topic, event.aggregateId.valueAsString(), kevent.toJson())
-            producer.write(record)
-                .onFailure {
-                    onFailure(it, event)
-                }.onSuccess {
-                    onSuccess(event)
-                }
+    override fun chooseExternalEvent(aggregate: Game, domainEvent: GameEvent): ExternalEvent? {
+        return when(domainEvent){
+            is CardDealingRequested -> {
+                val listPlayerIdentities=(aggregate as GameWaitingDealer).players.map { it.id }
+                CardsRequestedToDealer(domainEvent.aggregateId,listPlayerIdentities)
+            }
+            else -> null
         }
     }
 
-    override fun onFailure(throwable: Throwable, event: GameEvent) {
-        log.error("Event ${event.javaClass.simpleName} not published to Kafka", throwable)
+    override fun onFailure(throwable: Throwable, aggregate: Game, domainEvent: GameEvent, extEvent: ExternalEvent) {
+        log.error("Event ${domainEvent.javaClass.simpleName} not published to Kafka", throwable)
     }
 
-    override fun onSuccess(event: GameEvent) {
-        log.info("Event  ${event.javaClass.simpleName} published")
+    override fun onSuccess(aggregate: Game, domainEvent: GameEvent, extEvent: ExternalEvent) {
+        log.info("ExternalEvent  ${extEvent.javaClass.simpleName} published")
     }
 
 }

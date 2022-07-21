@@ -1,8 +1,13 @@
 package com.abaddon83.burraco.game.adapters.gameEventPublisher.kafka
 
+import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
+import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealer
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
-import com.abaddon83.burraco.game.models.game.GameIdentity
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.game.models.game.GameDraft
+import com.abaddon83.burraco.game.models.game.GameWaitingDealer
+import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import com.abaddon83.burraco.helpers.KafkaContainerTest
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
@@ -42,14 +47,22 @@ internal class KafkaGameEventPublisherAdapterTest() : KafkaContainerTest(){
             println(it.value())
             actualEvents.add(it.value())
         })
-        println("${kafka.bootstrapServers}")
+        //println("${kafka.bootstrapServers}")
         val kafkaGameEventPublisherAdapter=KafkaGameEventPublisherAdapter(vertx, kafkaProducerConfig())
         val gameIdentity = GameIdentity.create()
-        val playerIdentity = PlayerIdentity.create()
-        val event = CardDealingRequested.create(gameIdentity, playerIdentity)
+        val playerIdentity1 = PlayerIdentity.create()
+        val playerIdentity2 = PlayerIdentity.create()
+
+        val aggregate = GameWaitingDealer.from(GameDraft(gameIdentity,1, listOf(
+            WaitingPlayer(playerIdentity1, listOf()) ,
+            WaitingPlayer(playerIdentity2, listOf())
+            ))
+        )
+        val event = CardDealingRequested.create(gameIdentity, playerIdentity1)
         runBlocking {
-            kafkaGameEventPublisherAdapter.publish(event)
+            kafkaGameEventPublisherAdapter.publish(aggregate,event)
         }
+
         testContext.awaitCompletion(2,TimeUnit.SECONDS)
         assertEquals(expectedEventsCount,actualEvents.size)
         consumer.close().onComplete { testContext.completeNow() }

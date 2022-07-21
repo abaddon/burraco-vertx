@@ -1,8 +1,8 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest.handlers
 
 import com.abaddon83.burraco.game.helpers.Validated
-import com.abaddon83.burraco.game.models.game.GameIdentity
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.ports.CommandControllerPort
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
@@ -19,8 +19,8 @@ class RequestDealCardsRoutingHandler(private val controllerAdapter: CommandContr
         val params: RequestParameters = routingContext.get(ValidationHandler.REQUEST_CONTEXT_KEY)
         val bodyRequest: JsonObject = params.body().jsonObject
         log.debug("RequestDealCardsRoutingHandler request body: ${bodyRequest.encode()}")
-        val gameIdentity = GameIdentity.create(params.pathParameter("gameId").string)
-        val playerIdentity = PlayerIdentity.create(bodyRequest.get<String>("playerId"))
+        val gameIdentity = GameIdentity(params.pathParameter("gameId").string)
+        val playerIdentity = PlayerIdentity(bodyRequest.get<String>("playerId"))
         when (val outcome = controllerAdapter.requestDealCards(gameIdentity, playerIdentity)) {
             is Validated.Valid -> commandExecuted(routingContext, outcome.value)
             is Validated.Invalid -> commandNotExecuted(routingContext, outcome.err)

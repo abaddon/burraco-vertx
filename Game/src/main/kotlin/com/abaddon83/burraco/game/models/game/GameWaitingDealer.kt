@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
@@ -7,7 +8,7 @@ import com.abaddon83.burraco.game.helpers.playerCards
 import com.abaddon83.burraco.game.helpers.updatePlayer
 import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

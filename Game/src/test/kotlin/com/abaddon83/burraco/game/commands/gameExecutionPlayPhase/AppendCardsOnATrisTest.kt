@@ -2,14 +2,14 @@ package com.abaddon83.burraco.game.commands.gameExecutionPlayPhase
 
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.Tris
-import com.abaddon83.burraco.game.models.TrisIdentity
+import com.abaddon83.burraco.common.models.TrisIdentity
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
-import com.abaddon83.burraco.game.models.game.GameIdentity
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.helpers.DeckHelper
 import com.abaddon83.burraco.helpers.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity

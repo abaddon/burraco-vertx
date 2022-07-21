@@ -22,14 +22,16 @@ class AggregateGameCommandHandler(
             is Result.Valid -> {
                 try {
                     val newAggregate = command.execute(actualAggregateResult.value)
-                    check(newAggregate.version > actualAggregateResult.value.version){"Aggregate version is wrong"}
+                    check(newAggregate.version > actualAggregateResult.value.version) { "Aggregate version is wrong" }
                     val saveResult = repository.save(newAggregate, UUID.randomUUID(), updateHeaders)
                     when (saveResult) {
-                        is Result.Valid -> publish(newAggregate.uncommittedEvents())
+                        is Result.Valid -> publishExternalEvent(saveResult.value)
                         else -> null
                     }
                     saveResult
-                } catch (ex: IllegalArgumentException){
+                } catch (ex: IllegalArgumentException) {
+                    Result.Invalid(ex)
+                } catch (ex: UnsupportedOperationException){
                     Result.Invalid(ex)
                 }
             }
@@ -39,11 +41,13 @@ class AggregateGameCommandHandler(
     override suspend fun handle(command: ICommand<Game>): Result<Exception, Game> =
         handle(command) { mapOf<String, String>() }
 
-    private suspend fun publish(events: List<IDomainEvent>) {
-        events.forEach {
-            when (it) {
-                is GameEvent -> gameEventPublisherPort.publish(it)
+    private suspend fun publishExternalEvent(aggregate: Game) {
+        aggregate
+            .uncommittedEvents()
+            .forEach {
+                when (it) {
+                    is GameEvent -> gameEventPublisherPort.publish(aggregate, it)
+                }
             }
-        }
     }
 }

@@ -7,8 +7,8 @@ import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.SINGLE_DECK_CARD_WITH_JOLLY
 import com.abaddon83.burraco.dealer.models.DealerIdentity
-import com.abaddon83.burraco.dealer.models.GameIdentity
-import com.abaddon83.burraco.dealer.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.ports.DomainError
 import com.abaddon83.burraco.dealer.ports.DomainResult
 import com.abaddon83.burraco.dealer.ports.ExceptionError

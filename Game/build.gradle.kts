@@ -5,7 +5,7 @@ object Versions {
     const val kcqrsTestVersion="0.0.10"
     const val kcqrsEventStoreDBVersion="0.0.7"
     const val slf4jVersion = "1.7.25"
-    const val kotlinVersion = "1.6.0"
+    const val kotlinVersion = "1.7.10"
     const val kotlinCoroutineVersion = "1.6.0"
     const val vertxVersion = "4.3.2"
     const val jacksonModuleKotlinVersion = "2.13.0"
@@ -56,6 +56,9 @@ repositories {
 
 dependencies {
 
+    //Modules
+    implementation(files("../KafkaAdapter/build/libs/KafkaAdapter-0.1.1-SNAPSHOT.jar"))
+    implementation(files("../Common/build/libs/Common-0.1.1-SNAPSHOT.jar"))
     //Config
     implementation("com.sksamuel.hoplite:hoplite-core:${Versions.hopliteVersion}")
     implementation("com.sksamuel.hoplite:hoplite-yaml:${Versions.hopliteVersion}")
@@ -83,6 +86,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:${Versions.log4jVersion}")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4jVersion}")
 
+    //Test
     testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
     testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")

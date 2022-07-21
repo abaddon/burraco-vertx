@@ -4,9 +4,7 @@ import com.abaddon83.burraco.game.adapters.commandController.rest.RestHttpServic
 import com.abaddon83.burraco.game.adapters.gameEventPublisher.kafka.KafkaGameEventPublisherAdapter
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
-import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
-import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepositoryConfig
 import io.vertx.core.*
 import org.slf4j.LoggerFactory
 
@@ -37,7 +35,8 @@ class MainVerticle : AbstractVerticle() {
             deploy(
                 RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, gameEventPublisher),
                 serverOpts
-            ).future())
+            ).future()
+        )
 
         CompositeFuture.all(allFutures).onComplete {
             if (it.succeeded()) {

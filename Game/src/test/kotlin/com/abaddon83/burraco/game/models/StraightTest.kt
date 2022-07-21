@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models
 
+import com.abaddon83.burraco.common.models.StraightIdentity
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits

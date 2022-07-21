@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.*
 import com.abaddon83.burraco.game.helpers.StraightHelper.validStraight
@@ -9,7 +10,9 @@ import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.StraightIdentity
+import com.abaddon83.burraco.common.models.TrisIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

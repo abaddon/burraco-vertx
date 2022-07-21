@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.dealer.helpers
 
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.models.Player
-import com.abaddon83.burraco.dealer.models.PlayerIdentity
 
 
 fun Iterable<Player>.contains(playerIdentity: PlayerIdentity): Boolean =

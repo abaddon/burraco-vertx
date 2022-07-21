@@ -5,9 +5,9 @@ object Versions {
     const val kcqrsTestVersion="0.0.10"
     const val kcqrsEventStoreDBVersion="0.0.7"
     const val slf4jVersion = "1.7.25"
-    const val kotlinVersion = "1.6.0"
+    const val kotlinVersion = "1.7.10"
     const val kotlinCoroutineVersion = "1.6.0"
-    const val vertxVersion = "4.1.4"
+    const val vertxVersion = "4.3.2"
     const val jacksonModuleKotlinVersion = "2.13.0"
     const val junitJupiterVersion = "5.7.0"
     const val jacocoToolVersion = "0.8.7"
@@ -16,7 +16,8 @@ object Versions {
     const val mysqlConnectorVersion = "8.0.21"
     const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
-    const val testContainerVersion="1.16.3"
+    const val testContainerVersion="1.17.3"
+    const val hopliteVersion="2.3.3"
 }
 
 val mainVerticleName = "com.abaddon83.burraco.dealer.MainVerticle"
@@ -24,7 +25,7 @@ val watchForChange = "src/**/*"
 val doOnChange = "./gradlew classes"
 
 plugins {
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.7.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("com.palantir.git-version") version "0.15.0"
     jacoco
@@ -54,6 +55,13 @@ repositories {
 }
 
 dependencies {
+
+    //modules
+    implementation(files("../KafkaAdapter/build/libs/KafkaAdapter-0.1.1-SNAPSHOT.jar"))
+    implementation(files("../Common/build/libs/Common-0.1.1-SNAPSHOT.jar"))
+    //Config
+    implementation("com.sksamuel.hoplite:hoplite-core:${Versions.hopliteVersion}")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:${Versions.hopliteVersion}")
 
     //kcqrs
     implementation("io.github.abaddon.kcqrs:kcqrs-core:${Versions.kcqrsCoreVersion}")

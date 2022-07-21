@@ -1,6 +1,8 @@
 package com.abaddon83.burraco.dealer.models
 
 
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.helpers.*
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_DISCARD_DECK_CARD

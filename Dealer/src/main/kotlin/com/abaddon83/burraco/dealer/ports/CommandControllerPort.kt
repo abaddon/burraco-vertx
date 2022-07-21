@@ -1,0 +1,18 @@
+package com.abaddon83.burraco.dealer.ports
+
+import com.abaddon83.burraco.dealer.models.DealerIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.dealer.services.DealerService
+
+sealed class CommandPortResult<out TDomainError: DomainError, out DomainResult> {
+    data class Invalid<TDomainError: DomainError>(val err: TDomainError): CommandPortResult<TDomainError, Nothing>()
+    data class Valid<DomainResult>(val value: DomainResult): CommandPortResult<Nothing, DomainResult>()
+}
+
+interface CommandControllerPort {
+    val dealerService: DealerService
+    suspend fun createDeck(dealerIdentity: DealerIdentity,gameIdentity: GameIdentity, players: List<PlayerIdentity>): CommandPortResult<DomainError,DomainResult>
+
+
+}

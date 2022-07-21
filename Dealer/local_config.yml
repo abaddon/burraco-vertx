@@ -1,0 +1,10 @@
+
+gameEventConsumer:
+  topic: "game_event"
+  properties:
+    bootstrap.servers: "localhost:9093"
+    key.deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+    value.deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+    group.id: "dealer"
+    auto.offset.reset: "earliest"
+    enable.auto.commit: "true"

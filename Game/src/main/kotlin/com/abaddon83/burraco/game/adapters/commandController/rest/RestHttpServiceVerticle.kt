@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest
 
+import com.abaddon83.burraco.common.vertx.AbstractHttpServiceVerticle
 import com.abaddon83.burraco.game.HealthCheck
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
@@ -10,7 +11,6 @@ import com.abaddon83.burraco.game.commands.AggregateGameCommandHandler
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.ports.CommandControllerPort
 import com.abaddon83.burraco.game.ports.GameEventPublisherPort
-import com.abaddon83.burraco.shared.vertx.AbstractHttpServiceVerticle
 import io.github.abaddon.kcqrs.core.persistence.IAggregateRepository
 import io.vertx.core.Promise
 import io.vertx.core.http.HttpHeaders
