@@ -9,9 +9,9 @@ import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 //    data class Valid<TPublishResult: PublishResult>(val value: TPublishResult): ExternalEventPublisherResult<Nothing, TPublishResult>()
 //}
 
-data class PublishResult(
-    val details: Map<String,String>
-)
+//data class PublishResult(
+//    val details: Map<String,String>
+//)
 
 interface ExternalEventPublisherPort {
     suspend fun publish(aggregate: Dealer, event: DealerEvent) //: ExternalEventPublisherResult<Exception, PublishResult>
