@@ -16,7 +16,7 @@ object Versions {
     const val mysqlConnectorVersion = "8.0.21"
     const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
-    const val testcontainers="1.17.3"
+    const val testcontainersVersion="1.17.3"
     const val hopliteVersion="2.3.3"
 }
 
@@ -65,28 +65,28 @@ dependencies {
     api(project(":Common"))
 
     //Config
-    implementation("com.sksamuel.hoplite:hoplite-core:2.1.5")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.1.5")
+    implementation("com.sksamuel.hoplite:hoplite-core:${Versions.hopliteVersion}")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:${Versions.hopliteVersion}")
 
     //kcqrs
-    implementation("io.github.abaddon.kcqrs:kcqrs-core:0.0.7")
+    implementation("io.github.abaddon.kcqrs:kcqrs-core:${Versions.kcqrsCoreVersion}")
 
     //Vertx
-    implementation("io.vertx:vertx-config:4.3.1")
-    implementation("io.vertx:vertx-lang-kotlin:4.3.1")
-    implementation("io.vertx:vertx-lang-kotlin-coroutines:4.3.1")
+    implementation("io.vertx:vertx-config:${Versions.vertxVersion}")
+    implementation("io.vertx:vertx-lang-kotlin:${Versions.vertxVersion}")
+    implementation("io.vertx:vertx-lang-kotlin-coroutines:${Versions.vertxVersion}")
 
     //Vertx kafka
-    implementation("io.vertx:vertx-kafka-client:4.3.1")
+    implementation("io.vertx:vertx-kafka-client:${Versions.vertxVersion}")
 
     //Logs
-    implementation("org.apache.logging.log4j:log4j-api:2.17.2")
-    implementation("org.apache.logging.log4j:log4j-core:2.17.2")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.2")
+    implementation("org.apache.logging.log4j:log4j-api:${Versions.log4jVersion}")
+    implementation("org.apache.logging.log4j:log4j-core:${Versions.log4jVersion}")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4jVersion}")
 
     //Test
-    testImplementation("io.vertx:vertx-junit5:4.3.1")
-    testImplementation("org.testcontainers:junit-jupiter:1.17.2")
+    testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
+    testImplementation("org.testcontainers:junit-jupiter:${Versions.testcontainersVersion}")
 
 
 }

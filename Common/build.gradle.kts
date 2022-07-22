@@ -61,41 +61,26 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    //Config
-//    implementation("com.sksamuel.hoplite:hoplite-core:${Versions.hopliteVersion}")
-//    implementation("com.sksamuel.hoplite:hoplite-yaml:${Versions.hopliteVersion}")
-
     //kcqrs
-    implementation("io.github.abaddon.kcqrs:kcqrs-core:0.0.7")
-//    implementation("io.github.abaddon.kcqrs:kcqrs-EventStoreDB:${Versions.kcqrsEventStoreDBVersion}")
+    implementation("io.github.abaddon.kcqrs:kcqrs-core:${Versions.kcqrsCoreVersion}")
 
     //Vertx
-    implementation("io.vertx:vertx-config:4.3.1")
-    implementation("io.vertx:vertx-web-openapi:4.3.1")
-    implementation("io.vertx:vertx-lang-kotlin:4.3.1")
-    implementation("io.vertx:vertx-lang-kotlin-coroutines:4.3.1")
+    implementation("io.vertx:vertx-config:${Versions.vertxVersion}")
+    implementation("io.vertx:vertx-lang-kotlin:${Versions.vertxVersion}")
+    implementation("io.vertx:vertx-lang-kotlin-coroutines:${Versions.vertxVersion}")
     implementation("com.fasterxml.jackson.core:jackson-annotations")
     //Vertx HealthCheck
-//    implementation("io.vertx:vertx-health-check:${Versions.vertxVersion}")
-    //Vertx kafka
-//    implementation("io.vertx:vertx-kafka-client:${Versions.vertxVersion}")
-    //Vertx event bus tcp bridge
-//    implementation("io.vertx:vertx-tcp-eventbus-bridge:${Versions.vertxVersion}")
     //Vertx service discovery
-    implementation("io.vertx:vertx-service-discovery:4.3.1")
+    implementation("io.vertx:vertx-service-discovery:${Versions.vertxVersion}")
 
     //Logs
-    implementation("org.apache.logging.log4j:log4j-api:2.17.2")
-    implementation("org.apache.logging.log4j:log4j-core:2.17.2")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.2")
+    implementation("org.apache.logging.log4j:log4j-api:${Versions.log4jVersion}")
+    implementation("org.apache.logging.log4j:log4j-core:${Versions.log4jVersion}")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4jVersion}")
 
     //Test
-//    testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
-    testImplementation("io.vertx:vertx-junit5:4.3.1")
-//    testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")
-//    testImplementation("org.testcontainers:testcontainers:${Versions.testcontainers}")
-//    testImplementation("org.testcontainers:kafka:${Versions.testcontainers}")
-    testImplementation("org.testcontainers:junit-jupiter:1.17.2")
+    testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
+    //testImplementation("org.testcontainers:junit-jupiter:${Versions.junitJupiterVersion}")
 
 
 }
