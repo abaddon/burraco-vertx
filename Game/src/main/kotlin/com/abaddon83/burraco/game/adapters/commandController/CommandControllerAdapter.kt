@@ -1,12 +1,12 @@
 package com.abaddon83.burraco.game.adapters.commandController
 
+import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.game.DomainResult
 import com.abaddon83.burraco.game.ExceptionError
 import com.abaddon83.burraco.game.commands.gameDraft.AddPlayer
 import com.abaddon83.burraco.game.commands.gameDraft.CreateGame
 import com.abaddon83.burraco.game.commands.gameDraft.RequestDealCards
 import com.abaddon83.burraco.game.commands.gameWaitingDealer.*
-import com.abaddon83.burraco.game.helpers.Validated
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.common.models.GameIdentity

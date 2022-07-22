@@ -1,9 +1,9 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest
 
+import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.game.DomainResult
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestApiHttpConfig
-import com.abaddon83.burraco.game.helpers.Validated
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft

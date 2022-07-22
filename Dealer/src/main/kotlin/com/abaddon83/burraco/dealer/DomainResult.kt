@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.dealer.ports
+package com.abaddon83.burraco.dealer
 
 
 import com.abaddon83.burraco.dealer.models.Dealer

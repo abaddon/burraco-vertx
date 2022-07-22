@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.dealer.ports
+package com.abaddon83.burraco.dealer
 
 import com.abaddon83.burraco.dealer.models.DealerIdentity
 
@@ -25,7 +25,7 @@ data class DealError(
 
 data class ExceptionError(
     val exception: Exception
-): DomainError{
+): DomainError {
     override fun toMap():Map<String,*> =
         mapOf(
             "exception" to exception::class.simpleName,

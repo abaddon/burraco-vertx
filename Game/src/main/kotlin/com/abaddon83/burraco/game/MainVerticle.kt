@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game
 
 import com.abaddon83.burraco.game.adapters.commandController.rest.RestHttpServiceVerticle
-import com.abaddon83.burraco.game.adapters.gameEventPublisher.kafka.KafkaGameEventPublisherAdapter
+import com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
@@ -17,9 +17,9 @@ class MainVerticle(
         @JvmStatic
         fun main(args: Array<String>) {
             val vertx=Vertx.vertx()
-            val configPath= when(args[0]){
-                is String -> args[0]
-                else -> "Game/local_config.yml"
+            val configPath= when(args.size){
+                1 -> args[0]
+                else -> "./local_config.yml"
             }
             vertx.deployVerticle(MainVerticle(configPath))
         }
@@ -29,7 +29,7 @@ class MainVerticle(
         val serviceConfig = ServiceConfig.load(configPath)
 
         //GameEventsPublisher
-        val gameEventPublisher = KafkaGameEventPublisherAdapter(vertx, serviceConfig.gameEventPublisher)
+        val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx, serviceConfig.gameEventPublisher)
 
         //Repository
         val repository = EventStoreDBRepository<Game>(serviceConfig.eventStoreDBRepository) { GameDraft.empty() }
@@ -39,7 +39,7 @@ class MainVerticle(
         //list of verticle to deploy
         val allFutures: List<Future<Any>> = listOf(
             deploy(
-                RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, gameEventPublisher),
+                RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, externalEventPublisher),
                 serverOpts
             ).future()
         )
@@ -59,11 +59,15 @@ class MainVerticle(
 
     override fun stop(stopPromise: Promise<Void?>) {
         val ids = vertx.deploymentIDs()
-        log.info("Undeployed ok: {}", ids)
+        log.info("Undeploy started..: {}", ids)
+        if(ids.isEmpty()){
+            log.info("Undeploy ended")
+            super.stop(stopPromise)
+        }
         for (id in ids) {
             vertx.undeploy(id) { res: AsyncResult<Void?> ->
                 if (res.succeeded()) {
-                    log.info("Undeployed ok")
+                    log.info("Undeploy ended")
                     stopPromise.complete()
                 } else {
                     log.error("Undeploy failed!", res.cause())

@@ -2,8 +2,8 @@ package com.abaddon83.burraco.dealer.models
 
 
 data class Card(
-    val suit: Suits.Suit,
-    val rank: Ranks.Rank
+    val suit: Suit,
+    val rank: Rank
 ) {
 
 //    companion object Factory{
@@ -21,10 +21,10 @@ data class Card(
 
     override fun toString(): String {
 
-        return "card: ${suit.icon} - ${rank.label}"
+        return "card: ${suit.label} - ${rank.label}"
     }
 
-//    val label: String = "${suit.label}-${rank.label}"
+    fun label(): String = "${suit.label}-${rank.label}"
 
 }
 

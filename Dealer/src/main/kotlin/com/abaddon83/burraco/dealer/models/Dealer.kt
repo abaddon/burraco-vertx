@@ -87,17 +87,19 @@ data class Dealer private constructor(
     private fun apply(event: DeckCreated): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val newDealer = copy(
+            version = this.version+1,
             id = event.aggregateId,
             gameIdentity = event.gameId,
             players = event.playersId.map { Player.create(it) },
             cardsAvailable = event.cards
         )
-        log.debug("New Player added, now there are ${newDealer.cardsAvailable.size} cards and ${newDealer.players.size} players")
+        log.debug("Dealer initialised, now there are ${newDealer.cardsAvailable.size} cards and ${newDealer.players.size} players")
         return newDealer
     }
     private fun apply(event: CardDealtToPlayer): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val newDealer = copy(
+            version = this.version+1,
             cardsAvailable = cardsAvailable.removeCards(listOf(event.card)),
             players = players.updatePlayer(event.playerId){player ->  player.copy(numCardsDealt = player.numCardsDealt+1)}
         )
@@ -108,6 +110,7 @@ data class Dealer private constructor(
     private fun apply(event: CardDealtToPlayerDeck1): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val newDealer = copy(
+            version = this.version+1,
             cardsAvailable = cardsAvailable.removeCards(listOf(event.card)),
             playerDeck1NumCards = this.playerDeck1NumCards+1
         )
@@ -118,6 +121,7 @@ data class Dealer private constructor(
     private fun apply(event: CardDealtToPlayerDeck2): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val newDealer = copy(
+            version = this.version+1,
             cardsAvailable = cardsAvailable.removeCards(listOf(event.card)),
             playerDeck2NumCards = this.playerDeck2NumCards+1
         )
@@ -128,6 +132,7 @@ data class Dealer private constructor(
     private fun apply(event: CardDealtToDiscardDeck): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val newDealer = copy(
+            version = this.version+1,
             cardsAvailable = cardsAvailable.removeCards(listOf(event.card)),
             discardDeck = this.discardDeck+1
         )
@@ -138,57 +143,12 @@ data class Dealer private constructor(
     private fun apply(event: CardDealtToDeck): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val newDealer = copy(
+            version = this.version+1,
             cardsAvailable = cardsAvailable.removeCards(listOf(event.card)),
             deckNumCards = this.deckNumCards+1
         )
         log.debug("Card dealt to Discard deck, now there are ${newDealer.cardsAvailable.size} cards and Deck has ${newDealer.deckNumCards} cards")
         return newDealer
     }
-
-
-//    fun addPlayer(playerIdentity: PlayerIdentity): Dealer {
-//        require(!players.contains(playerIdentity)) { "The player ${playerIdentity.valueAsString()} is already a player of game ${this.id.valueAsString()}" }
-//        val playersCount = players.size + 1
-//        check(GameConfig.MAX_PLAYERS >= playersCount) { "Maximum number of players reached, (Max: ${GameConfig.MAX_PLAYERS})" }
-//
-//        return raiseEvent(PlayerAdded.create(id, playerIdentity)) as Dealer
-//    }
-//
-//    fun removePlayer(playerIdentity: PlayerIdentity): Dealer {
-//        require(players.contains(playerIdentity)) { "The player ${playerIdentity.valueAsString()} is not a player of game ${this.id.valueAsString()}" }
-//
-//        return raiseEvent(PlayerRemoved.create(id, playerIdentity)) as Dealer
-//    }
-//
-//    fun requestDealCards(requestedBy: PlayerIdentity): GameWaitingDealer {
-//        require(players.contains(requestedBy)) { "The player $requestedBy is not one of the players " }
-//        check(players.size in GameConfig.MIN_PLAYERS..GameConfig.MAX_PLAYERS) { "Not enough players to deal the playing cards, ( Min players required: ${GameConfig.MIN_PLAYERS})" }
-//
-//        return raiseEvent(CardDealingRequested.create(id, requestedBy)) as GameWaitingDealer
-//    }
-
-//    private fun apply(event: GameCreated): Dealer {
-//        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-//        return copy(id = event.aggregateId)
-//    }
-//
-//    private fun apply(event: PlayerAdded): Dealer {
-//        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-//        val updatedPlayers = players.plus(WaitingPlayer(event.playerIdentity))
-//        log.debug("New Player added, now there are ${updatedPlayers.size} players")
-//        return copy(players = updatedPlayers)
-//    }
-//
-//    private fun apply(event: PlayerRemoved): Dealer {
-//        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-//        val updatedPlayers = players.minus(WaitingPlayer(event.playerIdentity))
-//        log.debug("Player removed, now there are ${updatedPlayers.size} players")
-//        return copy(players = updatedPlayers)
-//    }
-//
-//    private fun apply(event: CardDealingRequested): GameWaitingDealer {
-//        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-//        return GameWaitingDealer.from(this)
-//    }
 
 }

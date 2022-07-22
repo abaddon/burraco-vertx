@@ -1,17 +1,16 @@
 package com.abaddon83.burraco.dealer.services
 
-import com.abaddon83.burraco.dealer.commands.CommandHandler
+import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.models.DealerIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.GameIdentity
-import com.abaddon83.burraco.testHelpers.DummyDealerEventAdapter
+import com.abaddon83.burraco.dealer.adapters.commandController.CommandControllerAdapter
+import com.abaddon83.burraco.testHelpers.DummyExternalEventPublisherAdapter
 import io.github.abaddon.kcqrs.core.IIdentity
-import io.github.abaddon.kcqrs.core.domain.SimpleAggregateCommandHandler
 import io.github.abaddon.kcqrs.core.persistence.InMemoryEventStoreRepository
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -20,7 +19,8 @@ internal class DealerServiceTest{
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     private fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     private val inMemoryRepository = InMemoryEventStoreRepository<Dealer>("stream1",emptyAggregate())
-    private val dealerService = DealerService(CommandHandler<Dealer>(inMemoryRepository,DummyDealerEventAdapter()))
+    private val commandControllerAdapter= CommandControllerAdapter(AggregateDealerCommandHandler(inMemoryRepository,DummyExternalEventPublisherAdapter()))
+    private val dealerService = DealerService(commandControllerAdapter)
 
     @Test
     fun `given 1 player when create a dealer then exception`() = runTest {

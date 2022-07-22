@@ -10,15 +10,24 @@ abstract class KafkaConsumerVerticle(
     private val kafkaConfig: KafkaConsumerConfig
 ) : AbstractVerticle() {
     private val log = LoggerFactory.getLogger(this::class.java)
+    lateinit var consumer: KafkaConsumer<String, String>
 
     abstract fun loadHandlers(): EventRouterHandler
 
     override fun start(startPromise: Promise<Void>) {
-        val consumer: KafkaConsumer<String, String> = KafkaConsumer.create(vertx, kafkaConfig.consumerConfig())
+        log.info("KafkaConsumerVerticle starting")
+        consumer = KafkaConsumer.create(vertx, kafkaConfig.consumerConfig())
         consumer
             .handler(loadHandlers())
             .subscribe(kafkaConfig.topic())
-            .onFailure { log.error("Subscription failed", it) }
-            .onSuccess { log.info("subscribed") }
+            .onFailure { log.error(" ${kafkaConfig.topic()} subscriptions failed", it) }
+            .onSuccess { log.info("${kafkaConfig.topic()} subscribed") }
+        super.start(startPromise);
+    }
+
+    override fun stop(stopPromise: Promise<Void>?) {
+        log.info("KafkaConsumerVerticle stopping")
+        consumer.unsubscribe()
+            .onComplete { super.stop(stopPromise) }
     }
 }

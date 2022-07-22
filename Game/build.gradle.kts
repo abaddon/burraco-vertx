@@ -25,9 +25,9 @@ val watchForChange = "src/**/*"
 val doOnChange = "./gradlew classes"
 
 plugins {
-    kotlin("jvm") version "1.7.10"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("com.palantir.git-version") version "0.15.0"
+    kotlin("jvm")
+    id("com.github.johnrengelman.shadow")
+    id("com.palantir.git-version")
     jacoco
     application
 }
@@ -56,9 +56,12 @@ repositories {
 
 dependencies {
 
-    //Modules
-    implementation(files("../KafkaAdapter/build/libs/KafkaAdapter-0.1.1-SNAPSHOT.jar"))
-    implementation(files("../Common/build/libs/Common-0.1.1-SNAPSHOT.jar"))
+    implementation(project(":Common"))
+    implementation(project(":KafkaAdapter"))
+
+    // Align versions of all Kotlin components
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+
     //Config
     implementation("com.sksamuel.hoplite:hoplite-core:${Versions.hopliteVersion}")
     implementation("com.sksamuel.hoplite:hoplite-yaml:${Versions.hopliteVersion}")
@@ -77,7 +80,7 @@ dependencies {
     //Vertx kafka
     implementation("io.vertx:vertx-kafka-client:${Versions.vertxVersion}")
     //Vertx event bus tcp bridge
-    implementation("io.vertx:vertx-tcp-eventbus-bridge:${Versions.vertxVersion}")
+    //implementation("io.vertx:vertx-tcp-eventbus-bridge:${Versions.vertxVersion}")
     //Vertx service discovery
     implementation("io.vertx:vertx-service-discovery:${Versions.vertxVersion}")
 
