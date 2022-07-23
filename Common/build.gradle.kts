@@ -2,23 +2,15 @@ group = "com.abaddon83.burraco.common.models"
 
 object Versions {
     const val kcqrsCoreVersion="0.0.7"
-    const val kcqrsTestVersion="0.0.10"
-    const val kcqrsEventStoreDBVersion="0.0.7"
     const val slf4jVersion = "1.7.25"
     const val kotlinVersion = "1.7.10"
     const val kotlinCoroutineVersion = "1.6.0"
     const val vertxVersion = "4.3.2"
-    const val jacksonModuleKotlinVersion = "2.13.0"
     const val junitJupiterVersion = "5.7.0"
     const val jacocoToolVersion = "0.8.7"
     const val jvmTarget = "11"
-    const val ktormVersion ="3.2.0"
-    const val mysqlConnectorVersion = "8.0.21"
-    const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
     const val testcontainers="1.17.3"
-    const val hopliteVersion="2.3.3"
-    const val jacksonVersion="2.13.3"
 }
 
 val watchForChange = "src/**/*"
@@ -69,7 +61,7 @@ dependencies {
     implementation("io.vertx:vertx-lang-kotlin:${Versions.vertxVersion}")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:${Versions.vertxVersion}")
     implementation("com.fasterxml.jackson.core:jackson-annotations")
-    //Vertx HealthCheck
+
     //Vertx service discovery
     implementation("io.vertx:vertx-service-discovery:${Versions.vertxVersion}")
 
@@ -80,8 +72,6 @@ dependencies {
 
     //Test
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
-    //testImplementation("org.testcontainers:junit-jupiter:${Versions.junitJupiterVersion}")
-
 
 }
 

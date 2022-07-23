@@ -3,18 +3,12 @@ group = "com.abaddon83.burraco.game"
 object Versions {
     const val kcqrsCoreVersion="0.0.7"
     const val kcqrsTestVersion="0.0.10"
-    const val kcqrsEventStoreDBVersion="0.0.7"
-    const val slf4jVersion = "1.7.25"
+    const val kcqrsEventStoreDBVersion="0.0.8"
     const val kotlinVersion = "1.7.10"
-    const val kotlinCoroutineVersion = "1.6.0"
+    //const val kotlinCoroutineVersion = "1.6.0"
     const val vertxVersion = "4.3.2"
-    const val jacksonModuleKotlinVersion = "2.13.0"
-    const val junitJupiterVersion = "5.7.0"
     const val jacocoToolVersion = "0.8.7"
     const val jvmTarget = "11"
-    const val ktormVersion ="3.2.0"
-    const val mysqlConnectorVersion = "8.0.21"
-    const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
     const val testContainerVersion="1.17.3"
     const val hopliteVersion="2.3.3"
@@ -93,7 +87,7 @@ dependencies {
     testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
     testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinCoroutineVersion}")
+    //testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.testcontainers:testcontainers:${Versions.testContainerVersion}")
     testImplementation("org.testcontainers:junit-jupiter:${Versions.testContainerVersion}")
     testImplementation("org.testcontainers:kafka:${Versions.testContainerVersion}")
