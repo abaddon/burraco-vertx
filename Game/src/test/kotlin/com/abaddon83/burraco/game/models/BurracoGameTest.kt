@@ -1,7 +1,7 @@
 //package com.abaddon83.burraco.game.models
 //
 //import com.abaddon83.burraco.game.models.game.Game
-//import com.abaddon83.burraco.game.models.game.GameIdentity
+//import com.abaddon83.burraco.common.models.GameIdentity
 //import org.junit.jupiter.api.Test
 //
 //class BurracoGameTest {

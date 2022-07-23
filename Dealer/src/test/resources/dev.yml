@@ -1,0 +1,25 @@
+
+gameEventConsumer:
+  topic: "game_event"
+  properties:
+    bootstrap.servers: "localhost:9093"
+    key.deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+    value.deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+    group.id: "dealer"
+    auto.offset.reset: "earliest"
+    enable.auto.commit: "true"
+
+eventStoreDBRepository:
+  streamName: "dealer_stream"
+  maxReadPageSize: 100
+  maxWritePageSize: 200
+  eventStoreDB:
+    connectionString: "esdb://127.0.0.1:2113?tls=false&tlsVerifyCert=false"
+
+dealerEventPublisher:
+  topic: "dealer_event"
+  properties:
+    bootstrap.servers: "localhost:9093"
+    key.serializer: "org.apache.kafka.common.serialization.StringSerializer"
+    value.serializer: "org.apache.kafka.common.serialization.StringSerializer"
+    acks: 1

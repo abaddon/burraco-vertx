@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.helpers
 
 import com.abaddon83.burraco.game.models.Straight
-import com.abaddon83.burraco.game.models.StraightIdentity
+import com.abaddon83.burraco.common.models.StraightIdentity
 
 fun Iterable<Straight>.updateStraight(
     straightIdentity: StraightIdentity,

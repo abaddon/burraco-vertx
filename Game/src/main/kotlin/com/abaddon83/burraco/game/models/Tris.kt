@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models
 
+import com.abaddon83.burraco.common.models.TrisIdentity
 import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
 import com.abaddon83.burraco.game.helpers.containsJolly
 import com.abaddon83.burraco.game.models.card.Card

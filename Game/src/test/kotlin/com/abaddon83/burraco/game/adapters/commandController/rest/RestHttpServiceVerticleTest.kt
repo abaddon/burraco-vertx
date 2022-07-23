@@ -1,16 +1,16 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest
 
+import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.game.DomainResult
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestApiHttpConfig
-import com.abaddon83.burraco.game.helpers.Validated
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
-import com.abaddon83.burraco.game.models.game.GameIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import com.abaddon83.burraco.game.models.player.Player
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import com.abaddon83.burraco.game.ports.CommandControllerPort
 import com.abaddon83.burraco.game.ports.Outcome
@@ -147,7 +147,7 @@ internal class RestHttpServiceVerticleTest {
         @BeforeAll
         @JvmStatic
         fun beforeAll(testContext: VertxTestContext) {
-            val restApiConfig = RestHttpServiceConfig("test", RestApiHttpConfig(PORT, ADDRESS, ROOT))
+            val restApiConfig = RestHttpServiceConfig("test","./gameAPIs.yaml", RestApiHttpConfig(PORT, ADDRESS, ROOT))
             val verticle =
                 RestHttpServiceVerticle(
                     restApiConfig, controllerAdapter = DummyCommandControllerAdapter(

@@ -2,21 +2,15 @@ group = "com.abaddon83.burraco.game"
 
 object Versions {
     const val kcqrsCoreVersion="0.0.7"
-    const val kcqrsTestVersion="0.0.9"
-    const val kcqrsEventStoreDBVersion="0.0.7"
-    const val slf4jVersion = "1.7.25"
-    const val kotlinVersion = "1.6.0"
-    const val kotlinCoroutineVersion = "1.6.0"
+    const val kcqrsTestVersion="0.0.10"
+    const val kcqrsEventStoreDBVersion="0.0.8"
+    const val kotlinVersion = "1.7.10"
+    //const val kotlinCoroutineVersion = "1.6.0"
     const val vertxVersion = "4.3.2"
-    const val jacksonModuleKotlinVersion = "2.13.0"
-    const val junitJupiterVersion = "5.7.0"
     const val jacocoToolVersion = "0.8.7"
     const val jvmTarget = "11"
-    const val ktormVersion ="3.2.0"
-    const val mysqlConnectorVersion = "8.0.21"
-    const val config4k = "0.4.2"
     const val log4jVersion= "2.17.2"
-    const val testcontainers="1.17.3"
+    const val testContainerVersion="1.17.3"
     const val hopliteVersion="2.3.3"
 }
 
@@ -25,9 +19,9 @@ val watchForChange = "src/**/*"
 val doOnChange = "./gradlew classes"
 
 plugins {
-    kotlin("jvm") version "1.7.10"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("com.palantir.git-version") version "0.15.0"
+    kotlin("jvm")
+    id("com.github.johnrengelman.shadow")
+    id("com.palantir.git-version")
     jacoco
     application
 }
@@ -56,6 +50,12 @@ repositories {
 
 dependencies {
 
+    implementation(project(":Common"))
+    implementation(project(":KafkaAdapter"))
+
+    // Align versions of all Kotlin components
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+
     //Config
     implementation("com.sksamuel.hoplite:hoplite-core:${Versions.hopliteVersion}")
     implementation("com.sksamuel.hoplite:hoplite-yaml:${Versions.hopliteVersion}")
@@ -74,7 +74,7 @@ dependencies {
     //Vertx kafka
     implementation("io.vertx:vertx-kafka-client:${Versions.vertxVersion}")
     //Vertx event bus tcp bridge
-    implementation("io.vertx:vertx-tcp-eventbus-bridge:${Versions.vertxVersion}")
+    //implementation("io.vertx:vertx-tcp-eventbus-bridge:${Versions.vertxVersion}")
     //Vertx service discovery
     implementation("io.vertx:vertx-service-discovery:${Versions.vertxVersion}")
 
@@ -83,14 +83,14 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:${Versions.log4jVersion}")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4jVersion}")
 
+    //Test
     testImplementation("io.github.abaddon.kcqrs:kcqrs-test:${Versions.kcqrsTestVersion}")
     testImplementation("io.vertx:vertx-junit5:${Versions.vertxVersion}")
     testImplementation("io.vertx:vertx-web-client:${Versions.vertxVersion}")
-    testImplementation("org.testcontainers:testcontainers:${Versions.testcontainers}")
-    testImplementation("org.testcontainers:kafka:${Versions.testcontainers}")
-    testImplementation("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
-
-
+    //testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    testImplementation("org.testcontainers:testcontainers:${Versions.testContainerVersion}")
+    testImplementation("org.testcontainers:junit-jupiter:${Versions.testContainerVersion}")
+    testImplementation("org.testcontainers:kafka:${Versions.testContainerVersion}")
 }
 
 jacoco {
@@ -116,12 +116,14 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     archiveClassifier.set("all")
     manifest {
         attributes(mapOf(
-            "Main-Verticle" to mainVerticleName
-            ))
+            "Main-Class" to "io.vertx.core.Starter",
+            "Main-Verticle" to mainVerticleName,
+            "Multi-Release" to "true"
+        ))
     }
-    mergeServiceFiles {
-        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
-    }
+//    mergeServiceFiles {
+//        include("META-INF/services/io.vertx.core.spi.VerticleFactory")
+//    }
 }
 
 tasks.withType<Test> {

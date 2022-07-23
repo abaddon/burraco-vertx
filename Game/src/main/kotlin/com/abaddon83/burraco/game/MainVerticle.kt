@@ -1,23 +1,27 @@
 package com.abaddon83.burraco.game
 
 import com.abaddon83.burraco.game.adapters.commandController.rest.RestHttpServiceVerticle
-import com.abaddon83.burraco.game.adapters.gameEventPublisher.kafka.KafkaGameEventPublisherAdapter
+import com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
-import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
-import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepositoryConfig
 import io.vertx.core.*
 import org.slf4j.LoggerFactory
 
-class MainVerticle : AbstractVerticle() {
-    private val configPath= "Game/local_config.yml"
+class MainVerticle(
+    private val configPath: String
+) : AbstractVerticle() {
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            Launcher.executeCommand("run", MainVerticle::class.java.name)
+            val vertx=Vertx.vertx()
+            val configPath= when(args.size){
+                1 -> args[0]
+                else -> "./local_config.yml"
+            }
+            vertx.deployVerticle(MainVerticle(configPath))
         }
     }
 
@@ -25,7 +29,7 @@ class MainVerticle : AbstractVerticle() {
         val serviceConfig = ServiceConfig.load(configPath)
 
         //GameEventsPublisher
-        val gameEventPublisher = KafkaGameEventPublisherAdapter(vertx, serviceConfig.gameEventPublisher)
+        val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx, serviceConfig.gameEventPublisher)
 
         //Repository
         val repository = EventStoreDBRepository<Game>(serviceConfig.eventStoreDBRepository) { GameDraft.empty() }
@@ -35,9 +39,10 @@ class MainVerticle : AbstractVerticle() {
         //list of verticle to deploy
         val allFutures: List<Future<Any>> = listOf(
             deploy(
-                RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, gameEventPublisher),
+                RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, externalEventPublisher),
                 serverOpts
-            ).future())
+            ).future()
+        )
 
         CompositeFuture.all(allFutures).onComplete {
             if (it.succeeded()) {
@@ -54,11 +59,15 @@ class MainVerticle : AbstractVerticle() {
 
     override fun stop(stopPromise: Promise<Void?>) {
         val ids = vertx.deploymentIDs()
-        log.info("Undeployed ok: {}", ids)
+        log.info("Undeploy started..: {}", ids)
+        if(ids.isEmpty()){
+            log.info("Undeploy ended")
+            super.stop(stopPromise)
+        }
         for (id in ids) {
             vertx.undeploy(id) { res: AsyncResult<Void?> ->
                 if (res.succeeded()) {
-                    log.info("Undeployed ok")
+                    log.info("Undeploy ended")
                     stopPromise.complete()
                 } else {
                     log.error("Undeploy failed!", res.cause())

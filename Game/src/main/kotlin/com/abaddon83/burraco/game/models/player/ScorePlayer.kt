@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.player
 
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.helpers.score
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.game.models.Tris

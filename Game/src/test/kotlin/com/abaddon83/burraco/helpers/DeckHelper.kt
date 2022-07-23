@@ -7,8 +7,8 @@ import com.abaddon83.burraco.game.helpers.removeCards
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
-import com.abaddon83.burraco.game.models.game.GameIdentity
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 
 object DeckHelper{
 

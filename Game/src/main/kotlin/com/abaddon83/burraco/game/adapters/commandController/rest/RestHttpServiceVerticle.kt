@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest
 
+import com.abaddon83.burraco.common.vertx.AbstractHttpServiceVerticle
 import com.abaddon83.burraco.game.HealthCheck
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
@@ -9,8 +10,7 @@ import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.Reque
 import com.abaddon83.burraco.game.commands.AggregateGameCommandHandler
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.ports.CommandControllerPort
-import com.abaddon83.burraco.game.ports.GameEventPublisherPort
-import com.abaddon83.burraco.shared.vertx.AbstractHttpServiceVerticle
+import com.abaddon83.burraco.game.ports.ExternalEventPublisherPort
 import io.github.abaddon.kcqrs.core.persistence.IAggregateRepository
 import io.vertx.core.Promise
 import io.vertx.core.http.HttpHeaders
@@ -31,9 +31,8 @@ class RestHttpServiceVerticle(
     }
 
     private fun startHttpServer(startPromise: Promise<Void>?) {
-        val apiDefinitionUrl = this.javaClass.classLoader.getResource("gameAPIs.yaml")
         val healthCheck = HealthCheck(vertx)
-        RouterBuilder.create(vertx, apiDefinitionUrl.toString())
+        RouterBuilder.create(vertx, restHttpServiceConfig.openApiPath)
             .onFailure { ex ->
                 log.error("OpenApi not loaded", ex)
                 startPromise?.fail(ex)
@@ -89,7 +88,7 @@ class RestHttpServiceVerticle(
         fun build(
             restHttpServiceConfig: RestHttpServiceConfig,
             repository: IAggregateRepository<Game>,
-            gameEventPublisher: GameEventPublisherPort
+            gameEventPublisher: ExternalEventPublisherPort
         ): RestHttpServiceVerticle {
             val commandControllerAdapter =
                 CommandControllerAdapter(AggregateGameCommandHandler(repository, gameEventPublisher))
@@ -97,8 +96,4 @@ class RestHttpServiceVerticle(
         }
     }
 
-    //    override fun stop(endPromise: Promise<Void>?) {
-// //        stop()
-//        endPromise?.complete()
-//    }
 }

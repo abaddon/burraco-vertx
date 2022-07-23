@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.events.game
 
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.game.GameIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
 import java.util.*
 

@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models
 
+import com.abaddon83.burraco.common.models.StraightIdentity
 import com.abaddon83.burraco.game.helpers.StraightHelper.sortStraight
 import com.abaddon83.burraco.game.helpers.StraightHelper.validStraight
 import com.abaddon83.burraco.game.models.card.Card

@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.models.Team
 import com.abaddon83.burraco.game.models.player.ScorePlayer
 import org.slf4j.Logger

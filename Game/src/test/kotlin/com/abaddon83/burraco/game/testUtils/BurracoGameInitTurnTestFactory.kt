@@ -5,7 +5,7 @@
 //import com.abaddon83.burraco.game.models.*
 //import com.abaddon83.burraco.game.models.decks.DiscardPile
 //import com.abaddon83.burraco.game.models.decks.MazzettoDecks
-//import com.abaddon83.burraco.game.models.game.GameIdentity
+//import com.abaddon83.burraco.common.models.GameIdentity
 //
 //data class BurracoGameInitTurnTestFactory(
 //    private val gameIdentity: GameIdentity,

@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.game.events.game
 
-import com.abaddon83.burraco.game.models.game.GameIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

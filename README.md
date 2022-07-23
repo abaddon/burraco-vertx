@@ -2,10 +2,14 @@
 
 [![Build](https://github.com/abaddon/burraco-vertx/actions/workflows/builds.yml/badge.svg)](https://github.com/abaddon/burraco-vertx/actions/workflows/builds.yml)
 [![codecov](https://codecov.io/gh/abaddon/burraco-vertx/branch/master/graph/badge.svg?token=QFVXQXWIWF)](https://codecov.io/gh/abaddon/burraco-vertx)
+[![CodeFactor](https://www.codefactor.io/repository/github/abaddon/burraco-vertx/badge)](https://www.codefactor.io/repository/github/abaddon/burraco-vertx)
 
 ## Design
 ### Event Storming - Big Picture
 ![big picture schema](./documents/eventStormingBigPicture.jpg)
+
+### Hexagonal Architecture
+![Hexagonal Architecture](./documents/hexagonalArchitecture.jpg)
 
 ## Bounded contexts
 ### Game
@@ -41,13 +45,12 @@
 
 ### Dealer
 #### Commands
-- [ ] create Deck
-- [ ] deck shuffle
-- [ ] Deal player card
-- [ ] Deal player deck 1 card
-- [ ] Deal player deck 2 card
-- [ ] Deal discard deck card
-- [ ] Deal deck card
+- [x] create Deck
+- [x] Deal player card
+- [x] Deal player deck 1 card
+- [x] Deal player deck 2 card
+- [x] Deal discard deck card
+- [x] Deal deck card
 
 ### Player
 #### Commands

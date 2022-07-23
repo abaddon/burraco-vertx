@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.game
 
-import com.abaddon83.burraco.game.models.game.GameIdentity
+import com.abaddon83.burraco.common.models.GameIdentity
+
 
 interface DomainError{
     abstract fun toMap():Map<String,*>

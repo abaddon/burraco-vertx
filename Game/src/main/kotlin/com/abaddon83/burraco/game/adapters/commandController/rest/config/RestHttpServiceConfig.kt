@@ -4,6 +4,7 @@ import io.vertx.core.http.HttpServerOptions
 
 data class RestHttpServiceConfig(
     val serviceName: String,
+    val openApiPath: String,
     val http: RestApiHttpConfig
 ) {
     fun getHttpServerOptions(): HttpServerOptions {
@@ -11,16 +12,6 @@ data class RestHttpServiceConfig(
             .setPort(http.port)
             .setHost(http.address)
     }
-
-//    fun toJson(): JsonObject =
-//        buildJsonObject {
-//            put("serviceName", Json.parseToJsonElement(serviceName))
-//            putJsonObject("http") {
-//                put("port", http.port)
-//                put("address", http.address)
-//                put("root", http.root)
-//            }
-//        }
 }
 
 data class RestApiHttpConfig(

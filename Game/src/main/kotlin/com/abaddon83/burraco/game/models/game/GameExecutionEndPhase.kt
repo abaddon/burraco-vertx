@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.events.game.GameEnded
 import com.abaddon83.burraco.game.events.game.NextPlayerTurnStarted
 import com.abaddon83.burraco.game.helpers.playerCards
@@ -8,7 +9,7 @@ import com.abaddon83.burraco.game.models.Team
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
-import com.abaddon83.burraco.game.models.player.PlayerIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
