@@ -2,9 +2,9 @@ package com.abaddon83.burraco.common.adapter.kafka
 
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import com.abaddon83.burraco.common.models.GameIdentity
-import com.abaddon83.burraco.common.models.PlayerIdentity
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class KafkaEventTest{
@@ -14,8 +14,8 @@ internal class KafkaEventTest{
         val gameIdentity = GameIdentity.create()
         val externalEvent = DummyExternalEvent(gameIdentity)
         val kafkaEvent = KafkaEvent.from(externalEvent)
-        val json = kafkaEvent?.toJson()
-        assertTrue(json!!.contains(gameIdentity.valueAsString()))
+        val json = kafkaEvent.toJson()
+        assertTrue(json.contains(gameIdentity.valueAsString()))
     }
 
     @Test

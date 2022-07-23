@@ -6,6 +6,7 @@ import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.testHelpers.DummyExternalEventPublisherAdapter
 import io.github.abaddon.kcqrs.core.persistence.InMemoryEventStoreRepository
+import io.vertx.core.Vertx
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -14,7 +15,8 @@ internal class CardDealingRequestedHandlerTest {
 
     private val inMemoryEventStoreRepository = InMemoryEventStoreRepository("stream",{Dealer.empty()})
     private val commandHandler = AggregateDealerCommandHandler(inMemoryEventStoreRepository, DummyExternalEventPublisherAdapter())
-    private val cardsRequestedToDealerHandler = CardsRequestedToDealerHandler(CommandControllerAdapter(commandHandler))
+    private val cardsRequestedToDealerHandler = CardsRequestedToDealerHandler(CommandControllerAdapter(commandHandler),
+        Vertx.vertx())
 
     @Test
     fun `Given a KafkaEvent containing the externalEvent CardDealingRequested, when processed, then command createDeck executed `() {

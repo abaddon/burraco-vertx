@@ -7,10 +7,13 @@ import com.abaddon83.burraco.dealer.models.DealerIdentity
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
 import com.abaddon83.burraco.dealer.services.DealerService
 import com.abaddon83.burraco.dealer.services.DealerServiceResult
+import io.vertx.core.Vertx
 import io.vertx.core.json.Json
 import org.slf4j.LoggerFactory
 
-class CardsRequestedToDealerHandler(private val commandController: CommandControllerPort): EventHandler() {
+class CardsRequestedToDealerHandler(private val commandController: CommandControllerPort, vertx: Vertx): EventHandler(
+    vertx
+) {
     private val log = LoggerFactory.getLogger(this::class.qualifiedName)
     override suspend fun asyncHandle(event: KafkaEvent?) {
         checkNotNull(event)

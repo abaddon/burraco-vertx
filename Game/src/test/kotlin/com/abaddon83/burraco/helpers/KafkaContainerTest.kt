@@ -70,22 +70,22 @@ abstract class KafkaContainerTest {
         return consumer
     }
 
-    internal fun createTopic(topic: String) = runBlocking {
+    private fun createTopic(topic: String) = runBlocking {
         KafkaAdminClient.create(vertx, adminConfig()).createTopics(listOf(NewTopic(topic, 1, 1)))
             .onSuccess { println("topic created") }
             .onFailure { println("topic not created, cause: ${it.message}") }.await()
     }
 
 
-    internal fun getProducer(): KafkaProducer<String, String> {
+    private fun getProducer(): KafkaProducer<String, String> {
         if (producer == null) {
             val producer: KafkaProducer<String, String> = KafkaProducer.create(vertx, producerConfig());
             this.producer = producer
         }
-        return this.producer!!
+        return this.producer
     }
 
-    internal fun publishMessage(topic: String, key: String, value: String) {
+    private fun publishMessage(topic: String, key: String, value: String) {
         getProducer().write(KafkaProducerRecord.create(topic, key, value))
     }
 
