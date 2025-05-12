@@ -1,219 +1,190 @@
 version: "3.8"
 
 networks:
-  burraco-project:
-    external: true
+  burraco-net:
+    driver: bridge
+
+volumes:
+  redpanda-hd0: null
 
 services:
   db:
-    build: ./MysqlContainer
-    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+    image: mariadb:latest
+    command: --bind-address=0.0.0.0
     restart: always
     ports:
       - "3306:3306"
     networks:
-      burraco-project:
+      burraco-net:
         aliases:
-          - event.repository
+          - db
     environment:
       MYSQL_ROOT_PASSWORD: root
-  #      MYSQL_DATABASE: eventstore
+      MYSQL_DATABASE: eventstore
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
 
-  engine:
-    build: ./Engine
-    depends_on:
-      - eventstore
-    ports:
-      - "8080:8080"
-    networks:
-      burraco-project:
-        aliases:
-          - engine
 
-  eventstore:
-    build: ./EventStore
+  game:
+    build: ./Game
     depends_on:
       - db
-    links:
-      - db:mysql
+      - eventstore
+      - redpanda
+    ports:
+      - "8081:8080"
     networks:
-      burraco-project:
+      burraco-net:
+        aliases:
+          - dealer
+
+  dealer:
+    build: ./Dealer
+    depends_on:
+      - db
+      - eventstore
+      - redpanda
+    ports:
+      - "8082:8080"
+    networks:
+      burraco-net:
+        aliases:
+          - dealer
+
+  eventstore:
+#    image: eventstore/eventstore:latest
+    image: docker.kurrent.io/kurrent-latest/kurrentdb
+    command: --insecure --enable-atom-pub-over-http
+    depends_on:
+      - db
+    ports:
+      - "2113:2113"
+    networks:
+      burraco-net:
         aliases:
           - eventstore
 
-#  kafka-cluster:
-#    image: lensesio/fast-data-dev
-#    container_name: kafka1
-#    environment:
-#      ADV_HOST: 127.0.0.1
-#      RUNTESTS: 0
-#    networks:
-#      burraco-project:
-#        aliases:
-#          - eventstore
-#    ports:
-#      - 2181:2181 #zookeeper
-#      - 3030:3030 #Landoop UI
-#      - 8081-8083:8081-8083 #REST proxy, Schema registry, Kafka Connect ports
-#      - 9581-9585:9581-9585 #JMX ports
-#      - 9092:9092 # Broker
+  redpanda:
+    container_name: redpanda
+    environment:
+      REDPANDA_VERSION: "v25.1.3"
+    command:
+      - redpanda
+      - start
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      # Address the broker advertises to clients that connect to the Kafka API.
+      # Use the internal addresses to connect to the Redpanda brokers'
+      # from inside the same Docker network.
+      # Use the external addresses to connect to the Redpanda brokers'
+      # from outside the Docker network.
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
+      # Address the broker advertises to clients that connect to the HTTP Proxy.
+      - --advertise-pandaproxy-addr internal://redpanda:8082,external://localhost:18082
+      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:18081
+      # Redpanda brokers use the RPC API to communicate with each other internally.
+      - --rpc-addr redpanda:33145
+      - --advertise-rpc-addr redpanda:33145
+      # Mode dev-container uses well-known configuration properties for development in containers.
+      - --mode dev-container
+      # Tells Seastar (the framework Redpanda uses under the hood) to use 1 core on the system.
+      - --smp 1
+      - --default-log-level=info
+    image: docker.redpanda.com/redpandadata/redpanda:v25.1.3
+    volumes:
+      - redpanda-hd0:/var/lib/redpanda/data
+    networks:
+      - burraco-net
+    ports:
+      - 18081:18081
+      - 18082:18082
+      - 19092:19092
+      - 19644:9644
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:5.4.0
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      zk_id: "1"
-    ports:
-      - "2181:2181"
+  console:
+    container_name: redpanda-console
+    image: docker.redpanda.com/redpandadata/console:v3.1.0
     networks:
-      burraco-project:
-        aliases:
-          - zookeeper
-  kafka1:
-    hostname: kafka1
-    image: confluentinc/cp-enterprise-kafka:5.4.0
-    links:
-      - zookeeper
-    ports:
-      - "9092:9092"
+      - burraco-net
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://:9092"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-    networks:
-      burraco-project:
-        aliases:
-          - kafka1
-  control-center:
-    image: confluentinc/cp-enterprise-control-center:5.4.0
+      REDPANDA_CONSOLE_VERSION: "v3.1.0"
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda:9092"]
+        schemaRegistry:
+          enabled: true
+          urls: ["http://redpanda:8081"]
+        redpanda:
+          adminApi:
+            enabled: true
+            urls: ["http://redpanda:9644"]
+    ports:
+      - 8181:8080
     depends_on:
-      - zookeeper
-      - kafka1
-#      - schema-registry
-    ports:
-      - "9021:9021"
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: "kafka1:9092"
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-    networks:
-      burraco-project:
-        aliases:
-          - control-center
+      - redpanda
 
-  projection:
-    build: ./ReadModel
-    depends_on:
-      - db
-    links:
-      - db:mysql
-    networks:
-      burraco-project:
-        aliases:
-          - projection
 
-#  dbprojection:
-#    build: ./MysqlContainer
-#    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
-#    restart: always
-#    ports:
-#      - "3307:3306"
-#    networks:
-#      burraco-project:
-#        aliases:
-#          - projection.repository
+
+
+
+#  zookeeper:
+#    image: confluentinc/cp-zookeeper:5.4.0
 #    environment:
-#      MYSQL_ROOT_PASSWORD: root
-#      MYSQL_DATABASE: game
-  #    volumes:
-  #      - ./MysqlContainer/database:/var/lib/mysql
-
-#  zk1:
-#    image: zookeeper-node
-#    container_name: zk1
-#    networks:
-#      - burraco-project
-#    tty: true
-#    environment:
-#      - KAFKA_OPTS=-javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/zookeeper.yaml
-#      - MYID=1
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#      zk_id: "1"
 #    ports:
 #      - "2181:2181"
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/solutions/:/var/solutions/:ro
-#      - ./KafkaCluster/shared/:/var/shared/:rw
-#
-#  kafka1:
-#    image: kafka-node
-#    container_name: kafka1
-#    depends_on:
-#      - zk1
 #    networks:
-#      - burraco-project
-#    tty: true
-#    environment:
-#      - KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
-#      - KAFKA_CONFIG=server1.properties
+#      burraco-project:
+#        aliases:
+#          - zookeeper
+#  kafka1:
+#    hostname: kafka1
+#    image: confluentinc/cp-enterprise-kafka:5.4.0
+#    links:
+#      - zookeeper
 #    ports:
 #      - "9092:9092"
-#      - "9093:9093"
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/solutions/:/var/solutions/:ro
-#      - ./KafkaCluster/shared/:/var/shared/:rw
-#
-#  kafka-worker1:
-#    image: kafka-worker
-#    container_name: kworker1
-#    depends_on:
-#      - kafka1
-#    networks:
-#      - burraco-project
-#    tty: true
 #    environment:
-#      #- KAFKA_OPTS=-Dzookeeper.sasl.client.canonicalize.hostname=false -javaagent:/var/content/jolokia-jvm-1.6.2-agent.jar=host=* -javaagent:/var/content/jmx_prometheus_javaagent-0.13.0.jar=8080:/var/content/jmx_exporter/kafka-2_0_0.yaml
-#      - KAFKA_WORKER_CONFIG=connect-distributed1.properties
+#      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+#      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://:9092"
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#    networks:
+#      burraco-project:
+#        aliases:
+#          - kafka1
+#  control-center:
+#    image: confluentinc/cp-enterprise-control-center:5.4.0
+#    depends_on:
+#      - zookeeper
+#      - kafka1
+##      - schema-registry
 #    ports:
-#      - "8083:8083"
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/connectors/:/connectors/:ro
+#      - "9021:9021"
+#    environment:
+#      CONTROL_CENTER_BOOTSTRAP_SERVERS: "kafka1:9092"
+#      CONTROL_CENTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
+#      CONTROL_CENTER_CONNECT_CLUSTER: 'connect:8083'
+#      CONTROL_CENTER_REPLICATION_FACTOR: 1
+#    networks:
+#      burraco-project:
+#        aliases:
+#          - control-center
 
-#  prometheus:
-#    image: prom/prometheus:v2.19.1
-#    container_name: kafka-prometheus
+#  projection:
+#    build: ./ReadModel
+#    depends_on:
+#      - db
+#    links:
+#      - db:mysql
 #    networks:
-#      - burraco-project
-#    volumes:
-#      - ./KafkaCluster/prometheus/prometheusConfig.yml:/etc/prometheus/prometheus.yml
-#      - ./KafkaCluster/shared/:/var/shared/:rw
-#    ports:
-#      - "9090:9090"
-#    restart: unless-stopped
-#
-#  grafana:
-#    image: grafana/grafana:7.0.3
-#    container_name: kafka-grafana
-#    networks:
-#      - burraco-project
-#    volumes:
-#      - ./KafkaCluster/prometheus/grafanaDatasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-#      - ./KafkaCluster/shared/:/var/shared/:rw
-#    ports:
-#      - "3000:3000"
-#    restart: unless-stopped
-#
-#  kafka-toolbox:
-#    image: kafka
-#    container_name: kafka-toolbox
-#    networks:
-#      - burraco-project
-#    tty: true
-#    volumes:
-#      - ./KafkaCluster/content/:/var/content/:ro
-#      - ./KafkaCluster/solutions/:/var/solutions/:ro
-#      - ./KafkaCluster/shared/:/var/shared/:rw
+#      burraco-project:
+#        aliases:
+#          - projection
+
+

@@ -1,7 +1,7 @@
-FROM openjdk:11-jre-slim
+FROM openjdk:21-slim
 
-ENV VERTICLE_ORIGIN_PATH .
-ENV VERTICLE_FILE dealer.jar
+ENV VERTICLE_ORIGIN_PATH ./build/libs
+ENV VERTICLE_FILE Dealer-1.0-SNAPSHOT-all.jar
 
 # Set the location of the verticles
 ENV VERTICLE_HOME /usr/verticles

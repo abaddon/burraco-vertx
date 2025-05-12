@@ -3,7 +3,7 @@ package com.abaddon83.burraco.game.adapters.commandController.kafka
 import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
 import com.abaddon83.burraco.common.adapter.kafka.consumer.EventHandler
 import com.abaddon83.burraco.common.adapter.kafka.consumer.EventRouterHandler
-import io.vertx.core.Handler
+import io.vertx.core.Vertx
 import io.vertx.core.json.Json
 import io.vertx.kafka.client.consumer.KafkaConsumerRecord
 import io.vertx.kafka.client.consumer.impl.KafkaConsumerRecordImpl
@@ -28,7 +28,7 @@ internal class EventRouterHandlerTest{
     @Test
     fun `Given an EventRouterHandler with the right handler when receive a record, it's managed`(){
         val eventName="event1"
-        val dummyEventHandler=DummyEventHandler()
+        val dummyEventHandler=DummyEventHandler(Vertx.vertx())
 
         val eventRouterHandler= EventRouterHandler()
             .addHandler(eventName, dummyEventHandler) //{ counter += 1 }
@@ -41,7 +41,7 @@ internal class EventRouterHandlerTest{
         }
     }
 
-    internal class DummyEventHandler: EventHandler() {
+    internal class DummyEventHandler(vertx: Vertx) : EventHandler(vertx) {
         override suspend fun asyncHandle(event: KafkaEvent?) {
             println("ciao")
         }

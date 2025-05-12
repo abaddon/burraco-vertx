@@ -48,7 +48,6 @@ internal class RestHttpServiceVerticleTest {
     }
     @Test
     fun `given I want to create a  new game when call api create new game then new game is created`(testContext: VertxTestContext) {
-        val expectedResponse = """{"gameId":"${GAME_IDENTITY.valueAsString()}","status":"DRAFT","players":[]}"""
         val client = WebClient.create(vertx)
         client
             .get(PORT, ADDRESS, "$ROOT/game/burraco")
@@ -81,7 +80,7 @@ internal class RestHttpServiceVerticleTest {
                 val actualResponse = response.bodyAsString()
                 assertEquals(expectedResponse, actualResponse)
                 testContext.completeNow()
-            }.onFailure { error ->
+            }.onFailure {
                 assert(false)
                 testContext.completeNow()
             }
@@ -103,7 +102,7 @@ internal class RestHttpServiceVerticleTest {
                 val actualResponse = response.bodyAsString()
                 assertEquals(expectedResponse, actualResponse)
                 testContext.completeNow()
-            }.onFailure { error ->
+            }.onFailure {
                 assert(false)
                 testContext.completeNow()
             }
@@ -129,7 +128,7 @@ internal class RestHttpServiceVerticleTest {
                 assertEquals(expectedPlayersSize, actualResponse.getJsonArray("players").size())
                 assertEquals(expectedGameId, actualResponse.getString("gameId"))
                 testContext.completeNow()
-            }.onFailure { error ->
+            }.onFailure {
                 assert(false)
                 testContext.completeNow()
             }
