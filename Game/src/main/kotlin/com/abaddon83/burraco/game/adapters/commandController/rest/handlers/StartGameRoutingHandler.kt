@@ -12,11 +12,8 @@
 //import io.vertx.ext.web.RoutingContext
 //import io.vertx.ext.web.validation.RequestParameters
 //import io.vertx.ext.web.validation.ValidationHandler
-//import org.slf4j.Logger
-//import org.slf4j.LoggerFactory
 //
 //class StartGameRoutingHandler(private val controllerAdapter: CommandControllerPort): RoutingHandler {
-//    private val log: Logger = LoggerFactory.getLogger(this::class.java)
 //
 //    override fun handle(routingContext: RoutingContext) {
 //        val params: RequestParameters = routingContext.get(ValidationHandler.REQUEST_CONTEXT_KEY)

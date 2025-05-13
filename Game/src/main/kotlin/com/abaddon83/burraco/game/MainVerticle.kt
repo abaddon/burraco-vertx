@@ -1,66 +1,72 @@
 package com.abaddon83.burraco.game
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.game.adapters.commandController.rest.RestHttpServiceVerticle
 import com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
 import io.vertx.core.*
-import org.slf4j.LoggerFactory
+
 
 class MainVerticle(
-    private val configPath: String
+    private val serviceConfig: ServiceConfig
 ) : AbstractVerticle() {
-    private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val vertx=Vertx.vertx()
-            val configPath= when(args.size){
-                1 -> args[0]
-                else -> "./local_config.yml"
-            }
-            vertx.deployVerticle(MainVerticle(configPath))
+            val vertx = Vertx.vertx()
+
+            ServiceConfig.load(vertx, { serviceConfig ->
+                vertx.deployVerticle(MainVerticle(serviceConfig))
+            })
         }
     }
 
     override fun start(startPromise: Promise<Void>?) {
-        val serviceConfig = ServiceConfig.load(configPath)
+        log.info("Game Starting...")
+        try {
+            //GameEventsPublisher
+            val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx, serviceConfig.kafkaGameProducer)
 
-        //GameEventsPublisher
-        val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx, serviceConfig.gameEventPublisher)
+            //Repository
+            val repository =
+                EventStoreDBRepository<Game>(serviceConfig.eventStore.eventStoreDBRepositoryConfig()) { GameDraft.empty() }
 
-        //Repository
-        val repository = EventStoreDBRepository<Game>(serviceConfig.eventStoreDBRepository) { GameDraft.empty() }
 
-        val serverOpts = DeploymentOptions().setConfig(config())
+            val serverOpts = DeploymentOptions().setConfig(config())
 
-        //list of verticle to deploy
-        val allFutures: List<Future<Any>> = listOf(
-            deploy(
-                RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, externalEventPublisher),
-                serverOpts
-            ).future()
-        )
+            //list of verticle to deploy
+            val allFutures: List<Future<Any>> = listOf(
+                deploy(
+                    RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, externalEventPublisher),
+                    serverOpts
+                ).future()
+            )
 
-        CompositeFuture.all(allFutures).onComplete {
-            if (it.succeeded()) {
-                log.info("MainVerticle started")
-                start()
-                log.info("IDS: ${vertx.deploymentIDs()}")
-                startPromise?.complete()
-            } else {
-                log.error(it.cause().message, it.cause())
-                startPromise?.fail(it.cause())
+            Future.all(allFutures).onComplete {
+                if (it.succeeded()) {
+                    log.info("MainVerticle started")
+                    start()
+                    log.info("IDS: ${vertx.deploymentIDs()}")
+                    startPromise?.complete()
+                } else {
+                    log.error(it.cause().message, it.cause())
+                    startPromise?.fail(it.cause())
+                }
             }
+        } catch (ex: Exception) {
+            log.error("Service start failed", ex)
+            startPromise?.fail(ex.message)
+            stop(Promise.promise())
         }
     }
 
     override fun stop(stopPromise: Promise<Void?>) {
         val ids = vertx.deploymentIDs()
         log.info("Undeploy started..: {}", ids)
-        if(ids.isEmpty()){
+        if (ids.isEmpty()) {
             log.info("Undeploy ended")
             super.stop(stopPromise)
         }

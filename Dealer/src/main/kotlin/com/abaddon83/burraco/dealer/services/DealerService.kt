@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.dealer.services
 
 import com.abaddon83.burraco.common.helpers.Validated
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_DISCARD_DECK_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
@@ -13,8 +14,6 @@ import com.abaddon83.burraco.dealer.DomainResult
 import com.abaddon83.burraco.dealer.ExceptionError
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
 import com.abaddon83.burraco.dealer.ports.Outcome
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 
 sealed class DealerServiceResult<out TDomainError: DomainError, out DomainResult> {
@@ -23,7 +22,6 @@ sealed class DealerServiceResult<out TDomainError: DomainError, out DomainResult
 }
 
 class DealerService(private val commandController: CommandControllerPort) {
-    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     suspend fun dealCards(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,

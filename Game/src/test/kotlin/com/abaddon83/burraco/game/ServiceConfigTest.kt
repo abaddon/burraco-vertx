@@ -1,35 +1,42 @@
 package com.abaddon83.burraco.game
 
-import org.junit.jupiter.api.Assertions.*
+import io.vertx.core.Vertx
+import io.vertx.junit5.VertxExtension
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(VertxExtension::class)
 internal class ServiceConfigTest {
 
     @Test
     fun `test`() {
         val serviceConfig =
-            ServiceConfig.load("src/test/resources/dev.yml")
+            ServiceConfig.load(Vertx.vertx(), { serviceConfig ->
+                assertNotNull(serviceConfig)
+                assertEquals("game-service", serviceConfig.restHttpService.serviceName)
+                assertEquals(8080, serviceConfig.restHttpService.http.port)
+                assertEquals("0.0.0.0", serviceConfig.restHttpService.http.address)
+                assertEquals("/", serviceConfig.restHttpService.http.root)
 
-        assertEquals("game-service", serviceConfig.restHttpService.serviceName)
-        assertEquals(8080, serviceConfig.restHttpService.http.port)
-        assertEquals("0.0.0.0", serviceConfig.restHttpService.http.address)
-        assertEquals("/", serviceConfig.restHttpService.http.root)
+                assertEquals("game-event", serviceConfig.kafkaGameProducer.topic())
+                assertEquals("localhost:9092", serviceConfig.kafkaGameProducer.producerConfig()["bootstrap.servers"])
+                assertEquals(
+                    "org.apache.kafka.common.serialization.StringSerializer",
+                    serviceConfig.kafkaGameProducer.producerConfig()["key.serializer"]
+                )
+                assertEquals(
+                    "org.apache.kafka.common.serialization.StringSerializer",
+                    serviceConfig.kafkaGameProducer.producerConfig()["value.serializer"]
+                )
+                assertEquals("1", serviceConfig.kafkaGameProducer.producerConfig()["acks"])
 
-        assertEquals("game-event", serviceConfig.gameEventPublisher.topic())
-        assertEquals("localhost:9092", serviceConfig.gameEventPublisher.producerConfig()["bootstrap.servers"])
-        assertEquals(
-            "org.apache.kafka.common.serialization.StringSerializer",
-            serviceConfig.gameEventPublisher.producerConfig()["key.serializer"]
-        )
-        assertEquals(
-            "org.apache.kafka.common.serialization.StringSerializer",
-            serviceConfig.gameEventPublisher.producerConfig()["value.serializer"]
-        )
-        assertEquals("1", serviceConfig.gameEventPublisher.producerConfig()["acks"])
+                assertEquals("stream_name", serviceConfig.eventStore.streamName)
+                assertEquals(100, serviceConfig.eventStore.maxReadPageSize)
+                assertEquals(200, serviceConfig.eventStore.maxWritePageSize)
+            })
 
-        assertEquals("stream_name", serviceConfig.eventStoreDBRepository.streamName)
-        assertEquals(100, serviceConfig.eventStoreDBRepository.maxReadPageSize)
-        assertEquals(200, serviceConfig.eventStoreDBRepository.maxWritePageSize)
 
         //assertDoesNotThrow { serviceConfig.eventStoreDBRepository.eventStoreDBClientSettings() }
     }

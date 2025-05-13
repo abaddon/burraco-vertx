@@ -1,12 +1,10 @@
 package com.abaddon83.burraco.game.helpers
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 object TrisHelper {
-    val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     fun validTris(cards: List<Card>): Boolean {
         if (cards.size < 3) {
             log.warn("A tris is composed by 3 or more cards")

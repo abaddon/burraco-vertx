@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.*
@@ -14,8 +15,6 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.StraightIdentity
 import com.abaddon83.burraco.common.models.TrisIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 data class GameExecutionPlayPhase private constructor(
     override val id: GameIdentity,
@@ -28,7 +27,6 @@ data class GameExecutionPlayPhase private constructor(
     val discardPile: DiscardPile,
     val teams: List<Team>
 ) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile,teams) {
-    override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
         fun from(game: GameExecutionPickUpPhase): GameExecutionPlayPhase = GameExecutionPlayPhase(

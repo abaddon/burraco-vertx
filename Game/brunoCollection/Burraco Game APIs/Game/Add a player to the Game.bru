@@ -1,0 +1,28 @@
+meta {
+  name: Add a player to the Game
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/games/{{gameId}}/player/add
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "playerId": "{{playerUUID}}"
+  }
+}
+
+vars:pre-request {
+  gameId: {{gameId}}
+}
+
+script:pre-request {
+  var uuid = require('uuid');
+  
+  bru.setVar("playerUUID",uuid.v4());
+  
+}

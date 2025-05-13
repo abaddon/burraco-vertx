@@ -6,15 +6,11 @@ import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.ExternalEventPublisherPort
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.core.persistence.IAggregateRepository
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 class AggregateDealerCommandHandler(
     override val repository: IAggregateRepository<Dealer>,
     private val externalEventPublisherPort: ExternalEventPublisherPort
 ) : AggregateCommandHandler<Dealer>() {
-    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
-
 
     protected override suspend fun onSuccess(aggregate: Dealer) {
         aggregate

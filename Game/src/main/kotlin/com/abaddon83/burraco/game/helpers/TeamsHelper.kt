@@ -2,11 +2,8 @@ package com.abaddon83.burraco.game.helpers
 
 import com.abaddon83.burraco.game.models.Team
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 object TeamsHelper {
-    val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     fun buildTeamsWith3Players(playerPickedUp: PlayerIdentity, players: List<PlayerIdentity>): List<Team> {
         require(players.contains(playerPickedUp)){"PlayerPickedUp ${playerPickedUp.valueAsString()} has to belong to the players ${players.map { it.valueAsString() }}"}

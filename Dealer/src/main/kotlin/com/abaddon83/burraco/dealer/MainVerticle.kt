@@ -1,53 +1,50 @@
 package com.abaddon83.burraco.dealer
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.dealer.adapters.commandController.kafka.KafkaGameConsumerAdapter
-import com.abaddon83.burraco.dealer.adapters.externalEventPublisher.DummyExternalEventPublisher
 import com.abaddon83.burraco.dealer.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.dealer.models.Dealer
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
 import io.vertx.core.*
-import org.slf4j.LoggerFactory
 
 class MainVerticle(
-    private val configPath: String
+    private val serviceConfig: ServiceConfig
 ) : AbstractVerticle() {
-    private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val vertx=Vertx.vertx()
-            val configPath= when(args.size){
-                1 -> args[0]
-                else -> "./local_config.yml"
-            }
-            vertx.deployVerticle(MainVerticle(configPath))
+            val vertx = Vertx.vertx()
+            ServiceConfig.load(vertx, { serviceConfig ->
+                vertx.deployVerticle(MainVerticle(serviceConfig))
+            })
         }
     }
 
     override fun start(startPromise: Promise<Void>?) {
         log.info("Dealer Starting...")
         try {
-            val serviceConfig = ServiceConfig.load(configPath)
             log.info("ServiceConfig loaded..")
 
 
-            val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx,serviceConfig.dealerEventPublisher)
+            val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx, serviceConfig.dealerEventPublisher)
 
             //Repository
-            val repository = EventStoreDBRepository<Dealer>(serviceConfig.eventStoreDBRepository, { Dealer.empty() })
+            val repository = EventStoreDBRepository<Dealer>(
+                serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
+                { Dealer.empty() })
 
             val serverOpts = DeploymentOptions().setConfig(config())
 
             //list of verticle to deploy
             val allFutures: List<Future<Any>> = listOf(
                 deploy(
-                    KafkaGameConsumerAdapter.build(serviceConfig.gameEventConsumer,repository,externalEventPublisher),
+                    KafkaGameConsumerAdapter.build(serviceConfig.gameEventConsumer, repository, externalEventPublisher),
                     serverOpts
                 ).future()
             )
 
-            CompositeFuture.all(allFutures).onComplete {
+            Future.all(allFutures).onComplete {
                 if (it.succeeded()) {
                     log.info("MainVerticle started")
                     start()
@@ -58,8 +55,8 @@ class MainVerticle(
                     startPromise?.fail(it.cause())
                 }
             }
-        }catch (ex: Exception){
-            log.error("Service start failed",ex)
+        } catch (ex: Exception) {
+            log.error("Service start failed", ex)
             startPromise?.fail(ex.message)
             stop(Promise.promise())
         }
@@ -68,7 +65,7 @@ class MainVerticle(
     override fun stop(stopPromise: Promise<Void?>) {
         val ids = vertx.deploymentIDs()
         log.info("Undeploy started..: {}", ids)
-        if(ids.isEmpty()){
+        if (ids.isEmpty()) {
             log.info("Undeploy ended")
             super.stop(stopPromise)
         }

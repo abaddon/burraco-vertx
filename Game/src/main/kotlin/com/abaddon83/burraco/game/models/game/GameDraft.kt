@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.GameCreated
@@ -9,28 +10,36 @@ import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.contains
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+
+private const val AGGREGATE_APPLY_EVENT_MSG = "The aggregate is applying the event {} with id {}"
+private const val VALIDATION_MSG_GAME_EXIST = "Current game with id %s is already created"
+private const val VALIDATION_MSG_PLAYER_ALREADY_ADDED = "The player %s is already a player of game %s"
+
 
 data class GameDraft constructor(
     override val id: GameIdentity,
     override val version: Long,
     override val players: List<WaitingPlayer>
 ) : Game() {
-    override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
         fun empty(): GameDraft = GameDraft(GameIdentity.empty(), 0, listOf())
     }
 
     fun createGame(gameIdentity: GameIdentity): GameDraft {
-        check(this.id == GameIdentity.empty()){"Current game with id ${this.id} is already created"}
+        check(this.id == GameIdentity.empty()) { String.format(VALIDATION_MSG_GAME_EXIST, this.id) }
         return raiseEvent(GameCreated.create(gameIdentity)) as GameDraft
     }
 
     fun addPlayer(playerIdentity: PlayerIdentity): GameDraft {
-        require(!players.contains(playerIdentity)) { "The player ${playerIdentity.valueAsString()} is already a player of game ${this.id.valueAsString()}" }
-        val playersCount = players.size+1
+        require(!players.contains(playerIdentity)) {
+            String.format(
+                VALIDATION_MSG_PLAYER_ALREADY_ADDED,
+                playerIdentity.valueAsString(),
+                this.id.valueAsString()
+            )
+        }
+        val playersCount = players.size + 1
         check(GameConfig.MAX_PLAYERS >= playersCount) { "Maximum number of players reached, (Max: ${GameConfig.MAX_PLAYERS})" }
 
         return raiseEvent(PlayerAdded.create(id, playerIdentity)) as GameDraft
@@ -50,26 +59,26 @@ data class GameDraft constructor(
     }
 
     private fun apply(event: GameCreated): GameDraft {
-        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        return copy(id = event.aggregateId,version = version + 1 )
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
+        return copy(id = event.aggregateId, version = version + 1)
     }
 
     private fun apply(event: PlayerAdded): GameDraft {
-        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        val updatedPlayers=players.plus(WaitingPlayer(event.playerIdentity))
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
+        val updatedPlayers = players.plus(WaitingPlayer(event.playerIdentity))
         log.debug("New Player added, now there are ${updatedPlayers.size} players")
-        return copy(players = updatedPlayers,version = version + 1 )
+        return copy(players = updatedPlayers, version = version + 1)
     }
 
     private fun apply(event: PlayerRemoved): GameDraft {
-        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        val updatedPlayers=players.minus(WaitingPlayer(event.playerIdentity))
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
+        val updatedPlayers = players.minus(WaitingPlayer(event.playerIdentity))
         log.debug("Player removed, now there are ${updatedPlayers.size} players")
-        return copy(players = updatedPlayers,version = version + 1 )
+        return copy(players = updatedPlayers, version = version + 1)
     }
 
     private fun apply(event: CardDealingRequested): GameWaitingDealer {
-        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
         return GameWaitingDealer.from(this.copy(version = version + 1))
     }
 

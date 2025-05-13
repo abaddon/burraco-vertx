@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.dealer.models
 
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.events.*
@@ -10,8 +11,6 @@ import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 data class Dealer private constructor(
     override val id: DealerIdentity,
@@ -24,10 +23,7 @@ data class Dealer private constructor(
     val deckNumCards:Int,
     val cardsAvailable: List<Card>
 ) : AggregateRoot() {
-    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     override val uncommittedEvents: MutableCollection<IDomainEvent> = mutableListOf()
-
-
 
 
     companion object Factory {

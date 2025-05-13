@@ -12,6 +12,7 @@ kcqrs-eventStoreDB = "0.0.8"
 kcqrs-test = "0.0.10"
 vertx = "4.5.14"
 jackson = "2.18.4"
+jacksonDataformatHocon = "1.1.0"
 log4j = "2.24.3"
 hoplite = "2.9.0"
 testcontainer = "1.21.0"
@@ -30,6 +31,7 @@ kcqrs-test = { module = "io.github.abaddon.kcqrs:kcqrs-test", version.ref = "kcq
 
 
 vertx-config = { module = "io.vertx:vertx-config", version.ref = "vertx" }
+vertx-config-hocon = { module = "io.vertx:vertx-config-hocon", version.ref = "vertx" }
 vertx-lang-kotlin = { module = "io.vertx:vertx-lang-kotlin", version.ref = "vertx" }
 vertx-lang-kotlin-coroutines = { module = "io.vertx:vertx-lang-kotlin-coroutines", version.ref = "vertx" }
 vertx-kafka-client = { module = "io.vertx:vertx-kafka-client", version.ref = "vertx" }
@@ -42,6 +44,9 @@ vertx-junit5 = { module = "io.vertx:vertx-junit5", version.ref = "vertx" }
 
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson"}
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jackson-dataformat-hocon = { module = "com.jasonclawson:jackson-dataformat-hocon", version.ref = "jacksonDataformatHocon" }
+
 
 hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "hoplite" }
 hoplite-yaml = { module = "com.sksamuel.hoplite:hoplite-yaml", version.ref = "hoplite" }
@@ -101,12 +106,15 @@ game = [
     "kcqrs-core",
     "kcqrs-EventStoreDB",
     "vertx-config",
+    "vertx-config-hocon",
     "vertx-web-openapi",
     "vertx-health-check",
     "vertx-lang-kotlin",
     "vertx-lang-kotlin-coroutines",
     "vertx-kafka-client",
     "vertx-service-discovery",
+    "jackson-annotations",
+    "jackson-databind",
     "log4j-api",
     "log4j-core",
     "log4j-slf4j-impl",
@@ -129,6 +137,7 @@ dealer = [
     "kcqrs-core",
     "kcqrs-EventStoreDB",
     "vertx-config",
+    "vertx-config-hocon",
     "vertx-web-openapi",
     "vertx-health-check",
     "vertx-lang-kotlin",
@@ -136,6 +145,8 @@ dealer = [
     "vertx-tcp-eventbus-bridge",
     "vertx-kafka-client",
     "vertx-service-discovery",
+    "jackson-annotations",
+    "jackson-databind",
     "log4j-api",
     "log4j-core",
     "log4j-slf4j-impl",

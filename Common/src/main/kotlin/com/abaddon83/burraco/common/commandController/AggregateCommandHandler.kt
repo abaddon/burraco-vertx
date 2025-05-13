@@ -1,15 +1,13 @@
 package com.abaddon83.burraco.common.commandController
 
+import com.abaddon83.burraco.common.helpers.log
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
 import io.github.abaddon.kcqrs.core.domain.Result
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.*
 
 abstract class AggregateCommandHandler<A: AggregateRoot>: IAggregateCommandHandler<A> {
-    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     override suspend fun handle(
         command: ICommand<A>,
         updateHeaders: () -> Map<String, String>

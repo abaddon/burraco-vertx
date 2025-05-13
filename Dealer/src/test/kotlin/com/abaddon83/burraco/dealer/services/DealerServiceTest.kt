@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.dealer.services
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.models.Dealer
@@ -13,11 +14,8 @@ import io.github.abaddon.kcqrs.core.persistence.InMemoryEventStoreRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 internal class DealerServiceTest{
-    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     private fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     private val inMemoryRepository = InMemoryEventStoreRepository<Dealer>("stream1",emptyAggregate())
     private val commandControllerAdapter= CommandControllerAdapter(AggregateDealerCommandHandler(inMemoryRepository,DummyExternalEventPublisherAdapter()))

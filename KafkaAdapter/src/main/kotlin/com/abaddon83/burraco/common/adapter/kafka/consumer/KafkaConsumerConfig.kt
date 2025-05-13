@@ -1,6 +1,8 @@
 package com.abaddon83.burraco.common.adapter.kafka.consumer
+import kotlinx.serialization.Serializable
 import org.apache.kafka.clients.consumer.ConsumerConfig
 
+@Serializable
 data class KafkaConsumerConfig(
     private val properties: Map<String, String>,
     private val topic: String

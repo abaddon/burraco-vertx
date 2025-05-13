@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.vertx.AbstractHttpServiceVerticle
 import com.abaddon83.burraco.game.HealthCheck
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
@@ -16,14 +17,12 @@ import io.vertx.core.Promise
 import io.vertx.core.http.HttpHeaders
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.openapi.RouterBuilder
-import org.slf4j.LoggerFactory
 
 
 class RestHttpServiceVerticle(
     private val restHttpServiceConfig: RestHttpServiceConfig,
     private val controllerAdapter: CommandControllerPort
 ) : AbstractHttpServiceVerticle() {
-    private val log = LoggerFactory.getLogger(this::class.qualifiedName)
 
 
     override fun start(startFuture: Promise<Void>?) {

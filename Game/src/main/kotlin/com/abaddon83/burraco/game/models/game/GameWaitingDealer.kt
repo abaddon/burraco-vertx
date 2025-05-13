@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.GameConfig
@@ -10,8 +11,6 @@ import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 data class GameWaitingDealer private constructor(
     override val id: GameIdentity,
@@ -22,8 +21,6 @@ data class GameWaitingDealer private constructor(
     val playerDeck2: List<Card>,
     val discardDeck: List<Card>
 ) : Game() {
-    override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
-
 
     companion object Factory {
         fun from(gameDraft: GameDraft): GameWaitingDealer =

@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
+import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.events.game.GameEnded
 import com.abaddon83.burraco.game.events.game.NextPlayerTurnStarted
@@ -11,8 +12,6 @@ import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 
 data class GameExecutionEndPhase private constructor(
@@ -26,7 +25,6 @@ data class GameExecutionEndPhase private constructor(
     val discardPile: DiscardPile,
     val teams: List<Team>
 ) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile, teams) {
-    override val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     companion object Factory {
         fun from(game: GameExecutionPlayPhase): GameExecutionEndPhase = GameExecutionEndPhase(
