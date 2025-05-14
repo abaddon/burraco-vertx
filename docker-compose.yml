@@ -8,6 +8,42 @@ volumes:
   redpanda-hd0: null
 
 services:
+  base-builder:
+    build:
+      context: .
+      dockerfile: DockerFile-base
+    image: base-builder
+
+  game:
+    build:
+      context: Game
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - eventstore
+      - redpanda
+    ports:
+      - "8081:8081"
+    networks:
+      burraco-net:
+        aliases:
+          - dealer
+
+  dealer:
+    build:
+      context: Dealer
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - eventstore
+      - redpanda
+    #    ports:
+    #      - "8082:8082"
+    networks:
+      burraco-net:
+        aliases:
+          - dealer
+
   db:
     image: mariadb:latest
     command: --bind-address=0.0.0.0
@@ -24,31 +60,7 @@ services:
     volumes:
       - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
 
-  game:
-    build: ./Game
-    depends_on:
-      - db
-      - eventstore
-      - redpanda
-    ports:
-      - "8081:8081"
-    networks:
-      burraco-net:
-        aliases:
-          - dealer
 
-  dealer:
-    build: ./Dealer
-    depends_on:
-      - db
-      - eventstore
-      - redpanda
-#    ports:
-#      - "8082:8082"
-    networks:
-      burraco-net:
-        aliases:
-          - dealer
 
   eventstore:
 #    image: eventstore/eventstore:latest
