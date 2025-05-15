@@ -1,7 +1,7 @@
 plugins {
     // Apply the shared build logic from a convention plugin.
-    // The shared code is located in `buildSrc/src/main/kotlin/kotlin-jvm.gradle.kts`.
     id("buildsrc.convention.kotlin-jvm")
+    id("buildsrc.convention.git-version")
     // Apply Kotlin Serialization plugin from `gradle/libs.versions.toml`.
     alias(libs.plugins.kotlinPluginSerialization)
     alias(libs.plugins.shadowPlugin)
@@ -23,13 +23,22 @@ dependencies {
     testImplementation(libs.bundles.dealerTest)
 }
 
+// Get the git version provider from the convention plugin
+val gitVersion = extra["gitVersion"] as Provider<String>
+
 tasks {
     shadowJar {
         archiveBaseName.set("Dealer")
         archiveClassifier.set("all")
-        archiveVersion.set("1.0-SNAPSHOT")
+        archiveVersion.set(gitVersion)
         manifest {
             attributes["Main-Class"] = application.mainClass
+        }
+    }
+    
+    register("printDealerVersion") {
+        doLast {
+            println("Dealer module version: ${gitVersion.get()}")
         }
     }
 }
