@@ -1,0 +1,40 @@
+# Base Dockerfile for building the entire project
+# Save this as: Dockerfile.base
+FROM eclipse-temurin:21-jdk AS base-builder
+
+WORKDIR /app
+
+# Copy Gradle configuration files (least likely to change)
+COPY gradlew settings.gradle.kts gradle.properties* ./
+COPY gradle ./gradle
+
+# Make gradlew executable
+RUN chmod +x ./gradlew
+
+# Create directories for modules
+RUN mkdir -p buildSrc Common KafkaAdapter Game Dealer
+
+# Copy module-specific build files
+COPY buildSrc/build.gradle.kts ./buildSrc/
+COPY buildSrc/settings.gradle.kts ./buildSrc/
+COPY buildSrc/src ./buildSrc/src
+# Libraries
+COPY Common/build.gradle.kts ./Common/
+COPY KafkaAdapter/build.gradle.kts ./KafkaAdapter/
+# Services
+COPY Game/build.gradle.kts ./Game/
+COPY Dealer/build.gradle.kts ./Dealer/
+
+# Download all dependencies for both modules - this will be cached
+RUN ./gradlew dependencies --refresh-dependencies --no-daemon
+
+# Copy all source code
+COPY Common/src ./Common/src
+COPY KafkaAdapter/src ./KafkaAdapter/src
+COPY Game/src ./Game/src
+COPY Dealer/src ./Dealer/src
+
+# Build all modules
+RUN ./gradlew clean build shadowJar -x test --no-daemon --build-cache
+
+# This image now contains both built modules and can be used as a cache
