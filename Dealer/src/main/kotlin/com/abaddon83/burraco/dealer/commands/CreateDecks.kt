@@ -12,9 +12,12 @@ data class CreateDecks(
     val players: List<PlayerIdentity>
 ) : Command<Dealer>(aggregateID) {
 
-    override fun execute(currentAggregate: Dealer?): Dealer = when (currentAggregate) {
-        is Dealer -> currentAggregate.createDeck(aggregateID, gameIdentity, players)
-        else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+    override fun execute(currentAggregate: Dealer?): Result<Dealer> = when (currentAggregate) {
+        is Dealer -> runCatching {
+            currentAggregate.createDeck(aggregateID, gameIdentity, players)
+        }
+
+        else -> Result.failure(UnsupportedOperationException("Aggregate in a wrong status"))
     }
 
 }

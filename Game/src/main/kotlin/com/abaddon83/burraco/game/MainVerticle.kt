@@ -1,10 +1,14 @@
 package com.abaddon83.burraco.game
 
-import com.abaddon83.burraco.common.helpers.log
+import com.abaddon83.burraco.common.VertxCoroutineScope
+import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
+import com.abaddon83.burraco.game.adapters.commandController.kafka.KafkaDealerConsumerVerticle
 import com.abaddon83.burraco.game.adapters.commandController.rest.RestHttpServiceVerticle
 import com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
+import com.abaddon83.burraco.game.commands.AggregateGameCommandHandler
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
 import io.vertx.core.*
 
@@ -12,6 +16,7 @@ import io.vertx.core.*
 class MainVerticle(
     private val serviceConfig: ServiceConfig
 ) : AbstractVerticle() {
+
 
     companion object {
         @JvmStatic
@@ -27,22 +32,13 @@ class MainVerticle(
     override fun start(startPromise: Promise<Void>?) {
         log.info("Game Starting...")
         try {
-            //GameEventsPublisher
-            val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx, serviceConfig.kafkaGameProducer)
-
-            //Repository
-            val repository =
-                EventStoreDBRepository<Game>(serviceConfig.eventStore.eventStoreDBRepositoryConfig()) { GameDraft.empty() }
-
-
+            val commandControllerAdapter = buildCommandControllerAdapter(serviceConfig, VertxCoroutineScope(vertx))
             val serverOpts = DeploymentOptions().setConfig(config())
-
             //list of verticle to deploy
             val allFutures: List<Future<Any>> = listOf(
-                deploy(
-                    RestHttpServiceVerticle.build(serviceConfig.restHttpService, repository, externalEventPublisher),
-                    serverOpts
-                ).future()
+                deploy(RestHttpServiceVerticle(serviceConfig, commandControllerAdapter), serverOpts).future(),
+                deploy(KafkaDealerConsumerVerticle(serviceConfig, commandControllerAdapter), serverOpts).future()
+
             )
 
             Future.all(allFutures).onComplete {
@@ -96,5 +92,29 @@ class MainVerticle(
             }
         }
         return done
+    }
+
+    private fun buildCommandControllerAdapter(
+        serviceConfig: ServiceConfig,
+        vertxCoroutineScope: VertxCoroutineScope
+    ): CommandControllerAdapter {
+        //GameEventsPublisher
+        val externalEventPublisher =
+            KafkaExternalEventPublisherAdapter(vertxCoroutineScope, serviceConfig.kafkaGameProducer)
+
+        //Repository
+        val repository = EventStoreDBRepository<Game>(
+            serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
+            { GameDraft.empty() },
+            vertxCoroutineScope.coroutineContext()
+        )
+
+        val aggregateGameCommandHandler = AggregateGameCommandHandler(
+            repository,
+            externalEventPublisher,
+            vertxCoroutineScope.coroutineContext()
+        )
+
+        return CommandControllerAdapter(aggregateGameCommandHandler)
     }
 }

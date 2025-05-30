@@ -1,33 +1,33 @@
 package com.abaddon83.burraco.dealer.commands
 
-import com.abaddon83.burraco.common.commandController.AggregateCommandHandler
 import com.abaddon83.burraco.dealer.events.DealerEvent
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.ExternalEventPublisherPort
-import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
+import io.github.abaddon.kcqrs.core.domain.AggregateCommandHandler
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.core.persistence.IAggregateRepository
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class AggregateDealerCommandHandler(
-    override val repository: IAggregateRepository<Dealer>,
-    private val externalEventPublisherPort: ExternalEventPublisherPort
-) : AggregateCommandHandler<Dealer>() {
+    repository: IAggregateRepository<Dealer>,
+    private val externalEventPublisherPort: ExternalEventPublisherPort,
+    coroutineContext: CoroutineContext
+) : AggregateCommandHandler<Dealer>(repository, coroutineContext) {
 
-    protected override suspend fun onSuccess(aggregate: Dealer) {
-        aggregate
-            .uncommittedEvents()
-            .map {
-                when (it) {
-                    is DealerEvent -> externalEventPublisherPort.publish(aggregate, it)
-                    else -> null
+    override suspend fun onSuccess(updatedAggregate: Dealer): Result<Dealer> = withContext(coroutineContext) {
+        runCatching {
+            updatedAggregate
+                .uncommittedEvents()
+                .map {
+                    when (it) {
+                        is DealerEvent -> externalEventPublisherPort.publish(updatedAggregate, it)
+                        else -> null
+                    }
                 }
-            }
-//        val externalEventPublisherErrors =
-//            externalEventPublisherResults.filterIsInstance<ExternalEventPublisherResult.Invalid<Exception>>()
-//        when (externalEventPublisherErrors.isEmpty()) {
-//            true -> log.debug("Events ${eventsToString(aggregate.uncommittedEvents())} published")
-//            false -> log.error("Events ${eventsToString(aggregate.uncommittedEvents())} couldn't published", externalEventPublisherErrors)
-//        }
+            updatedAggregate
+        }.onFailure { ex ->
+            log.error("Error while publishing events", ex)
+        }
     }
-
-    private fun eventsToString(events: List<IDomainEvent>): String = events.joinToString(separator = ", ") { it.messageId.toString() }
 }

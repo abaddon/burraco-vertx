@@ -14,8 +14,10 @@ data class DropCardOnDiscardPile(
     val card: Card
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): GameExecutionEndPhase = when (currentAggregate) {
-        is GameExecutionPlayPhase -> currentAggregate.dropCardOnDiscardPile(playerID, card)
-        else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+    override fun execute(currentAggregate: Game?): Result<GameExecutionEndPhase> = runCatching{
+        when (currentAggregate) {
+            is GameExecutionPlayPhase -> currentAggregate.dropCardOnDiscardPile(playerID, card)
+            else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+        }
     }
 }

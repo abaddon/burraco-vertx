@@ -1,18 +1,13 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest
 
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.vertx.AbstractHttpServiceVerticle
 import com.abaddon83.burraco.game.HealthCheck
-import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
-import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
+import com.abaddon83.burraco.game.ServiceConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.AddPlayerRoutingHandler
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.NewGameRoutingHandler
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.RequestDealCardsRoutingHandler
-import com.abaddon83.burraco.game.commands.AggregateGameCommandHandler
-import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.ports.CommandControllerPort
-import com.abaddon83.burraco.game.ports.ExternalEventPublisherPort
-import io.github.abaddon.kcqrs.core.persistence.IAggregateRepository
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.vertx.core.Promise
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpHeaders
@@ -22,8 +17,8 @@ import java.io.File
 
 
 class RestHttpServiceVerticle(
-    private val restHttpServiceConfig: RestHttpServiceConfig,
-    private val controllerAdapter: CommandControllerPort
+    private val serviceConfig: ServiceConfig,
+    private var commandController: CommandControllerPort
 ) : AbstractHttpServiceVerticle() {
 
 
@@ -32,6 +27,7 @@ class RestHttpServiceVerticle(
     }
 
     private fun startHttpServer(startPromise: Promise<Void>?) {
+        val restHttpServiceConfig = serviceConfig.restHttpService
         val healthCheck = HealthCheck(vertx)
         RouterBuilder.create(vertx, extractAndLoadOpenAPISpec(restHttpServiceConfig.openApiPath))
             .onFailure { ex ->
@@ -40,9 +36,9 @@ class RestHttpServiceVerticle(
             }
             .onSuccess { routerBuilder ->
                 routerBuilder.operation("healthCheck").handler(healthCheck.build())
-                routerBuilder.operation("newGame").handler(NewGameRoutingHandler(controllerAdapter))
-                routerBuilder.operation("addPlayer").handler(AddPlayerRoutingHandler(controllerAdapter))
-                routerBuilder.operation("requestDealCards").handler(RequestDealCardsRoutingHandler(controllerAdapter))
+                routerBuilder.operation("newGame").handler(NewGameRoutingHandler(commandController))
+                routerBuilder.operation("addPlayer").handler(AddPlayerRoutingHandler(commandController))
+                routerBuilder.operation("requestDealCards").handler(RequestDealCardsRoutingHandler(commandController))
 //                routerBuilder.operation("startGame").handler(StartGameRoutingHandler(controllerAdapter))
 
                 //generate the router
@@ -141,16 +137,36 @@ class RestHttpServiceVerticle(
         return path
     }
 
-    companion object {
-        fun build(
-            restHttpServiceConfig: RestHttpServiceConfig,
-            repository: IAggregateRepository<Game>,
-            gameEventPublisher: ExternalEventPublisherPort
-        ): RestHttpServiceVerticle {
-            val commandControllerAdapter =
-                CommandControllerAdapter(AggregateGameCommandHandler(repository, gameEventPublisher))
-            return RestHttpServiceVerticle(restHttpServiceConfig, commandControllerAdapter)
-        }
-    }
+//    companion object {
+//        fun build(
+//            serviceConfig: ServiceConfig,
+//            vertxCoroutineScope: VertxCoroutineScope
+//        ): RestHttpServiceVerticle {
+//
+//            //GameEventsPublisher
+//            val externalEventPublisher =
+//                KafkaExternalEventPublisherAdapter(vertxCoroutineScope, serviceConfig.kafkaGameProducer)
+//
+//            //Repository
+//            val repository = EventStoreDBRepository<Game>(
+//                serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
+//                { GameDraft.empty() },
+//                vertxCoroutineScope.coroutineContext()
+//            )
+//
+//            val aggregateGameCommandHandler = AggregateGameCommandHandler(
+//                repository,
+//                externalEventPublisher,
+//                vertxCoroutineScope.coroutineContext()
+//            )
+//
+//            val commandControllerAdapter = CommandControllerAdapter(aggregateGameCommandHandler)
+//
+//            return RestHttpServiceVerticle(
+//                serviceConfig,
+//                commandControllerAdapter
+//            )
+//        }
+//    }
 
 }

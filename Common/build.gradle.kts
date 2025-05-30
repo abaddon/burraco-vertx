@@ -9,8 +9,10 @@ plugins {
 dependencies {
 
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
+    compileOnly(libs.bundles.logApi)
     implementation(libs.bundles.common)
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.commonTest)
+    testImplementation(libs.bundles.logs)
 
 }

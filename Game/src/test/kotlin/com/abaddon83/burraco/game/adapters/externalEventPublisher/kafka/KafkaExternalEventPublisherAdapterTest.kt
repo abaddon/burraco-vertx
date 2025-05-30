@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka
 
+import com.abaddon83.burraco.common.VertxCoroutineScope
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.common.models.GameIdentity
@@ -39,7 +40,7 @@ internal class KafkaExternalEventPublisherAdapterTest() : KafkaContainerTest(){
             actualEvents.add(it.value())
         })
         //println("${kafka.bootstrapServers}")
-        val kafkaExternalEventPublisherAdapter= KafkaExternalEventPublisherAdapter(vertx, kafkaProducerConfig())
+        val kafkaExternalEventPublisherAdapter= KafkaExternalEventPublisherAdapter(VertxCoroutineScope(vertx), kafkaProducerConfig())
         val gameIdentity = GameIdentity.create()
         val playerIdentity1 = PlayerIdentity.create()
         val playerIdentity2 = PlayerIdentity.create()

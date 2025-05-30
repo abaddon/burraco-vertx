@@ -14,5 +14,5 @@ import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 //)
 
 interface ExternalEventPublisherPort {
-    suspend fun publish(aggregate: Dealer, event: DealerEvent) //: ExternalEventPublisherResult<Exception, PublishResult>
+    suspend fun publish(aggregate: Dealer, event: DealerEvent): Result<Unit> //: ExternalEventPublisherResult<Exception, PublishResult>
 }

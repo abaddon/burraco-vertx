@@ -11,9 +11,10 @@ data class RemovePlayer(
     val playerIdentity: PlayerIdentity
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): GameDraft = when (currentAggregate) {
-        is GameDraft -> currentAggregate.removePlayer(playerIdentity)
-        else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+    override fun execute(currentAggregate: Game?): Result<GameDraft> = runCatching {
+        when (currentAggregate) {
+            is GameDraft -> currentAggregate.removePlayer(playerIdentity)
+            else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+        }
     }
-
 }

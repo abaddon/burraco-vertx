@@ -1,7 +1,6 @@
 package com.abaddon83.burraco.game.models.game
 
 
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.events.game.CardPickedFromDeck
@@ -15,6 +14,7 @@ import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.game.models.player.PlayerInGame
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 data class GameExecutionPickUpPhase private constructor(
     override val id: GameIdentity,

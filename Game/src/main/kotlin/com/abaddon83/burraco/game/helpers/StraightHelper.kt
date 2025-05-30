@@ -1,10 +1,10 @@
 package com.abaddon83.burraco.game.helpers
 
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
 import com.abaddon83.burraco.game.models.card.Suits
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import kotlin.math.min
 
 object StraightHelper {
@@ -14,16 +14,17 @@ object StraightHelper {
             log.warn("A Straight is composed by 3 or more cards")
             return false
         }
-        return when(val suit=calculateStraightSuit(cards)) {
+        return when (val suit = calculateStraightSuit(cards)) {
             is Suits.Suit -> {
                 try {
                     validateSequence(cards, suit)
                     true
-                }catch (ex: Exception) {
+                } catch (ex: Exception) {
                     log.warn(ex.message)
                     false
                 }
             }
+
             else -> false
         }
     }
@@ -45,7 +46,7 @@ object StraightHelper {
         return primarySuit
     }
 
-    private  fun validateSequence(cards: List<Card>, suit: Suits.Suit): List<Card> {
+    private fun validateSequence(cards: List<Card>, suit: Suits.Suit): List<Card> {
         val jollies = getJollies(cards, suit).toMutableList()
         val aces = cards.filter { c -> c.rank == Ranks.Ace }
         val sorted = (cards.removeCards(jollies).removeCards(aces)).sorted()
@@ -60,19 +61,21 @@ object StraightHelper {
                     jollies.clear()
                     updatedList
                 }
+
                 currentPositionValue == nextPositionValue -> listOf(sorted[idx])
-                else -> { assert(false) { "The hole is too big.." }
+                else -> {
+                    assert(false) { "The hole is too big.." }
                     listOf()
                 }
             }
         }
         val sortedWithAce = appendAce(firstSort, aces, jollies)
-        return appendRemainingJolly(sortedWithAce, jollies,suit)
+        return appendRemainingJolly(sortedWithAce, jollies, suit)
     }
 
     private fun appendRemainingJolly(cards: List<Card>, jollies: MutableList<Card>, suit: Suits.Suit): List<Card> {
         if (jollies.isEmpty()) return cards
-        val twos = jollies.filter { it.rank == Ranks.Two &&  it.suit == suit }
+        val twos = jollies.filter { it.rank == Ranks.Two && it.suit == suit }
         return when {
             cards.last().rank == Ranks.Three && twos.isNotEmpty() -> cards.plus(twos).plus(jollies.minus(twos))
             cards.first().rank != Ranks.Ace -> jollies.plus(cards)
@@ -90,28 +93,33 @@ object StraightHelper {
         return when {
             cards.first().rank == Ranks.King -> aces.plus(cards)
             cards.first().rank == Ranks.Queen && jollies.size == 1 -> {
-                val updatedList=aces.plus(jollies).plus(cards)
+                val updatedList = aces.plus(jollies).plus(cards)
                 jollies.clear()
                 updatedList
             }
+
             cards.first().rank == Ranks.Queen && jollies.isEmpty() -> {
                 assert(false) { "Jolly missing to cover the hole" }
                 listOf()
             }
+
             cards.last().rank == Ranks.Two -> cards.plus(aces)
             cards.last().rank == Ranks.Three && jollies.isEmpty() -> {
                 assert(false) { "Jolly missing to cover the hole" }
                 listOf()
             }
+
             cards.last().rank == Ranks.Three && jollies.size == 1 -> {
-                val updatedList=cards.plus(jollies).plus(aces)
+                val updatedList = cards.plus(jollies).plus(aces)
                 jollies.clear()
                 updatedList
             }
+
             cards.last().rank == Ranks.Three && jollies.isEmpty() -> {
                 assert(false) { "Jolly missing to cover the hole" }
                 listOf()
             }
+
             else -> {
                 assert(false) { "boh" }; listOf()
             }

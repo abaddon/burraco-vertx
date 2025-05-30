@@ -12,8 +12,10 @@ data class PickUpCardsFromDiscardPile(
                                val playerID: PlayerIdentity
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): GameExecutionPlayPhase = when (currentAggregate) {
-        is GameExecutionPickUpPhase -> currentAggregate.pickUpCardsFromDiscardPile(playerID)
-        else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+    override fun execute(currentAggregate: Game?): Result<GameExecutionPlayPhase> = runCatching{
+        when (currentAggregate) {
+            is GameExecutionPickUpPhase -> currentAggregate.pickUpCardsFromDiscardPile(playerID)
+            else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+        }
     }
 }

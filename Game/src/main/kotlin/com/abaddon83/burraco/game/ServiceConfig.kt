@@ -2,9 +2,9 @@ package com.abaddon83.burraco.game
 
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaConsumerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.game.adapters.eventStore.config.EventStoreConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigRetrieverOptions
 import io.vertx.config.ConfigStoreOptions

@@ -1,8 +1,8 @@
 package com.abaddon83.burraco.dealer.commands
 
+import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.models.DealerIdentity
-import com.abaddon83.burraco.common.models.GameIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.commands.Command
 
 data class DealCardToPlayerDeck1(
@@ -10,9 +10,12 @@ data class DealCardToPlayerDeck1(
     val gameIdentity: GameIdentity
 ) : Command<Dealer>(aggregateID) {
 
-    override fun execute(currentAggregate: Dealer?): Dealer = when (currentAggregate) {
-        is Dealer -> currentAggregate.dealCardToPlayerDeck1(gameIdentity)
-        else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+    override fun execute(currentAggregate: Dealer?): Result<Dealer> = when (currentAggregate) {
+        is Dealer -> runCatching {
+            currentAggregate.dealCardToPlayerDeck1(gameIdentity)
+        }
+
+        else -> Result.failure(UnsupportedOperationException("Aggregate in a wrong status"))
     }
 
 }

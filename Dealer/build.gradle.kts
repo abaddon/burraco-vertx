@@ -15,6 +15,7 @@ application {
 dependencies {
 
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
+    implementation(libs.bundles.logs)
     implementation(libs.bundles.dealer)
     implementation(project(":Common"))
     implementation(project(":KafkaAdapter"))

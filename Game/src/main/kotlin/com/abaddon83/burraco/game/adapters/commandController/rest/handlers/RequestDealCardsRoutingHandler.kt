@@ -1,10 +1,10 @@
 package com.abaddon83.burraco.game.adapters.commandController.rest.handlers
 
 import com.abaddon83.burraco.common.helpers.Validated
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.ports.CommandControllerPort
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.validation.RequestParameters

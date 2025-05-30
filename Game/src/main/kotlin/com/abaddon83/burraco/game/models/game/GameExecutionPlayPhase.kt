@@ -1,20 +1,22 @@
 package com.abaddon83.burraco.game.models.game
 
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.StraightIdentity
+import com.abaddon83.burraco.common.models.TrisIdentity
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.*
 import com.abaddon83.burraco.game.helpers.StraightHelper.validStraight
 import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
-import com.abaddon83.burraco.game.models.*
+import com.abaddon83.burraco.game.models.Straight
+import com.abaddon83.burraco.game.models.Team
+import com.abaddon83.burraco.game.models.Tris
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
-import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.common.models.StraightIdentity
-import com.abaddon83.burraco.common.models.TrisIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 data class GameExecutionPlayPhase private constructor(
     override val id: GameIdentity,

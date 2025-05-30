@@ -9,10 +9,12 @@ plugins {
 dependencies {
 
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
+    compileOnly(libs.bundles.logApi)
     implementation(libs.bundles.kafkaAdapter)
     api(project(":Common"))
 
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.kafkaAdapterTest)
+    testImplementation(libs.bundles.logs)
 
 }

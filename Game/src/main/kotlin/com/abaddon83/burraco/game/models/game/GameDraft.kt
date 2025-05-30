@@ -1,17 +1,17 @@
 package com.abaddon83.burraco.game.models.game
 
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.GameCreated
 import com.abaddon83.burraco.game.events.game.PlayerAdded
 import com.abaddon83.burraco.game.events.game.PlayerRemoved
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.contains
-import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
-private const val AGGREGATE_APPLY_EVENT_MSG = "The aggregate is applying the event {} with id {}"
+private const val AGGREGATE_APPLY_EVENT_MSG = "The aggregate is applying the event {} with id {} to the aggregate {}"
 private const val VALIDATION_MSG_GAME_EXIST = "Current game with id %s is already created"
 private const val VALIDATION_MSG_PLAYER_ALREADY_ADDED = "The player %s is already a player of game %s"
 
@@ -59,26 +59,26 @@ data class GameDraft constructor(
     }
 
     private fun apply(event: GameCreated): GameDraft {
-        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId, event.aggregateId)
         return copy(id = event.aggregateId, version = version + 1)
     }
 
     private fun apply(event: PlayerAdded): GameDraft {
-        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId, event.aggregateId)
         val updatedPlayers = players.plus(WaitingPlayer(event.playerIdentity))
         log.debug("New Player added, now there are ${updatedPlayers.size} players")
         return copy(players = updatedPlayers, version = version + 1)
     }
 
     private fun apply(event: PlayerRemoved): GameDraft {
-        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId, event.aggregateId)
         val updatedPlayers = players.minus(WaitingPlayer(event.playerIdentity))
         log.debug("Player removed, now there are ${updatedPlayers.size} players")
         return copy(players = updatedPlayers, version = version + 1)
     }
 
     private fun apply(event: CardDealingRequested): GameWaitingDealer {
-        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId)
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId, event.aggregateId)
         return GameWaitingDealer.from(this.copy(version = version + 1))
     }
 

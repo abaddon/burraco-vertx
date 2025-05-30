@@ -1,9 +1,12 @@
 package com.abaddon83.burraco.dealer
 
-import com.abaddon83.burraco.common.helpers.log
+import com.abaddon83.burraco.common.VertxCoroutineScope
+import com.abaddon83.burraco.dealer.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.dealer.adapters.commandController.kafka.KafkaGameConsumerAdapter
 import com.abaddon83.burraco.dealer.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
+import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.models.Dealer
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
 import io.vertx.core.*
 
@@ -24,24 +27,15 @@ class MainVerticle(
     override fun start(startPromise: Promise<Void>?) {
         log.info("Dealer Starting...")
         try {
-            log.info("ServiceConfig loaded..")
-
-
-            val externalEventPublisher = KafkaExternalEventPublisherAdapter(vertx, serviceConfig.dealerEventPublisher)
-
-            //Repository
-            val repository = EventStoreDBRepository<Dealer>(
-                serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
-                { Dealer.empty() })
-
+            val commandControllerAdapter = buildCommandController(
+                serviceConfig,
+                VertxCoroutineScope(vertx)
+            )
             val serverOpts = DeploymentOptions().setConfig(config())
 
             //list of verticle to deploy
             val allFutures: List<Future<Any>> = listOf(
-                deploy(
-                    KafkaGameConsumerAdapter.build(serviceConfig.gameEventConsumer, repository, externalEventPublisher),
-                    serverOpts
-                ).future()
+                deploy(KafkaGameConsumerAdapter(serviceConfig, commandControllerAdapter), serverOpts).future()
             )
 
             Future.all(allFutures).onComplete {
@@ -95,5 +89,26 @@ class MainVerticle(
             }
         }
         return done
+    }
+
+    private fun buildCommandController(
+        serviceConfig: ServiceConfig,
+        vertxCoroutineScope: VertxCoroutineScope
+    ): CommandControllerAdapter {
+
+        val coroutineContext = vertxCoroutineScope.coroutineContext()
+        val externalEventPublisher =
+            KafkaExternalEventPublisherAdapter(vertxCoroutineScope, serviceConfig.dealerEventPublisher)
+
+        //Repository
+        val repository = EventStoreDBRepository<Dealer>(
+            serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
+            { Dealer.empty() },
+            coroutineContext
+        )
+
+        val commandHandler =
+            AggregateDealerCommandHandler(repository, externalEventPublisher, coroutineContext)
+        return CommandControllerAdapter(commandHandler, coroutineContext)
     }
 }

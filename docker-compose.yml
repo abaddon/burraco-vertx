@@ -1,4 +1,3 @@
-version: "3.8"
 
 networks:
   burraco-net:
@@ -6,6 +5,8 @@ networks:
 
 volumes:
   redpanda-hd0: null
+  kurrentdb-volume-data: null
+  kurrentdb-volume-logs: null
 
 services:
   base-builder:
@@ -19,7 +20,7 @@ services:
       context: Game
       dockerfile: Dockerfile
     depends_on:
-      - db
+      #      - db
       - eventstore
       - redpanda
     ports:
@@ -34,7 +35,7 @@ services:
       context: Dealer
       dockerfile: Dockerfile
     depends_on:
-      - db
+      #      - db
       - eventstore
       - redpanda
     #    ports:
@@ -44,32 +45,38 @@ services:
         aliases:
           - dealer
 
-  db:
-    image: mariadb:latest
-    command: --bind-address=0.0.0.0
-    restart: always
-    ports:
-      - "3306:3306"
-    networks:
-      burraco-net:
-        aliases:
-          - db
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: eventstore
-    volumes:
-      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+  #  db:
+  #    image: mariadb:latest
+  #    command: --bind-address=0.0.0.0
+  #    restart: always
+  #    ports:
+  #      - "3306:3306"
+  #    networks:
+  #      burraco-net:
+  #        aliases:
+  #          - db
+  #    environment:
+  #      MYSQL_ROOT_PASSWORD: root
+  #      MYSQL_DATABASE: eventstore
+  #    volumes:
+  #      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
 
 
 
   eventstore:
-#    image: eventstore/eventstore:latest
-    image: docker.kurrent.io/kurrent-latest/kurrentdb
-    command: --insecure --enable-atom-pub-over-http
-    depends_on:
-      - db
+    image: docker.kurrent.io/kurrent-latest/kurrentdb:latest
+    environment:
+      - KURRENTDB_CLUSTER_SIZE=1
+      - KURRENTDB_RUN_PROJECTIONS=All
+      - KURRENTDB_START_STANDARD_PROJECTIONS=true
+      - KURRENTDB_NODE_PORT=2113
+      - KURRENTDB_INSECURE=true
+      - KURRENTDB_ENABLE_ATOM_PUB_OVER_HTTP=true
     ports:
       - "2113:2113"
+    volumes:
+      - kurrentdb-volume-data:/var/lib/kurrentdb
+      - kurrentdb-volume-logs:/var/log/kurrentdb
     networks:
       burraco-net:
         aliases:

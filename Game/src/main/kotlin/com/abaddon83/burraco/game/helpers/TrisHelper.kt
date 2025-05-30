@@ -1,8 +1,8 @@
 package com.abaddon83.burraco.game.helpers
 
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.card.Ranks
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 object TrisHelper {
     fun validTris(cards: List<Card>): Boolean {

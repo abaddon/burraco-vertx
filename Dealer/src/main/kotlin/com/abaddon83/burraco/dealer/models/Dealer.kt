@@ -1,7 +1,6 @@
 package com.abaddon83.burraco.dealer.models
 
 
-import com.abaddon83.burraco.common.helpers.log
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.events.*
@@ -11,6 +10,7 @@ import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 data class Dealer private constructor(
     override val id: DealerIdentity,

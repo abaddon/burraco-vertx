@@ -7,13 +7,14 @@ kotlin = "2.1.20"
 kotlinxDatetime = "0.6.1"
 kotlinxSerializationJSON = "1.7.3"
 kotlinxCoroutines = "1.10.2"
-kcqrs-core = "0.0.7"
-kcqrs-eventStoreDB = "0.0.8"
-kcqrs-test = "0.0.10"
+kcqrs-core = "0.2.0"
+kcqrs-test = "0.2.0"
+kcqrs-eventStoreDB = "0.2.0"
 vertx = "4.5.14"
 jackson = "2.18.4"
 jacksonDataformatHocon = "1.1.0"
 log4j = "2.24.3"
+slf4j-api = "2.0.17"
 hoplite = "2.9.0"
 testcontainer = "1.21.0"
 shadow = "8.1.1"
@@ -54,6 +55,9 @@ hoplite-yaml = { module = "com.sksamuel.hoplite:hoplite-yaml", version.ref = "ho
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
+
 
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainer" }
 testcontainer-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainer" }
@@ -63,6 +67,16 @@ testcontainer-kafka = { module = "org.testcontainers:kafka", version.ref = "test
 # Libraries can be bundled together for easier import
 [bundles]
 kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutines"]
+
+logApi = ["slf4j-api"]
+logs = [
+    "log4j-api",
+    "log4j-core",
+#    "log4j-slf4j-impl",
+    "log4j-slf4j2-impl",
+    "slf4j-api"
+]
+
 common = [
     "kotlinxDatetime",
     "kotlinxSerialization",
@@ -73,10 +87,7 @@ common = [
     "vertx-lang-kotlin-coroutines",
     "vertx-service-discovery",
     "jackson-databind",
-    "jackson-annotations",
-    "log4j-api",
-    "log4j-core",
-    "log4j-slf4j-impl"
+    "jackson-annotations"
 ]
 commonTest = ["vertx-junit5"]
 
@@ -89,9 +100,6 @@ kafkaAdapter = [
     "vertx-lang-kotlin",
     "vertx-lang-kotlin-coroutines",
     "vertx-kafka-client",
-    "log4j-api",
-    "log4j-core",
-    "log4j-slf4j-impl",
     "hoplite-core",
     "hoplite-yaml",
     "jackson-databind",
@@ -115,9 +123,6 @@ game = [
     "vertx-service-discovery",
     "jackson-annotations",
     "jackson-databind",
-    "log4j-api",
-    "log4j-core",
-    "log4j-slf4j-impl",
     "hoplite-core",
     "hoplite-yaml",
 ]
@@ -147,9 +152,6 @@ dealer = [
     "vertx-service-discovery",
     "jackson-annotations",
     "jackson-databind",
-    "log4j-api",
-    "log4j-core",
-    "log4j-slf4j-impl",
     "hoplite-core",
     "hoplite-yaml",
 ]

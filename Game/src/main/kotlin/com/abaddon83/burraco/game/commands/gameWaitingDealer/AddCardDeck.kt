@@ -11,8 +11,10 @@ data class AddCardDeck(
     val card: Card
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): GameWaitingDealer = when (currentAggregate) {
-        is GameWaitingDealer -> currentAggregate.addCardDeck(card)
-        else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+    override fun execute(currentAggregate: Game?): Result<GameWaitingDealer> = runCatching{
+        when (currentAggregate) {
+            is GameWaitingDealer -> currentAggregate.addCardDeck(card)
+            else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+        }
     }
 }

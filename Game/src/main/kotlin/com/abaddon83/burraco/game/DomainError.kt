@@ -25,7 +25,7 @@ data class GameError(
 }
 
 data class ExceptionError(
-    val exception: Exception
+    val exception: Throwable
 ): DomainError{
     override fun toMap():Map<String,*> =
         mapOf(

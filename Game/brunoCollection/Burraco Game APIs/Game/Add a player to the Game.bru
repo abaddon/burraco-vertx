@@ -20,9 +20,19 @@ vars:pre-request {
   gameId: {{gameId}}
 }
 
+vars:post-response {
+  playerId: req.body.playerId
+}
+
 script:pre-request {
   var uuid = require('uuid');
+  var playerId = uuid.v4();
+  bru.setVar("playerUUID",playerId);
+  bru.setEnvVar("playerId",playerId);
   
-  bru.setVar("playerUUID",uuid.v4());
+}
+
+script:post-response {
+  
   
 }

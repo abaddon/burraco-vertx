@@ -15,8 +15,10 @@ data class AppendCardsOnStraight(
     val cards: List<Card>
 ) : Command<Game>(aggregateID) {
 
-    override fun execute(currentAggregate: Game?): GameExecutionPlayPhase = when (currentAggregate) {
-        is GameExecutionPlayPhase -> currentAggregate.appendCardsOnStraight(playerID, cards, straightIdentity)
-        else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+    override fun execute(currentAggregate: Game?): Result<GameExecutionPlayPhase> = runCatching{
+        when (currentAggregate) {
+            is GameExecutionPlayPhase -> currentAggregate.appendCardsOnStraight(playerID, cards, straightIdentity)
+            else -> throw UnsupportedOperationException("Aggregate in a wrong status")
+        }
     }
 }
