@@ -7,7 +7,7 @@ import com.abaddon83.burraco.dealer.DomainResult
 import com.abaddon83.burraco.dealer.ExceptionError
 import com.abaddon83.burraco.dealer.commands.*
 import com.abaddon83.burraco.dealer.models.Dealer
-import com.abaddon83.burraco.dealer.models.DealerIdentity
+import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
 import com.abaddon83.burraco.dealer.ports.Outcome
 import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler

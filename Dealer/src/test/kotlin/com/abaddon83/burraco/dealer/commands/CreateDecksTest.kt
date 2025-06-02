@@ -5,7 +5,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.events.DealerEvent
 import com.abaddon83.burraco.dealer.events.DeckCreated
 import com.abaddon83.burraco.dealer.models.Dealer
-import com.abaddon83.burraco.dealer.models.DealerIdentity
+import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.testHelpers.DummyExternalEventPublisherAdapter
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler

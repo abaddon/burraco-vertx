@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.dealer.events
 
 import com.abaddon83.burraco.dealer.models.Card
-import com.abaddon83.burraco.dealer.models.DealerIdentity
+import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.common.models.GameIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
 import java.util.*

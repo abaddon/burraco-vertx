@@ -6,7 +6,7 @@ import com.abaddon83.burraco.dealer.adapters.commandController.CommandController
 import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.models.Dealer
-import com.abaddon83.burraco.dealer.models.DealerIdentity
+import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.testHelpers.DummyExternalEventPublisherAdapter
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log

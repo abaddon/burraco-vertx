@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.dealer
 
-import com.abaddon83.burraco.dealer.models.DealerIdentity
+import com.abaddon83.burraco.common.models.DealerIdentity
 
 interface DomainError{
     abstract fun toMap():Map<String,*>

@@ -1,9 +1,11 @@
-package com.abaddon83.burraco.dealer.models
+package com.abaddon83.burraco.common.models
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.abaddon.kcqrs.core.IIdentity
-import java.util.*
+import java.util.UUID
 
-data class DealerIdentity private constructor(
+data class DealerIdentity(
+    @JsonProperty("identity")
     val identity: String
 ) : IIdentity {
 
@@ -21,6 +23,3 @@ data class DealerIdentity private constructor(
     }
 
 }
-
-
-

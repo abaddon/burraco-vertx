@@ -5,7 +5,7 @@ import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.DomainError
 import com.abaddon83.burraco.dealer.DomainResult
-import com.abaddon83.burraco.dealer.models.DealerIdentity
+import com.abaddon83.burraco.common.models.DealerIdentity
 
 
 typealias Outcome = Validated<DomainError, DomainResult>
