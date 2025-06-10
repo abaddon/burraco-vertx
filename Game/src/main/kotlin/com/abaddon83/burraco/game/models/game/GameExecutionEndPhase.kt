@@ -14,7 +14,7 @@ import com.abaddon83.burraco.game.models.player.PlayerInGame
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 
-data class GameExecutionEndPhase private constructor(
+data class GameExecutionEndPhase(
     override val id: GameIdentity,
     override val version: Long,
     override val players: List<PlayerInGame>,

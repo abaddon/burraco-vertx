@@ -25,8 +25,9 @@ internal class Given_GameDraft_When_StartPlayerTurn_Then_exception : KcqrsAggreg
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.empty() }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
     override fun streamNameRoot(): String = "Stream1"
+    override fun membersToIgnore(): List<String> = listOf("header")
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
@@ -50,8 +51,9 @@ internal class Given_GameWaitingDealer_When_StartPlayerTurn_Then_exception : Kcq
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.empty() }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
     override fun streamNameRoot(): String = "Stream1"
+    override fun membersToIgnore(): List<String> = listOf("header")
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
@@ -81,8 +83,9 @@ internal class Given_GameWaitingDealerWithAllCardsDealt_When_StartPlayerTurn_The
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.empty() }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
     override fun streamNameRoot(): String = "Stream1"
+    override fun membersToIgnore(): List<String> = listOf("header")
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(

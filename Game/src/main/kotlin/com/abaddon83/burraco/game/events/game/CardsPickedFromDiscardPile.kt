@@ -6,7 +6,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
 import java.util.*
 
-data class CardsPickedFromDiscardPile private constructor(
+data class CardsPickedFromDiscardPile(
     override val messageId: UUID,
     override val header: EventHeader,
     override val aggregateId: GameIdentity,

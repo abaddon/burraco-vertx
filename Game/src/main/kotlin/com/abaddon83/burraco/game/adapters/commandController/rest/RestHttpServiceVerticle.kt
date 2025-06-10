@@ -137,36 +137,4 @@ class RestHttpServiceVerticle(
         return path
     }
 
-//    companion object {
-//        fun build(
-//            serviceConfig: ServiceConfig,
-//            vertxCoroutineScope: VertxCoroutineScope
-//        ): RestHttpServiceVerticle {
-//
-//            //GameEventsPublisher
-//            val externalEventPublisher =
-//                KafkaExternalEventPublisherAdapter(vertxCoroutineScope, serviceConfig.kafkaGameProducer)
-//
-//            //Repository
-//            val repository = EventStoreDBRepository<Game>(
-//                serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
-//                { GameDraft.empty() },
-//                vertxCoroutineScope.coroutineContext()
-//            )
-//
-//            val aggregateGameCommandHandler = AggregateGameCommandHandler(
-//                repository,
-//                externalEventPublisher,
-//                vertxCoroutineScope.coroutineContext()
-//            )
-//
-//            val commandControllerAdapter = CommandControllerAdapter(aggregateGameCommandHandler)
-//
-//            return RestHttpServiceVerticle(
-//                serviceConfig,
-//                commandControllerAdapter
-//            )
-//        }
-//    }
-
 }

@@ -38,8 +38,9 @@ internal class Given_GameExecutionEndPhase_and_GameNotEnded_When_EndGame_Then_ex
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.empty() }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
     override fun streamNameRoot(): String = "Stream1"
+    override fun membersToIgnore(): List<String> = listOf("header")
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(
@@ -117,8 +118,9 @@ internal class Given_GameExecutionEndPhase_and_GamEnded_When_EndGame_Then_event 
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { GameDraft.empty() }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
     override fun streamNameRoot(): String = "Stream1"
+    override fun membersToIgnore(): List<String> = listOf("header")
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>(

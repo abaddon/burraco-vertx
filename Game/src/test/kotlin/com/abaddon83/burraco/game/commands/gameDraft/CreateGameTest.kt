@@ -21,6 +21,7 @@ internal class Given_Nothing_When_CreateGame_Then_event : KcqrsAggregateTestSpec
     override val aggregateId: GameIdentity = AGGREGATE_ID
     override fun emptyAggregate(): (identity: IIdentity) -> GameDraft ={ GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
+    override fun membersToIgnore(): List<String> = listOf("header")
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<GameEvent>()

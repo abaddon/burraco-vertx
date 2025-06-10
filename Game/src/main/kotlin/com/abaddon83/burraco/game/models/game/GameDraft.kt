@@ -9,6 +9,7 @@ import com.abaddon83.burraco.game.events.game.PlayerRemoved
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.contains
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
+import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 private const val AGGREGATE_APPLY_EVENT_MSG = "The aggregate is applying the event {} with id {} to the aggregate {}"
@@ -24,6 +25,7 @@ data class GameDraft constructor(
 
     companion object Factory {
         fun empty(): GameDraft = GameDraft(GameIdentity.empty(), 0, listOf())
+        fun empty(identity: GameIdentity): GameDraft = GameDraft(identity, 0, listOf())
     }
 
     fun createGame(gameIdentity: GameIdentity): GameDraft {

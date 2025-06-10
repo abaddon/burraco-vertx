@@ -4,7 +4,7 @@ import com.abaddon83.burraco.common.models.GameIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
 import java.util.*
 
-data class GameEnded private constructor(
+data class GameEnded(
     override val messageId: UUID,
     override val header: EventHeader,
     override val aggregateId: GameIdentity,

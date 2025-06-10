@@ -18,7 +18,7 @@ import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.game.models.player.PlayerInGame
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
-data class GameExecutionPlayPhase private constructor(
+data class GameExecutionPlayPhase(
     override val id: GameIdentity,
     override val version: Long,
     override val players: List<PlayerInGame>,

@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.game
 
 import com.abaddon83.burraco.common.VertxCoroutineScope
+import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.game.adapters.commandController.kafka.KafkaDealerConsumerVerticle
 import com.abaddon83.burraco.game.adapters.commandController.rest.RestHttpServiceVerticle
@@ -10,7 +11,13 @@ import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
-import io.vertx.core.*
+import io.vertx.core.AbstractVerticle
+import io.vertx.core.AsyncResult
+import io.vertx.core.DeploymentOptions
+import io.vertx.core.Future
+import io.vertx.core.Promise
+import io.vertx.core.Verticle
+import io.vertx.core.Vertx
 
 
 class MainVerticle(
@@ -104,15 +111,12 @@ class MainVerticle(
 
         //Repository
         val repository = EventStoreDBRepository<Game>(
-            serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
-            { GameDraft.empty() },
-            vertxCoroutineScope.coroutineContext()
-        )
+            serviceConfig.eventStore.eventStoreDBRepositoryConfig()
+        ) { id -> GameDraft.empty(id as GameIdentity) }
 
         val aggregateGameCommandHandler = AggregateGameCommandHandler(
             repository,
-            externalEventPublisher,
-            vertxCoroutineScope.coroutineContext()
+            externalEventPublisher
         )
 
         return CommandControllerAdapter(aggregateGameCommandHandler)

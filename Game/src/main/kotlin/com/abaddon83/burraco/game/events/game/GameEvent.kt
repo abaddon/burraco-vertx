@@ -5,7 +5,7 @@ import io.vertx.core.json.Json
 
 abstract class GameEvent: IDomainEvent {
     override val aggregateType: String = AGGREGATE_TYPE_NAME
-    override val version: Int = 1
+    override val version: Long = 1
 
     fun toJson(): String= Json.encode(this);
 

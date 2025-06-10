@@ -9,7 +9,8 @@ import io.vertx.core.http.HttpHeaders
 import io.vertx.core.json.Json
 import io.vertx.ext.web.RoutingContext
 import io.vertx.kotlin.coroutines.dispatcher
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 abstract class CoroutineRoutingHandler : Handler<RoutingContext> {
@@ -17,12 +18,12 @@ abstract class CoroutineRoutingHandler : Handler<RoutingContext> {
     abstract suspend fun coroutineHandle(routingContext: RoutingContext)
 
     override fun handle(routingContext: RoutingContext) {
-        GlobalScope.launch(routingContext.vertx().dispatcher()) {
+        CoroutineScope(Job() + routingContext.vertx().dispatcher()).launch {
             coroutineHandle(routingContext)
         }
     }
 
-     protected fun commandExecuted(routingContext: RoutingContext, domainResult: DomainResult) {
+    protected fun commandExecuted(routingContext: RoutingContext, domainResult: DomainResult) {
         routingContext
             .response()
             .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")

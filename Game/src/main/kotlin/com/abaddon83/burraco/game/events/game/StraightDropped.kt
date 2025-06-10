@@ -8,7 +8,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
 import java.util.*
 
-data class StraightDropped private constructor(
+data class StraightDropped(
     override val messageId: UUID,
     override val header: EventHeader,
     override val aggregateId: GameIdentity,

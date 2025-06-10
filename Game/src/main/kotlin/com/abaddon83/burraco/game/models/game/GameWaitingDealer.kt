@@ -12,7 +12,7 @@ import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
-data class GameWaitingDealer private constructor(
+data class GameWaitingDealer(
     override val id: GameIdentity,
     override val version: Long,
     override val players: List<WaitingPlayer>,
