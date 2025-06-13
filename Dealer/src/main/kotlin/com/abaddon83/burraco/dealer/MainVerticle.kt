@@ -103,12 +103,11 @@ class MainVerticle(
         //Repository
         val repository = EventStoreDBRepository<Dealer>(
             serviceConfig.eventStore.eventStoreDBRepositoryConfig(),
-            { Dealer.empty() },
-            coroutineContext
+            { Dealer.empty() }
         )
 
         val commandHandler =
-            AggregateDealerCommandHandler(repository, externalEventPublisher, coroutineContext)
-        return CommandControllerAdapter(commandHandler, coroutineContext)
+            AggregateDealerCommandHandler(repository, externalEventPublisher)
+        return CommandControllerAdapter(commandHandler)
     }
 }

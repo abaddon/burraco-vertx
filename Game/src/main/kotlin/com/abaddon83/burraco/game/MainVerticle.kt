@@ -112,7 +112,7 @@ class MainVerticle(
         //Repository
         val repository = EventStoreDBRepository<Game>(
             serviceConfig.eventStore.eventStoreDBRepositoryConfig()
-        ) { id -> GameDraft.empty(id as GameIdentity) }
+        ) { id -> GameDraft.empty() }
 
         val aggregateGameCommandHandler = AggregateGameCommandHandler(
             repository,

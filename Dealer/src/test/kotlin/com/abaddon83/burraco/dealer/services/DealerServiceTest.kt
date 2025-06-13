@@ -25,17 +25,14 @@ internal class DealerServiceTest {
     private fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     private val inMemoryRepository = InMemoryEventStoreRepository<Dealer>(
         "stream1",
-        emptyAggregate(),
-        testScope.coroutineContext
+        emptyAggregate()
     )
     private val aggregateDealerCommandHandler = AggregateDealerCommandHandler(
         inMemoryRepository,
-        DummyExternalEventPublisherAdapter(),
-        testScope.coroutineContext
+        DummyExternalEventPublisherAdapter()
     )
     private val commandControllerAdapter = CommandControllerAdapter(
-        aggregateDealerCommandHandler,
-        testScope.coroutineContext
+        aggregateDealerCommandHandler
     )
     private val dealerService = DealerService(commandControllerAdapter)
 

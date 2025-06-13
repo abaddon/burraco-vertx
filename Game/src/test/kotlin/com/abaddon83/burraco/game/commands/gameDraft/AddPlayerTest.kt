@@ -20,7 +20,7 @@ internal class Given_an_emptyGame_When_AddPlayer_Then_event : KcqrsAggregateTest
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun membersToIgnore(): List<String> = listOf("header")
 
@@ -46,7 +46,7 @@ internal class Given_GameDraftWith1Player_When_AddSamePlayer_Then_exception : Kc
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun membersToIgnore(): List<String> = listOf("header")
 
@@ -78,7 +78,7 @@ internal class Given_GameDraftWith3Player_When_AddNewPlayer_Then_event : KcqrsAg
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun membersToIgnore(): List<String> = listOf("header")
 
@@ -111,7 +111,7 @@ internal class Given_GameDraftWith4Player_When_AddNewPlayer_Then_exception : Kcq
 
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun membersToIgnore(): List<String> = listOf("header")
 

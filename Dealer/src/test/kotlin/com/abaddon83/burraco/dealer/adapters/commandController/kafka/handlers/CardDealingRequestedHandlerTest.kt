@@ -18,20 +18,17 @@ import org.junit.jupiter.api.assertDoesNotThrow
 internal class CardDealingRequestedHandlerTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
-    private val testScope = TestScope(testDispatcher)
 
     private val inMemoryEventStoreRepository = InMemoryEventStoreRepository(
         "stream",
-        { Dealer.empty() },
-        testScope.coroutineContext
+        { Dealer.empty() }
     )
     private val commandHandler = AggregateDealerCommandHandler(
         inMemoryEventStoreRepository,
-        DummyExternalEventPublisherAdapter(),
-        testScope.coroutineContext
+        DummyExternalEventPublisherAdapter()
     )
     private val cardsRequestedToDealerHandler = CardsRequestedToDealerHandler(
-        CommandControllerAdapter(commandHandler, testScope.coroutineContext),
+        CommandControllerAdapter(commandHandler),
         Vertx.vertx()
     )
 

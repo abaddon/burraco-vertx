@@ -24,7 +24,7 @@ internal class Given_GameExecutionPickUpPhase_When_RightPlayerPickUpACardFromDec
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
     override fun membersToIgnore(): List<String> = listOf("header")
 
@@ -62,7 +62,7 @@ internal class Given_GameExecutionPickUpPhase_When_WrongPlayerPickUpACardFromDec
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
     override fun membersToIgnore(): List<String> = listOf("header")
 
@@ -98,7 +98,7 @@ internal class Given_GameExecutionPickUpPhase_When_NoValidPlayerPickUpACardFromD
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
-    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty(id as GameIdentity) }
+    override fun emptyAggregate(): (identity: IIdentity) -> GameDraft = { id -> GameDraft.empty() }
     override fun streamNameRoot(): String ="Stream1"
     override fun membersToIgnore(): List<String> = listOf("header")
 

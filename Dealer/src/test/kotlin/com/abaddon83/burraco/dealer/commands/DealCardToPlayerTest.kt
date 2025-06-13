@@ -34,7 +34,7 @@ internal class Given_existingDealer_When_DealCardToPlayer_Then_event : KcqrsAggr
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
-        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter(), testScope.coroutineContext)
+        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(
@@ -69,7 +69,7 @@ internal class Given_nothing_When_DealCardToPlayer_Then_exception : KcqrsAggrega
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
-        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter(),testScope.coroutineContext)
+        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(
@@ -106,7 +106,7 @@ internal class Given_existingDealer_When_DealCardToPlayerWithWrongGamId_Then_exc
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
-        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter(),testScope.coroutineContext)
+        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(
@@ -143,7 +143,7 @@ internal class Given_existingDealer_When_DealCardToPlayerWithWrongPlayerId_Then_
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
-        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter(),testScope.coroutineContext)
+        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(
@@ -181,7 +181,7 @@ internal class Given_existingDealerWithPlayerWithMaxCards_When_DealCardToPlayer_
     override fun emptyAggregate(): (identity: IIdentity) -> Dealer = { Dealer.empty() }
     override fun streamNameRoot(): String = "Stream1"
     override fun onCommandHandler(): IAggregateCommandHandler<Dealer> =
-        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter(),testScope.coroutineContext)
+        AggregateDealerCommandHandler(repository, DummyExternalEventPublisherAdapter())
 
     //Test
     override fun given(): List<IDomainEvent> = listOf<DealerEvent>(

@@ -26,4 +26,8 @@ data class EventStoreConfig(
     data class EventStoreDB(
         val connectionString: String
     )
+
+    companion object {
+        fun empty(): EventStoreConfig = EventStoreConfig("", 1, 1, EventStoreDB(""))
+    }
 }
