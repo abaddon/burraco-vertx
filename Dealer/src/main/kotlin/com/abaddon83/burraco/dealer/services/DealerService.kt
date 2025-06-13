@@ -1,174 +1,213 @@
 package com.abaddon83.burraco.dealer.services
 
-import com.abaddon83.burraco.common.helpers.Validated
+import com.abaddon83.burraco.common.helpers.flatMap
+import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.DomainError
 import com.abaddon83.burraco.dealer.DomainResult
 import com.abaddon83.burraco.dealer.ExceptionError
-import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_DISCARD_DECK_CARD
+import com.abaddon83.burraco.dealer.commands.CreateDecks
+import com.abaddon83.burraco.dealer.commands.DealCardToDeck
+import com.abaddon83.burraco.dealer.commands.DealCardToDiscardDeck
+import com.abaddon83.burraco.dealer.commands.DealCardToPlayer
+import com.abaddon83.burraco.dealer.commands.DealCardToPlayerDeck1
+import com.abaddon83.burraco.dealer.commands.DealCardToPlayerDeck2
+import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
-import com.abaddon83.burraco.dealer.models.DealerConfig.SINGLE_DECK_CARD_WITH_JOLLY
-import com.abaddon83.burraco.common.models.DealerIdentity
-import com.abaddon83.burraco.dealer.ports.CommandControllerPort
-import com.abaddon83.burraco.dealer.ports.Outcome
+import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
+import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 
-sealed class DealerServiceResult<out TDomainError: DomainError, out DomainResult> {
-    data class Invalid<TDomainError: DomainError>(val err: TDomainError): DealerServiceResult<TDomainError, Nothing>()
-    data class Valid<DomainResult>(val value: DomainResult): DealerServiceResult<Nothing, DomainResult>()
+sealed class DealerServiceResult<out TDomainError : DomainError, out DomainResult> {
+    data class Invalid<TDomainError : DomainError>(val err: TDomainError) : DealerServiceResult<TDomainError, Nothing>()
+    data class Valid<DomainResult>(val value: DomainResult) : DealerServiceResult<Nothing, DomainResult>()
 }
 
-class DealerService(private val commandController: CommandControllerPort) {
+class DealerService(
+    private val dealerCommandHandler: IAggregateCommandHandler<Dealer>
+) {
+
     suspend fun dealCards(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,
         players: List<PlayerIdentity>
-    ): DealerServiceResult<DomainError, DomainResult> = try {
-        log.debug("service.dealCards: dealerIdentity: ${dealerIdentity.identity}, gameIdentity: $gameIdentity")
-        //create deck
-        when (val createDecksResult = commandController.createDecks(dealerIdentity, gameIdentity, players)) {
-            is Validated.Invalid -> DealerServiceResult.Invalid(createDecksResult.err)
-            //deal players cards
-            is Validated.Valid -> when (val dealPlayersCardsResult =
-                dealPlayersCards(createDecksResult.value.dealer.id, gameIdentity, players, MAX_PLAYER_CARD, players)) {
-                is Validated.Invalid -> DealerServiceResult.Invalid(dealPlayersCardsResult.err)
-                //deal playerDeck1
-                is Validated.Valid -> when (val dealPlayerDeck1Result =
-                    dealPlayerDeck1(dealerIdentity, gameIdentity, MAX_PLAYER_DECK_CARD[players.size % 2])) {
-                    is Validated.Invalid -> DealerServiceResult.Invalid(dealPlayerDeck1Result.err)
-                    //deal playerDeck2
-                    is Validated.Valid -> when (val dealPlayerDeck2Result =
-                        dealPlayerDeck2(dealerIdentity, gameIdentity, MAX_PLAYER_DECK_CARD[0])) {
-                        is Validated.Invalid -> DealerServiceResult.Invalid(dealPlayerDeck2Result.err)
-                        //deal discard Deck
-                        is Validated.Valid -> when (val dealDiscardDeckResult =
-                            dealDiscardDeck(dealerIdentity, gameIdentity)) {
-                            is Validated.Invalid -> DealerServiceResult.Invalid(dealDiscardDeckResult.err)
-                            //deal Deck
-                            is Validated.Valid -> when (val dealDeckResult = dealDeck(dealerIdentity, gameIdentity)) {
-                                is Validated.Invalid -> DealerServiceResult.Invalid(dealDeckResult.err)
-                                is Validated.Valid -> {
-                                    val dealer = dealDeckResult.value.dealer
-                                    dealer.players.forEach { player -> check(player.numCardsDealt == MAX_PLAYER_CARD) }
-                                    check(dealer.cardsAvailable.isEmpty())
-                                    check(dealer.playerDeck1NumCards == MAX_PLAYER_DECK_CARD[players.size % 2])
-                                    check(dealer.playerDeck2NumCards == MAX_PLAYER_DECK_CARD[0])
-                                    check(dealer.discardDeck == MAX_DISCARD_DECK_CARD)
-                                    val totalCards = (SINGLE_DECK_CARD_WITH_JOLLY * 2)
-                                    val expectedDeckCards =
-                                        totalCards - dealer.players.sumOf { it.numCardsDealt } - dealer.playerDeck1NumCards - dealer.playerDeck2NumCards - dealer.discardDeck
-                                    check(dealer.deckNumCards == expectedDeckCards)
-                                    DealerServiceResult.Valid(DomainResult(dealer.uncommittedEvents, dealer))
-                                }
-                            }
+    ): DealerServiceResult<DomainError, DomainResult> = runCatching {
+        log.debug("service.dealCards: dealerIdentity: {}, gameIdentity: {}", dealerIdentity.identity, gameIdentity)
+
+        // Initialize dealer and create decks
+        dealerCommandHandler.handle(CreateDecks(dealerIdentity, gameIdentity, players))
+            .flatMap { dealer ->
+                // Deal players cards
+                dealPlayersCards(dealer, players, MAX_PLAYER_CARD)
+            }
+            .flatMap { dealer ->
+                // Deal player deck 1
+                dealPlayerDeck1(dealer.id, dealer.gameIdentity, MAX_PLAYER_DECK_CARD[players.size % 2])
+            }
+            .flatMap { dealer ->
+                // Deal player deck 2
+                dealPlayerDeck2(dealer.id, dealer.gameIdentity, MAX_PLAYER_DECK_CARD[0])
+            }
+            .flatMap { dealer ->
+                // Deal discard deck
+                dealDiscardDeck(dealer.id, dealer.gameIdentity)
+            }
+            .flatMap { dealer ->
+                // Deal remaining cards to deck
+                dealDeck(dealer.id, dealer.gameIdentity)
+            }
+            .fold(
+                onSuccess = { dealer ->
+                    // Validate final state
+                    dealer.players.forEach { player ->
+                        check(player.numCardsDealt == MAX_PLAYER_CARD) {
+                            "Player has incorrect number of cards: ${player.numCardsDealt}"
                         }
                     }
+                    check(dealer.cardsAvailable.isEmpty()) { "Cards still available after dealing" }
+
+                    DealerServiceResult.Valid(DomainResult(dealer.uncommittedEvents, dealer))
+                },
+                onFailure = { error ->
+                    DealerServiceResult.Invalid(ExceptionError(error as Exception))
                 }
-            }
-        }
-    } catch (e: Exception) {
-        DealerServiceResult.Invalid(ExceptionError(e))
+            )
+    }.getOrElse { error ->
+        DealerServiceResult.Invalid(ExceptionError(error as? Exception ?: Exception(error)))
     }
 
 
     private suspend fun dealDeck(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity
-    ): Outcome {
-        log.debug("service.dealDeck: dealerIdentity: $dealerIdentity, gameIdentity: $gameIdentity")
-        return when (val result = commandController.dealCardToDeck(dealerIdentity, gameIdentity)) {
-            is Validated.Invalid -> result
-            is Validated.Valid -> {
-                when (result.value.dealer.cardsAvailable.isNotEmpty()) {
-                    true -> dealDeck(dealerIdentity, gameIdentity)
-                    false -> Validated.Valid(result.value)
+    ): Result<Dealer> {
+        log.debug("service.dealDeck: dealerIdentity: {}, gameIdentity: {}", dealerIdentity, gameIdentity)
+
+        return handle(DealCardToDeck(dealerIdentity, gameIdentity))
+            .flatMap { dealer ->
+                when {
+                    dealer.cardsAvailable.isNotEmpty() -> dealDeck(dealer.id, dealer.gameIdentity)
+                    else -> Result.success(dealer)
                 }
             }
-        }
     }
 
     private suspend fun dealDiscardDeck(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity
-    ): Outcome = commandController.dealCardToDiscardDeck(dealerIdentity, gameIdentity)
+    ): Result<Dealer> = handle(DealCardToDiscardDeck(dealerIdentity, gameIdentity))
 
     private suspend fun dealPlayerDeck1(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,
-        remainingCards: Int,
-    ): Outcome {
-        log.debug("service.dealPlayerDeck1: dealerIdentity: $dealerIdentity, gameIdentity: $gameIdentity, remainingCards: $remainingCards")
-        return when (val result = commandController.dealCardToPlayerDeck1(dealerIdentity, gameIdentity)) {
-            is Validated.Invalid -> result
-            is Validated.Valid -> {
+        remainingCards: Int
+    ): Result<Dealer> {
+        log.debug(
+            "service.dealPlayerDeck1: dealerIdentity: {}, gameIdentity: {}, remainingCards: {}",
+            dealerIdentity,
+            gameIdentity,
+            remainingCards
+        )
+
+        return handle(DealCardToPlayerDeck1(dealerIdentity, gameIdentity))
+            .flatMap { dealer ->
                 val updatedRemainingCards = remainingCards - 1
-                when (updatedRemainingCards > 0) {
-                    true -> dealPlayerDeck1(dealerIdentity, gameIdentity, updatedRemainingCards)
-                    false -> result
+                when {
+                    updatedRemainingCards > 0 -> dealPlayerDeck1(dealer.id, dealer.gameIdentity, updatedRemainingCards)
+                    else -> Result.success(dealer)
                 }
             }
-        }
     }
 
     private suspend fun dealPlayerDeck2(
         dealerIdentity: DealerIdentity,
         gameIdentity: GameIdentity,
-        remainingCards: Int,
-    ): Outcome {
-        log.debug("service.dealPlayerDeck2: dealerIdentity: $dealerIdentity, gameIdentity: $gameIdentity, remainingCards: $remainingCards")
-        return when (val result = commandController.dealCardToPlayerDeck2(dealerIdentity, gameIdentity)) {
-            is Validated.Invalid -> result
-            is Validated.Valid -> {
+        remainingCards: Int
+    ): Result<Dealer> {
+        log.debug(
+            "service.dealPlayerDeck2: dealerIdentity: {}, gameIdentity: {}, remainingCards: {}",
+            dealerIdentity,
+            gameIdentity,
+            remainingCards
+        )
+
+        return handle(DealCardToPlayerDeck2(dealerIdentity, gameIdentity))
+            .flatMap { dealer ->
                 val updatedRemainingCards = remainingCards - 1
-                when (updatedRemainingCards > 0) {
-                    true -> dealPlayerDeck2(dealerIdentity, gameIdentity, updatedRemainingCards)
-                    false -> result
+                when {
+                    updatedRemainingCards > 0 -> dealPlayerDeck2(dealer.id, dealer.gameIdentity, updatedRemainingCards)
+                    else -> Result.success(dealer)
                 }
             }
-        }
     }
 
 
-
+    /**
+     * Deals cards to all players in round-robin fashion until each player has MAX_PLAYER_CARD cards.
+     * Follows DDD principles by using the DealCardToPlayer command for each card dealt.
+     */
     private suspend fun dealPlayersCards(
-        dealerIdentity: DealerIdentity,
-        gameIdentity: GameIdentity,
-        playerIdentities: List<PlayerIdentity>,
-        remainingCards: Int,
-        playerRemaining: List<PlayerIdentity>
-    ): Outcome {
-        log.debug("service.dealPlayersCards: dealerIdentity: $dealerIdentity, gameIdentity: $gameIdentity, remainingCards: $remainingCards, playerRemainingCount: ${playerRemaining.count()}")
-        val currentPlayer = playerRemaining.first()
-        return when (val result = dealPlayersCard(dealerIdentity, gameIdentity, currentPlayer)) {
-            is Validated.Invalid -> result
-            is Validated.Valid -> {
-                val currentPlayerRemaining = playerRemaining.minus(currentPlayer)
-                val (updatedCardRemaining, updatedPlayerRemaining) = when (currentPlayerRemaining.isEmpty()) {
-                    true -> Pair(remainingCards - 1, playerIdentities)
-                    false -> Pair(remainingCards, currentPlayerRemaining)
-                }
-                when (updatedCardRemaining > 0) {
-                    true -> dealPlayersCards(
-                        dealerIdentity,
-                        gameIdentity,
-                        playerIdentities,
-                        updatedCardRemaining,
-                        updatedPlayerRemaining
-                    )
-                    false -> result
-                }
-            }
-        }
+        dealer: Dealer,
+        players: List<PlayerIdentity>,
+        maxCardsPerPlayer: Int
+    ): Result<Dealer> {
+        log.debug(
+            "service.dealPlayersCards: dealerIdentity: {}, gameIdentity: {}, playersCount: {}, maxCardsPerPlayer: {}",
+            dealer.id,
+            dealer.gameIdentity,
+            players.size,
+            maxCardsPerPlayer
+        )
+
+        // Calculate total cards to deal: number of players * max cards per player
+        val totalCardsToDeal = players.size * maxCardsPerPlayer
+
+        // Get initial dealer state and start dealing
+        return dealCardsInRounds(totalCardsToDeal, players, players, dealer)
     }
 
+    /**
+     * Recursively deals cards in round-robin fashion.
+     * Each iteration deals one card to the current player, then moves to the next player.
+     */
+    private suspend fun dealCardsInRounds(
+        remainingCardsToDeal: Int,
+        allPlayers: List<PlayerIdentity>,
+        currentRoundPlayers: List<PlayerIdentity>,
+        currentDealer: Dealer
+    ): Result<Dealer> {
+        // Base case: no more cards to deal
+        if (remainingCardsToDeal <= 0) {
+            return Result.success(currentDealer)
+        }
 
-    private suspend fun dealPlayersCard(
-        dealerIdentity: DealerIdentity,
-        gameIdentity: GameIdentity,
-        playerIdentity: PlayerIdentity
-    ): Outcome = commandController.dealCardToPlayer(dealerIdentity, gameIdentity, playerIdentity)
+        // Get the current player (first in the round)
+        val currentPlayer = currentRoundPlayers.first()
+
+        // Deal one card to the current player
+        return handle(DealCardToPlayer(currentDealer.id, currentDealer.gameIdentity, currentPlayer))
+            .flatMap { updatedDealer ->
+                // Calculate next round players
+                val nextRoundPlayers = when (val playersAfterCurrent = currentRoundPlayers.drop(1)) {
+                    emptyList<PlayerIdentity>() -> allPlayers // Start new round with all players
+                    else -> playersAfterCurrent // Continue current round
+                }
+
+                // Continue dealing remaining cards
+                dealCardsInRounds(
+                    remainingCardsToDeal - 1,
+                    allPlayers,
+                    nextRoundPlayers,
+                    updatedDealer
+                )
+            }
+    }
+
+    private suspend fun handle(cmd: ICommand<Dealer>): Result<Dealer> {
+        return dealerCommandHandler.handle(cmd)
+    }
 
 }

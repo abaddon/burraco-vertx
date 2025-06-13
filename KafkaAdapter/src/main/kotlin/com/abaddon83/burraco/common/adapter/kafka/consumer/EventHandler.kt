@@ -6,7 +6,7 @@ import io.vertx.core.Vertx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-abstract class EventHandler(protected val vertx: Vertx) : Handler<KafkaEvent> {
+abstract class EventHandler : Handler<KafkaEvent> {
 
 
 }

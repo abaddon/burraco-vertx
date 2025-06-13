@@ -14,7 +14,7 @@ import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class AddCardDeckHandler(private val controllerAdapter: CommandControllerPort, vertx: Vertx) : EventHandler(vertx) {
+class AddCardDeckHandler(private val controllerAdapter: CommandControllerPort, vertx: Vertx) : EventHandler() {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(vertx.dispatcher())
 

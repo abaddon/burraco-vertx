@@ -6,15 +6,11 @@ import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.DomainResult
 import com.abaddon83.burraco.dealer.ExceptionError
-import com.abaddon83.burraco.dealer.commands.CreateDecks
-import com.abaddon83.burraco.dealer.commands.DealCardToDeck
-import com.abaddon83.burraco.dealer.commands.DealCardToDiscardDeck
-import com.abaddon83.burraco.dealer.commands.DealCardToPlayer
-import com.abaddon83.burraco.dealer.commands.DealCardToPlayerDeck1
-import com.abaddon83.burraco.dealer.commands.DealCardToPlayerDeck2
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
 import com.abaddon83.burraco.dealer.ports.Outcome
+import com.abaddon83.burraco.dealer.services.DealerService
+import com.abaddon83.burraco.dealer.services.DealerServiceResult
 import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 
@@ -22,44 +18,27 @@ class CommandControllerAdapter(
     private val dealerCommandHandler: IAggregateCommandHandler<Dealer>,
 ) : CommandControllerPort {
 
+    private val dealerService = DealerService(dealerCommandHandler)
 
-    override suspend fun createDecks(
-        dealerIdentity: DealerIdentity,
+    override suspend fun cardRequestedToDealer(
         gameIdentity: GameIdentity,
         players: List<PlayerIdentity>
     ): Outcome {
-        val cmd = CreateDecks(dealerIdentity, gameIdentity, players)
-        return executeCommand(cmd)
+        val dealerIdentity = DealerIdentity.create()
+        val result = dealerService.dealCards(dealerIdentity, gameIdentity, players)
+        when (result) {
+            is DealerServiceResult.Invalid -> {
+                return Validated.Invalid(result.err)
+            }
+
+            is DealerServiceResult.Valid<DomainResult> -> {
+                return Validated.Valid(result.value)
+
+            }
+        }
+
     }
 
-    override suspend fun dealCardToDeck(dealerIdentity: DealerIdentity, gameIdentity: GameIdentity): Outcome {
-        val cmd = DealCardToDeck(dealerIdentity, gameIdentity)
-        return executeCommand(cmd)
-    }
-
-    override suspend fun dealCardToDiscardDeck(dealerIdentity: DealerIdentity, gameIdentity: GameIdentity): Outcome {
-        val cmd = DealCardToDiscardDeck(dealerIdentity, gameIdentity)
-        return executeCommand(cmd)
-    }
-
-    override suspend fun dealCardToPlayer(
-        dealerIdentity: DealerIdentity,
-        gameIdentity: GameIdentity,
-        playerIdentity: PlayerIdentity
-    ): Outcome {
-        val cmd = DealCardToPlayer(dealerIdentity, gameIdentity, playerIdentity)
-        return executeCommand(cmd)
-    }
-
-    override suspend fun dealCardToPlayerDeck1(dealerIdentity: DealerIdentity, gameIdentity: GameIdentity): Outcome {
-        val cmd = DealCardToPlayerDeck1(dealerIdentity, gameIdentity)
-        return executeCommand(cmd)
-    }
-
-    override suspend fun dealCardToPlayerDeck2(dealerIdentity: DealerIdentity, gameIdentity: GameIdentity): Outcome {
-        val cmd = DealCardToPlayerDeck2(dealerIdentity, gameIdentity)
-        return executeCommand(cmd)
-    }
 
     private suspend fun executeCommand(command: ICommand<Dealer>): Outcome {
         val actualResult = dealerCommandHandler.handle(command)

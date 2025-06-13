@@ -49,7 +49,7 @@ class RestHttpServiceVerticle(
                         .response()
                         .setStatusCode(404)
                         .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                        .end(errorResponse(400, routingContext.failure().message ?: "Not Found"))
+                        .end(errorResponse(404, routingContext.failure().message ?: "Not Found"))
                 }
                 //generate the 400 error handler
                 router.errorHandler(400) { routingContext ->
