@@ -40,24 +40,33 @@ class DealerService(
         // Initialize dealer and create decks
         dealerCommandHandler.handle(CreateDecks(dealerIdentity, gameIdentity, players))
             .flatMap { dealer ->
+                log.info("dealer created: {}", dealer)
                 // Deal players cards
                 dealPlayersCards(dealer, players, MAX_PLAYER_CARD)
             }
             .flatMap { dealer ->
+                log.info("dealer dealt cards to players: {}", dealer)
                 // Deal player deck 1
                 dealPlayerDeck1(dealer.id, dealer.gameIdentity, MAX_PLAYER_DECK_CARD[players.size % 2])
             }
             .flatMap { dealer ->
+                log.info("dealer dealt cards to deck1: {}", dealer)
                 // Deal player deck 2
                 dealPlayerDeck2(dealer.id, dealer.gameIdentity, MAX_PLAYER_DECK_CARD[0])
             }
             .flatMap { dealer ->
+                log.info("dealer dealt cards to deck2: {}", dealer)
                 // Deal discard deck
                 dealDiscardDeck(dealer.id, dealer.gameIdentity)
             }
             .flatMap { dealer ->
+                log.info("dealer dealt cards to discard deck: {}", dealer)
                 // Deal remaining cards to deck
                 dealDeck(dealer.id, dealer.gameIdentity)
+            }
+            .flatMap { dealer ->
+                log.info("dealer dealt  remaining cards to deck: {}", dealer)
+                Result.success(dealer)
             }
             .fold(
                 onSuccess = { dealer ->

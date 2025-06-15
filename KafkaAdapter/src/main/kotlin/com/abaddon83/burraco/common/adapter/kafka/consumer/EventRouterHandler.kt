@@ -13,11 +13,12 @@ class EventRouterHandler private constructor(
     fun addHandler(eventName: String, handler: EventHandler): EventRouterHandler =
         EventRouterHandler(eventsHandlers.plus(eventName to handler))
 
-    override fun handle(record: KafkaConsumerRecord<String, String>?) {
-        checkNotNull(record) { "received a record null" }
-        val kafkaEvent = KafkaEvent.from(record.value())
+    override fun handle(event: KafkaConsumerRecord<String, String>?) {
+        checkNotNull(event) { "received a record null" }
+        val kafkaEvent = KafkaEvent.from(event.value())
         val handler = eventsHandlers[kafkaEvent.eventName]
         checkNotNull(handler) { "Handler for event ${kafkaEvent.eventName} not found" }
+
         handler.handle(kafkaEvent)
     }
 

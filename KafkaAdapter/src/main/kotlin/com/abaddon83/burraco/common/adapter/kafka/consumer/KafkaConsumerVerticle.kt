@@ -40,8 +40,6 @@ abstract class KafkaConsumerVerticle(
         runCatching {
             // Process the record
             eventRouterHandler.handle(record)
-
-
         }.onFailure {
             log.error("Error processing record ${record.topic()}:${record.partition()}:${record.offset()}", it)
             // Handle the error, e.g., retry logic or logging

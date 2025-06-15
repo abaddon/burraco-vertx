@@ -6,20 +6,30 @@ import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealer
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
-import io.vertx.core.Vertx
 import io.vertx.core.json.Json
-import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class CardsRequestedToDealerHandler(
-    private val commandController: CommandControllerPort,
-    vertx: Vertx
+    private val commandController: CommandControllerPort
 ) : EventHandler() {
 
-    private val coroutineScope: CoroutineScope = CoroutineScope(vertx.dispatcher())
+    private val coroutineIOScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    suspend fun asyncHandle(event: KafkaEvent?) {
+    override fun handle(event: KafkaEvent?) {
+        val job = coroutineIOScope.launch {
+            handleCardsRequested(event)
+        }
+        // Wait for the coroutine to complete
+
+        runBlocking { job.join() }
+    }
+
+    private suspend fun handleCardsRequested(event: KafkaEvent?) {
         checkNotNull(event)
         check(event.eventName == CardsRequestedToDealer::class.java.simpleName)
         log.info("Event ${event.eventName} received")
@@ -30,16 +40,14 @@ class CardsRequestedToDealerHandler(
             cardsRequestedToDealerEvent.aggregateIdentity,
             cardsRequestedToDealerEvent.players
         )
-        when (outcome) {
-            is Validated.Invalid -> log.error("The dealer failed to deal cards, {}", outcome.err)
-            is Validated.Valid -> log.info("The dealer has dealt cards")
-        }
+        logOutcome(outcome)
 
     }
 
-    override fun handle(event: KafkaEvent?) {
-        coroutineScope.launch {
-            asyncHandle(event)
+    private fun logOutcome(outcome: Validated<*, *>) {
+        when (outcome) {
+            is Validated.Invalid -> log.error("Failed to deal cards: {}", outcome.err)
+            is Validated.Valid -> log.info("Cards dealt successfully")
         }
     }
 
