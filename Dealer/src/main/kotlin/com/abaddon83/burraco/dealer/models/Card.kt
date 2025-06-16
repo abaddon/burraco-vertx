@@ -1,5 +1,8 @@
 package com.abaddon83.burraco.dealer.models
 
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
+
 
 data class Card(
     val suit: Suit,

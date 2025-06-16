@@ -1,9 +1,10 @@
 package com.abaddon83.burraco.game.helpers
 
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
+import com.abaddon83.burraco.common.models.card.Suits
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import kotlin.math.min
 
@@ -15,7 +16,7 @@ object StraightHelper {
             return false
         }
         return when (val suit = calculateStraightSuit(cards)) {
-            is Suits.Suit -> {
+            is Suit -> {
                 try {
                     validateSequence(cards, suit)
                     true
@@ -35,7 +36,7 @@ object StraightHelper {
     }
 
 
-    private fun calculateStraightSuit(cards: List<Card>): Suits.Suit {
+    private fun calculateStraightSuit(cards: List<Card>): Suit {
         val cardsBySuit = cards.groupBy { c -> c.suit }.mapValues { (_, v) -> v.size }
         check(cardsBySuit.keys.size <= 2) { "Too many different suits found: ${cardsBySuit.keys}" }
         val primarySuit = cardsBySuit.maxByOrNull { it.value }!!.key
@@ -46,9 +47,9 @@ object StraightHelper {
         return primarySuit
     }
 
-    private fun validateSequence(cards: List<Card>, suit: Suits.Suit): List<Card> {
+    private fun validateSequence(cards: List<Card>, suit: Suit): List<Card> {
         val jollies = getJollies(cards, suit).toMutableList()
-        val aces = cards.filter { c -> c.rank == Ranks.Ace }
+        val aces = cards.filter { c -> c.rank == Rank.Ace }
         val sorted = (cards.removeCards(jollies).removeCards(aces)).sorted()
         val firstSort = (sorted.indices).flatMap { idx ->
             val currentPositionValue = sorted[idx].rank.position
@@ -73,13 +74,13 @@ object StraightHelper {
         return appendRemainingJolly(sortedWithAce, jollies, suit)
     }
 
-    private fun appendRemainingJolly(cards: List<Card>, jollies: MutableList<Card>, suit: Suits.Suit): List<Card> {
+    private fun appendRemainingJolly(cards: List<Card>, jollies: MutableList<Card>, suit: Suit): List<Card> {
         if (jollies.isEmpty()) return cards
-        val twos = jollies.filter { it.rank == Ranks.Two && it.suit == suit }
+        val twos = jollies.filter { it.rank == Rank.Two && it.suit == suit }
         return when {
-            cards.last().rank == Ranks.Three && twos.isNotEmpty() -> cards.plus(twos).plus(jollies.minus(twos))
-            cards.first().rank != Ranks.Ace -> jollies.plus(cards)
-            cards.last().rank != Ranks.Ace -> cards.plus(jollies)
+            cards.last().rank == Rank.Three && twos.isNotEmpty() -> cards.plus(twos).plus(jollies.minus(twos))
+            cards.first().rank != Rank.Ace -> jollies.plus(cards)
+            cards.last().rank != Rank.Ace -> cards.plus(jollies)
             else -> {
                 assert(false) { "there isn't a space to put a jolly in the Straight, the Straight is full" }
                 listOf()
@@ -91,31 +92,31 @@ object StraightHelper {
         if (aces.isEmpty()) return cards
 
         return when {
-            cards.first().rank == Ranks.King -> aces.plus(cards)
-            cards.first().rank == Ranks.Queen && jollies.size == 1 -> {
+            cards.first().rank == Rank.King -> aces.plus(cards)
+            cards.first().rank == Rank.Queen && jollies.size == 1 -> {
                 val updatedList = aces.plus(jollies).plus(cards)
                 jollies.clear()
                 updatedList
             }
 
-            cards.first().rank == Ranks.Queen && jollies.isEmpty() -> {
+            cards.first().rank == Rank.Queen && jollies.isEmpty() -> {
                 assert(false) { "Jolly missing to cover the hole" }
                 listOf()
             }
 
-            cards.last().rank == Ranks.Two -> cards.plus(aces)
-            cards.last().rank == Ranks.Three && jollies.isEmpty() -> {
+            cards.last().rank == Rank.Two -> cards.plus(aces)
+            cards.last().rank == Rank.Three && jollies.isEmpty() -> {
                 assert(false) { "Jolly missing to cover the hole" }
                 listOf()
             }
 
-            cards.last().rank == Ranks.Three && jollies.size == 1 -> {
+            cards.last().rank == Rank.Three && jollies.size == 1 -> {
                 val updatedList = cards.plus(jollies).plus(aces)
                 jollies.clear()
                 updatedList
             }
 
-            cards.last().rank == Ranks.Three && jollies.isEmpty() -> {
+            cards.last().rank == Rank.Three && jollies.isEmpty() -> {
                 assert(false) { "Jolly missing to cover the hole" }
                 listOf()
             }
@@ -126,12 +127,12 @@ object StraightHelper {
         }
     }
 
-    private fun getJollies(cards: List<Card>, suit: Suits.Suit): List<Card> {
-        val tmpJollies = cards.filter { c -> c.rank == Ranks.Jolly || c.rank == Ranks.Two }
+    private fun getJollies(cards: List<Card>, suit: Suit): List<Card> {
+        val tmpJollies = cards.filter { c -> c.rank == Rank.Jolly || c.rank == Rank.Two }
 
         val jollies = when (tmpJollies.size) {
             //se la dimensione e' 2 significa che una delle 2 e' sicuramente un 2 valido
-            2 -> tmpJollies.minus(tmpJollies.first { c -> c.suit == suit && c.rank == Ranks.Two })
+            2 -> tmpJollies.minus(tmpJollies.first { c -> c.suit == suit && c.rank == Rank.Two })
             else -> tmpJollies
         }
 

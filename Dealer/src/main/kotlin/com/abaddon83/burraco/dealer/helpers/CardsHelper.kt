@@ -1,5 +1,9 @@
 package com.abaddon83.burraco.dealer.helpers
 
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Ranks
+import com.abaddon83.burraco.common.models.card.Suit
+import com.abaddon83.burraco.common.models.card.Suits
 import com.abaddon83.burraco.dealer.models.*
 import com.abaddon83.burraco.dealer.models.DealerConfig.NUM_RANK
 import com.abaddon83.burraco.dealer.models.DealerConfig.NUM_SUIT
