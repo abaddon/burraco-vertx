@@ -18,11 +18,11 @@
 //        val cards = ListCardsBuilder.allRanksWithJollyCards()
 //
 //        assert(cards.size == expectedCardsSize)
-//        assert(cards.count {card -> card.rank == Ranks.Jolly && card.suit == Suits.Jolly} == expectedJolly) { "The deck doesn't contain $expectedJolly ${Ranks.Jolly.label}" }
-//        Suits.allSuit.forEach { suit ->
+//        assert(cards.count {card -> card.rank == Rank.Jolly && card.suit == Suit.Jolly} == expectedJolly) { "The deck doesn't contain $expectedJolly ${Rank.Jolly.label}" }
+//        Suit.allSuit.forEach { suit ->
 //            assert(cards.count{card -> card.suit == suit} == expectedSuit) { "The card list doesn't contain $expectedSuit ${suit.icon} cards"}
 //        }
-//        Ranks.fullRanks.forEach{ rank ->
+//        Rank.fullRank.forEach{ rank ->
 //            assert(cards.count{card -> card.rank == rank} == expectedRanks){ "The card list doesn't contain $expectedRanks ${rank.label} cards"}
 //        }
 //
@@ -38,11 +38,11 @@
 //        val cards = ListCardsBuilder.allRanksCards()
 //
 //        assert(cards.size == expectedCardsSize)
-//        assert(cards.count{card -> card.rank == Ranks.Jolly && card.suit == Suits.Jolly} == expectedJolly){"The deck doesn't contain $expectedJolly ${Ranks.Jolly.label}"}
-//        Suits.allSuit.forEach{ suit ->
+//        assert(cards.count{card -> card.rank == Rank.Jolly && card.suit == Suit.Jolly} == expectedJolly){"The deck doesn't contain $expectedJolly ${Rank.Jolly.label}"}
+//        Suit.allSuit.forEach{ suit ->
 //            assert(cards.count{card -> card.suit == suit} == expectedSuit){"The card list doesn't contain $expectedSuit ${suit.icon} cards"}
 //            }
-//        Ranks.fullRanks.forEach{ rank ->
+//        Rank.fullRank.forEach{ rank ->
 //            assert(cards.count{card -> card.rank == rank} == expectedRanks){"The card list doesn't contain $expectedRanks ${rank.label} cards"}
 //        }
 //    }

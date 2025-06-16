@@ -20,9 +20,9 @@
 //        }
 //
 //        assert(listOfAllCards.size == 108)
-//        assert(listOfAllCards.count{card -> card.rank == Ranks.Jolly && card.suit == Suits.Jolly} == 4) { "The deck doesn't contain 4 ${Ranks.Jolly.label}" }
-//        Suits.allSuit.forEach{ suit -> assert(listOfAllCards.count{ card -> card.suit == suit} == 26) { "The card list doesn't contain 26 ${suit.icon} cards" }}
-//        Ranks.fullRanks.forEach{ rank -> assert(listOfAllCards.count{ card -> card.rank == rank} == 8) { "The card list doesn't contain 8 ${rank.label} cards" }}
+//        assert(listOfAllCards.count{card -> card.rank == Rank.Jolly && card.suit == Suit.Jolly} == 4) { "The deck doesn't contain 4 ${Rank.Jolly.label}" }
+//        Suit.allSuit.forEach{ suit -> assert(listOfAllCards.count{ card -> card.suit == suit} == 26) { "The card list doesn't contain 26 ${suit.icon} cards" }}
+//        Rank.fullRank.forEach{ rank -> assert(listOfAllCards.count{ card -> card.rank == rank} == 8) { "The card list doesn't contain 8 ${rank.label} cards" }}
 //    }
 //
 //    @Test

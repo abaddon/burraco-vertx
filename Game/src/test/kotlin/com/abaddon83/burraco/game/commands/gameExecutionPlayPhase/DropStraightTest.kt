@@ -6,12 +6,12 @@ import com.abaddon83.burraco.common.models.StraightIdentity
 import com.abaddon83.burraco.game.models.Tris
 import com.abaddon83.burraco.common.models.TrisIdentity
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.helpers.DeckHelper
 import com.abaddon83.burraco.helpers.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -29,7 +29,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerDropValidStraightWit
         val PLAYER_ID3 = PlayerIdentity.create()
         val PLAYER_ID4 = PlayerIdentity.create()
         val STRAIGHT_ID = StraightIdentity.create()
-        val STRAIGHT_CARDS = listOf(Card(Suits.Heart, Ranks.Three), Card(Suits.Heart, Ranks.Four), Card(Suits.Heart, Ranks.Five))
+        val STRAIGHT_CARDS = listOf(Card(Suit.Heart, Rank.Three), Card(Suit.Heart, Rank.Four), Card(Suit.Heart, Rank.Five))
         val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS)
     }
 
@@ -101,7 +101,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerDropValidStraightWit
     )
 
     override fun `when`(): ICommand<Game> = DropStraight(
-        aggregateId, PLAYER_ID1, StraightIdentity.create(), listOf(Card(Suits.Tile, Ranks.Three), Card(Suits.Tile, Ranks.Four), Card(Suits.Tile, Ranks.Five))
+        aggregateId, PLAYER_ID1, StraightIdentity.create(), listOf(Card(Suit.Tile, Rank.Three), Card(Suit.Tile, Rank.Four), Card(Suit.Tile, Rank.Five))
     )
 
     override fun expected(): List<IDomainEvent> = listOf()
@@ -119,7 +119,7 @@ internal class Given_GameExecutionPlayPhase_When_WrongPlayerDropValidStraightWit
         val PLAYER_ID3 = PlayerIdentity.create()
         val PLAYER_ID4 = PlayerIdentity.create()
         val STRAIGHT_ID = StraightIdentity.create()
-        val STRAIGHT_CARDS = listOf(Card(Suits.Heart, Ranks.Three), Card(Suits.Heart, Ranks.Four), Card(Suits.Heart, Ranks.Five))
+        val STRAIGHT_CARDS = listOf(Card(Suit.Heart, Rank.Three), Card(Suit.Heart, Rank.Four), Card(Suit.Heart, Rank.Five))
         val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID2, STRAIGHT_CARDS)
     }
 
@@ -163,40 +163,40 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithNoBurracoDropStr
         val PLAYER_ID4 = PlayerIdentity.create()
         val TRIS_ID = TrisIdentity.create()
         val TRIS_CARDS = listOf(
-            Card(Suits.Heart, Ranks.Queen),
-            Card(Suits.Heart, Ranks.Queen),
-            Card(Suits.Tile, Ranks.Queen),
-            Card(Suits.Tile, Ranks.Queen),
-            Card(Suits.Pike, Ranks.Queen)
+            Card(Suit.Heart, Rank.Queen),
+            Card(Suit.Heart, Rank.Queen),
+            Card(Suit.Tile, Rank.Queen),
+            Card(Suit.Tile, Rank.Queen),
+            Card(Suit.Pike, Rank.Queen)
         )
         val STRAIGHT_ID = StraightIdentity.create()
         val STRAIGHT_CARDS = listOf(
-            Card(Suits.Heart, Ranks.Ace),
-            Card(Suits.Heart, Ranks.Two),
-            Card(Suits.Heart, Ranks.Three),
-            Card(Suits.Heart, Ranks.Four),
-            Card(Suits.Heart, Ranks.Five),
-            Card(Suits.Heart, Ranks.Six)
+            Card(Suit.Heart, Rank.Ace),
+            Card(Suit.Heart, Rank.Two),
+            Card(Suit.Heart, Rank.Three),
+            Card(Suit.Heart, Rank.Four),
+            Card(Suit.Heart, Rank.Five),
+            Card(Suit.Heart, Rank.Six)
         )
         val TRIS_ID2 = TrisIdentity.create()
         val TRIS_CARDS2 = listOf(
-            Card(Suits.Heart, Ranks.King),
-            Card(Suits.Heart, Ranks.King),
-            Card(Suits.Tile, Ranks.King),
-            Card(Suits.Tile, Ranks.King),
-            Card(Suits.Pike, Ranks.King)
+            Card(Suit.Heart, Rank.King),
+            Card(Suit.Heart, Rank.King),
+            Card(Suit.Tile, Rank.King),
+            Card(Suit.Tile, Rank.King),
+            Card(Suit.Pike, Rank.King)
         )
         val STRAIGHT_ID2 = StraightIdentity.create()
         val STRAIGHT_CARDS2 = listOf(
-            Card(Suits.Tile, Ranks.Ace),
-            Card(Suits.Tile, Ranks.Two),
-            Card(Suits.Tile, Ranks.Three),
-            Card(Suits.Tile, Ranks.Four),
-            Card(Suits.Tile, Ranks.Five),
-            Card(Suits.Tile, Ranks.Six)
+            Card(Suit.Tile, Rank.Ace),
+            Card(Suit.Tile, Rank.Two),
+            Card(Suit.Tile, Rank.Three),
+            Card(Suit.Tile, Rank.Four),
+            Card(Suit.Tile, Rank.Five),
+            Card(Suit.Tile, Rank.Six)
         )
         val PLAYER_DECK_1 = STRAIGHT_CARDS2.plus(TRIS_CARDS2)
-        val DISCARD_DECK_CARD = Card(Suits.Clover, Ranks.Queen)
+        val DISCARD_DECK_CARD = Card(Suit.Clover, Rank.Queen)
         val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS.plus(TRIS_CARDS), DISCARD_DECK_CARD,PLAYER_DECK_1)
     }
 

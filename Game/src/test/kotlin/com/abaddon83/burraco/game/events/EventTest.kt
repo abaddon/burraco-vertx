@@ -4,7 +4,7 @@ class EventTest {
 //TODO()
 //    @Test
 //    fun `convert event in jsonObject`() {
-//        val event: BurracoGameCreated = BurracoGameCreated(GameIdentity.create(), listOf(Card(Suits.Clover, Ranks.Ace)));
+//        val event: BurracoGameCreated = BurracoGameCreated(GameIdentity.create(), listOf(Card(Suit.Clover, Rank.Ace)));
 //
 //        val message = Json.encodePrettily(event);
 //

@@ -51,7 +51,7 @@
 ////    fun `Given a player during his turn, when pickUps a card from the discard pile , then I have more cards`() {
 ////        val player1Id = PlayerIdentity.create()
 ////        val game = BurracoGameInitTurnTestFactory.create(player1Id = player1Id)
-////                .setDiscardPile(listOf(Card(Suits.Pike, Ranks.Eight)))
+////                .setDiscardPile(listOf(Card(Suit.Pike, Rank.Eight)))
 ////                .buildTurnPhaseStart()
 ////
 ////        val discardPileSize = game.showDiscardPile().size

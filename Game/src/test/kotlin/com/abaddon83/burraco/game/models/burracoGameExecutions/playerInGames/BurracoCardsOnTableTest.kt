@@ -97,7 +97,7 @@
 //                listOfTris = listOf(trisOnTable, createTris(true)),
 //                listOfScale = listOf()
 //        )
-//        val cardsToAppend = listOf(Card(suit = Suits.Pike, rank = Ranks.Three))
+//        val cardsToAppend = listOf(Card(suit = Suit.Pike, rank = Rank.Three))
 //
 //        val actualBurracoCardsOnTable = burracoCardsOnTable.appendCardOnBurraco(trisOnTable.identity(), cardsToAppend)
 //
@@ -118,7 +118,7 @@
 //                listOfTris = listOf(),
 //                listOfScale = listOf(scaleOnTable, createScale(true))
 //        )
-//        val cardsToAppend = listOf(Card(suit = Suits.Heart, rank = Ranks.Nine))
+//        val cardsToAppend = listOf(Card(suit = Suit.Heart, rank = Rank.Nine))
 //
 //        val actualBurracoCardsOnTable = burracoCardsOnTable.appendCardOnBurraco(scaleOnTable.identity(), cardsToAppend)
 //
@@ -139,7 +139,7 @@
 //                listOfTris = listOf(),
 //                listOfScale = listOf(createScale(true))
 //        )
-//        val cardsToAppend = listOf(Card(suit = Suits.Heart, rank = Ranks.Nine))
+//        val cardsToAppend = listOf(Card(suit = Suit.Heart, rank = Rank.Nine))
 //
 //        assertFailsWith(NoSuchElementException::class) {
 //            burracoCardsOnTable.appendCardOnBurraco(scaleOnTable.identity(), cardsToAppend)
@@ -151,8 +151,8 @@
 //    private fun createScale(isBurraco: Boolean): BurracoScale =
 //            BurracoScale.create(
 //                    cards = when (isBurraco) {
-//                        true -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.suit == Suits.Heart }.sorted().take(7)
-//                        false -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.suit == Suits.Heart }.sorted().take(6)
+//                        true -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.suit == Suit.Heart }.sorted().take(7)
+//                        false -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.suit == Suit.Heart }.sorted().take(6)
 //                    }
 //            )
 //
@@ -160,8 +160,8 @@
 //    private fun createTris(isBurraco: Boolean): BurracoTris =
 //            BurracoTris.create(
 //                    cards = when (isBurraco) {
-//                        true -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.rank == Ranks.Three }.take(7)
-//                        false -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.rank == Ranks.Queen }.take(6)
+//                        true -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.rank == Rank.Three }.take(7)
+//                        false -> ListCardsBuilder.allRanksCards().plus(ListCardsBuilder.allRanksCards()).filter { c -> c.rank == Rank.Queen }.take(6)
 //                    }
 //            )
 //

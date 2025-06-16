@@ -16,7 +16,7 @@ abstract class KafkaEventHandler() : Handler<KafkaEvent> {
             logOutcome(outcome)
 
         }
-        runBlocking { job.join() }
+        runBlocking { job.join() } //TODO remove this blocking call to avoid blocking the eventloop thread
     }
 
     private fun logOutcome(outcome: Validated<*, *>) {

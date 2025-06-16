@@ -2,12 +2,12 @@ package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
@@ -18,7 +18,7 @@ internal class Given_GameDraft_When_AddCardDiscardDeck_Then_exception : KcqrsAgg
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -45,7 +45,7 @@ internal class Given_GameWaitingDealer_When_AddCardDiscardDeck_Then_event : Kcqr
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -75,7 +75,7 @@ internal class Given_GameWaitingDealerWith1CardDiscardDeck_When_AddCardDiscardDe
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID

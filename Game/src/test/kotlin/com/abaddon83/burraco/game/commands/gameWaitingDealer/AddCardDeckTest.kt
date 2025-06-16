@@ -3,12 +3,12 @@ package com.abaddon83.burraco.game.commands.gameWaitingDealer
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
@@ -19,7 +19,7 @@ internal class Given_GameDraft_When_AddCardDeck_Then_exceptio : KcqrsAggregateTe
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -60,10 +60,10 @@ internal class Given_GameWaitingDealer_When_AddCardDeck_Then_event : KcqrsAggreg
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
     )
 
-    override fun `when`(): ICommand<Game> = AddCardDeck(aggregateId,Card(Suits.Clover, Ranks.Ace))
+    override fun `when`(): ICommand<Game> = AddCardDeck(aggregateId,Card(Suit.Clover, Rank.Ace))
 
     override fun expected(): List<IDomainEvent> = listOf(
-        CardAddedDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace))
+        CardAddedDeck.create(aggregateId, Card(Suit.Clover, Rank.Ace))
     )
 
     override fun expectedException(): Exception? = null
@@ -89,13 +89,13 @@ internal class Given_GameWaitingDealerWith4PlayersAnd41DeckCards_When_AddCardDec
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1)
     ).plus(
-        (2..deckSize(4)).map { CardAddedDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
+        (2..deckSize(4)).map { CardAddedDeck.create(aggregateId, Card(Suit.Clover, Rank.Ace)) }
     )
 
-    override fun `when`(): ICommand<Game> = AddCardDeck(aggregateId,Card(Suits.Clover, Ranks.Ace))
+    override fun `when`(): ICommand<Game> = AddCardDeck(aggregateId,Card(Suit.Clover, Rank.Ace))
 
     override fun expected(): List<IDomainEvent> = listOf(
-        CardAddedDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace))
+        CardAddedDeck.create(aggregateId, Card(Suit.Clover, Rank.Ace))
     )
 
     override fun expectedException(): Exception? = null
@@ -121,10 +121,10 @@ internal class Given_GameWaitingDealerWith4PlayersAnd42DeckCards_When_AddCardDec
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1)
     ).plus(
-        (1..deckSize(4)).map { CardAddedDeck.create(aggregateId, Card(Suits.Clover, Ranks.Ace)) }
+        (1..deckSize(4)).map { CardAddedDeck.create(aggregateId, Card(Suit.Clover, Rank.Ace)) }
     )
 
-    override fun `when`(): ICommand<Game> = AddCardDeck(aggregateId,Card(Suits.Clover, Ranks.Ace))
+    override fun `when`(): ICommand<Game> = AddCardDeck(aggregateId,Card(Suit.Clover, Rank.Ace))
 
     override fun expected(): List<IDomainEvent> = listOf()
 

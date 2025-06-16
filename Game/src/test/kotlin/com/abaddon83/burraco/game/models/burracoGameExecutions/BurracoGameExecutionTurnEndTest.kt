@@ -19,7 +19,7 @@
 ////    @Test
 ////    fun `Given a player with a card, when pickup the mazzetto, then receive an error`() {
 ////        val player1Id = PlayerIdentity.create()
-////        val player1 = PlayerInGame(player1Id, listOf(Card(Suits.Heart, Ranks.Six)), BurracoCardsOnTable(listOf(), listOf()), false)
+////        val player1 = PlayerInGame(player1Id, listOf(Card(Suit.Heart, Rank.Six)), BurracoCardsOnTable(listOf(), listOf()), false)
 ////        val game = BurracoGameInitTurnTestFactory.create(player1Id = player1Id)
 ////                .setPlayer1(player1)
 ////                .buildTurnPhaseEnd()
@@ -106,10 +106,10 @@
 ////    fun `Given a player with a Burraco, no cards, when complete the turn, then the game is end`() {
 ////        val player1Id = PlayerIdentity.create()
 ////        val tris = BurracoTris.create(listOf(
-////                Card(Suits.Heart, Ranks.Six), Card(Suits.Heart, Ranks.Six),
-////                Card(Suits.Pike, Ranks.Six), Card(Suits.Pike, Ranks.Six),
-////                Card(Suits.Tile, Ranks.Six), Card(Suits.Tile, Ranks.Six),
-////                Card(Suits.Clover, Ranks.Six), Card(Suits.Clover, Ranks.Six)
+////                Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six),
+////                Card(Suit.Pike, Rank.Six), Card(Suit.Pike, Rank.Six),
+////                Card(Suit.Tile, Rank.Six), Card(Suit.Tile, Rank.Six),
+////                Card(Suit.Clover, Rank.Six), Card(Suit.Clover, Rank.Six)
 ////        ))
 ////        val player1 = PlayerInGame(player1Id, listOf(), BurracoCardsOnTable(listOf(tris), listOf()), true)
 ////        val game = BurracoGameInitTurnTestFactory.create(player1Id = player1Id)
@@ -125,12 +125,12 @@
 ////    fun `Given a player with a Burraco, some cards, when complete the turn, then receive an error`() {
 ////        val player1Id = PlayerIdentity.create()
 ////        val tris = BurracoTris.create(listOf(
-////                Card(Suits.Heart, Ranks.Six), Card(Suits.Heart, Ranks.Six),
-////                Card(Suits.Pike, Ranks.Six), Card(Suits.Pike, Ranks.Six),
-////                Card(Suits.Tile, Ranks.Six), Card(Suits.Tile, Ranks.Six),
-////                Card(Suits.Clover, Ranks.Six), Card(Suits.Clover, Ranks.Six)
+////                Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six),
+////                Card(Suit.Pike, Rank.Six), Card(Suit.Pike, Rank.Six),
+////                Card(Suit.Tile, Rank.Six), Card(Suit.Tile, Rank.Six),
+////                Card(Suit.Clover, Rank.Six), Card(Suit.Clover, Rank.Six)
 ////        ))
-////        val player1 = PlayerInGame(player1Id, listOf(Card(Suits.Heart, Ranks.Four)), BurracoCardsOnTable(listOf(tris), listOf()), false)
+////        val player1 = PlayerInGame(player1Id, listOf(Card(Suit.Heart, Rank.Four)), BurracoCardsOnTable(listOf(tris), listOf()), false)
 ////        val game = BurracoGameInitTurnTestFactory.create(player1Id = player1Id)
 ////                .setPlayer1(player1)
 ////                .buildTurnPhaseEnd()
@@ -144,10 +144,10 @@
 ////    fun `Given a player with the mazzetto didn't take, when complete the turn, then receive an error`() {
 ////        val player1Id = PlayerIdentity.create()
 ////        val tris = BurracoTris.create(listOf(
-////                Card(Suits.Heart, Ranks.Six), Card(Suits.Heart, Ranks.Six),
-////                Card(Suits.Pike, Ranks.Six), Card(Suits.Pike, Ranks.Six),
-////                Card(Suits.Tile, Ranks.Six), Card(Suits.Tile, Ranks.Six),
-////                Card(Suits.Clover, Ranks.Six), Card(Suits.Clover, Ranks.Six)
+////                Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six),
+////                Card(Suit.Pike, Rank.Six), Card(Suit.Pike, Rank.Six),
+////                Card(Suit.Tile, Rank.Six), Card(Suit.Tile, Rank.Six),
+////                Card(Suit.Clover, Rank.Six), Card(Suit.Clover, Rank.Six)
 ////        ))
 ////        val player1 = PlayerInGame(player1Id, listOf(), BurracoCardsOnTable(listOf(tris), listOf()), false)
 ////        val game = BurracoGameInitTurnTestFactory.create(player1Id = player1Id)
@@ -176,10 +176,10 @@
 ////    fun `Given a player during the turn of another player, when complete the turn, then receive an error`() {
 ////        val player1Id = PlayerIdentity.create()
 ////        val tris = BurracoTris.create(listOf(
-////                Card(Suits.Heart, Ranks.Six), Card(Suits.Heart, Ranks.Six),
-////                Card(Suits.Pike, Ranks.Six), Card(Suits.Pike, Ranks.Six),
-////                Card(Suits.Tile, Ranks.Six), Card(Suits.Tile, Ranks.Six),
-////                Card(Suits.Clover, Ranks.Six), Card(Suits.Clover, Ranks.Six)
+////                Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six),
+////                Card(Suit.Pike, Rank.Six), Card(Suit.Pike, Rank.Six),
+////                Card(Suit.Tile, Rank.Six), Card(Suit.Tile, Rank.Six),
+////                Card(Suit.Clover, Rank.Six), Card(Suit.Clover, Rank.Six)
 ////        ))
 ////        val player1 = PlayerInGame(player1Id, listOf(), BurracoCardsOnTable(listOf(tris), listOf()), true)
 ////        val game = BurracoGameInitTurnTestFactory.create(player1Id = player1Id)

@@ -2,12 +2,12 @@ package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.helpers.DeckHelper.generateFakeDealerEvents
 import com.abaddon83.burraco.helpers.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -20,7 +20,7 @@ internal class Given_GameDraft_When_StartPlayerTurn_Then_exception : KcqrsAggreg
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1 = PlayerIdentity.create()
         val PLAYER_ID2 = PlayerIdentity.create()
-        val CARD = Card(Suits.Clover, Ranks.Ace)
+        val CARD = Card(Suit.Clover, Rank.Ace)
     }
 
     //Setup

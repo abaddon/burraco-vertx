@@ -15,7 +15,7 @@
 //    @Test
 //    fun `given a Mazzetto, when I take it  for the first time, then I have it on my cards`() {
 //
-//        val myCards = listOf(Card(Suits.Heart, Ranks.Six))
+//        val myCards = listOf(Card(Suit.Heart, Rank.Six))
 //        val playerInGame = PlayerInGameTestFactory.create().withCards(myCards).build()
 //        val mazzetto: PlayerDeck = PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11))
 //
@@ -32,7 +32,7 @@
 //
 //    @Test
 //    fun `given a Mazzetto, when I take it  for the second time, then I receive an error`() {
-//        val myCards = listOf(Card(Suits.Heart, Ranks.Six))
+//        val myCards = listOf(Card(Suit.Heart, Rank.Six))
 //        val playerInGame = PlayerInGameTestFactory.create().withCards(myCards).build()
 //        val mazzetto: PlayerDeck = PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11))
 //        val mazzetto2: PlayerDeck = PlayerDeck.create(ListCardsBuilder.allRanksCards().take(11))
@@ -44,7 +44,7 @@
 //
 //    @Test
 //    fun `given a Tris on My cards, when I drop it, then I see it on the table`() {
-//        val trisCards = ListCardsBuilder.allRanksCards().filter { c -> c.rank == Ranks.Seven }.take(4)
+//        val trisCards = ListCardsBuilder.allRanksCards().filter { c -> c.rank == Rank.Seven }.take(4)
 //        val myCards = ListCardsBuilder.allRanksCards().take(5).plus(trisCards)
 //        val playerInGame = PlayerInGameTestFactory.create().withCards(myCards).build()
 //        val trisToDrop = BurracoTris.create(trisCards)
@@ -67,10 +67,10 @@
 //    @Test
 //    fun `given a Scale on My cards, when I drop it, then I see it on the table`() {
 //        val scaleCards = listOf(
-//                Card(Suits.Heart, Ranks.Four),
-//                Card(Suits.Heart, Ranks.Five),
-//                Card(Suits.Heart, Ranks.Six),
-//                Card(Suits.Heart, Ranks.Seven)
+//                Card(Suit.Heart, Rank.Four),
+//                Card(Suit.Heart, Rank.Five),
+//                Card(Suit.Heart, Rank.Six),
+//                Card(Suit.Heart, Rank.Seven)
 //        )
 //        val myCards = ListCardsBuilder.allRanksCards().take(5).plus(scaleCards)
 //        val playerInGame = PlayerInGameTestFactory.create().withCards(myCards).build()
@@ -108,14 +108,14 @@
 //    @Test
 //    fun `given a card to append on a Scale on table, when I append the card, then the card is on the burraco`() {
 //        val cardsScale = listOf(
-//                Card(Suits.Heart, Ranks.Four),
-//                Card(Suits.Heart, Ranks.Five),
-//                Card(Suits.Heart, Ranks.Six),
-//                Card(Suits.Heart, Ranks.Seven)
+//                Card(Suit.Heart, Rank.Four),
+//                Card(Suit.Heart, Rank.Five),
+//                Card(Suit.Heart, Rank.Six),
+//                Card(Suit.Heart, Rank.Seven)
 //        )
-//        val cardToDrop = Card(Suits.Heart, Ranks.Eight)
+//        val cardToDrop = Card(Suit.Heart, Rank.Eight)
 //        var deck = ListCardsBuilder.allRanksCards().minus(cardsScale).minus(listOf(cardToDrop))
-//        val burracoTris = BurracoTris.create(deck.filter { c -> c.rank == Ranks.Three }.take(4))
+//        val burracoTris = BurracoTris.create(deck.filter { c -> c.rank == Rank.Three }.take(4))
 //        deck = deck.minus(burracoTris.showCards())
 //        val myCards = deck.take(5).plus(listOf(cardToDrop))
 //        //deck.minus(myCards)

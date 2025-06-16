@@ -2,12 +2,12 @@ package com.abaddon83.burraco.game.commands.gameWaitingDealer
 
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
@@ -18,7 +18,7 @@ internal class Given_GameDraft_When_addCardFirstPlayerDeck_Then_exception : Kcqr
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -45,7 +45,7 @@ internal class Given_GameWaitingDealer_When_addCardFirstPlayerDeck_Then_event : 
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -75,7 +75,7 @@ internal class Given_GameWaitingDealerWith2PlayersAndFirstDeck10Cards_When_addCa
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
         val PLAYER_ID2=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -89,16 +89,16 @@ internal class Given_GameWaitingDealerWith2PlayersAndFirstDeck10Cards_When_addCa
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId, PLAYER_ID2),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ace)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Two)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Three)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Four)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Five)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Six)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Seven)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Eight)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Nine)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ten)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ace)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Two)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Three)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Four)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Five)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Six)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Seven)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Eight)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Nine)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ten)),
     )
 
     override fun `when`(): ICommand<Game> = AddCardFirstPlayerDeck(aggregateId, CARD)
@@ -114,7 +114,7 @@ internal class Given_GameWaitingDealerWith2PlayersAndFirstDeck11Cards_When_addCa
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -128,17 +128,17 @@ internal class Given_GameWaitingDealerWith2PlayersAndFirstDeck11Cards_When_addCa
         PlayerAdded.create(aggregateId, PLAYER_ID1),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ace)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Two)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Three)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Four)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Five)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Six)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Seven)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Eight)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Nine)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ten)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Jack)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ace)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Two)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Three)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Four)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Five)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Six)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Seven)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Eight)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Nine)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ten)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Jack)),
     )
 
     override fun `when`(): ICommand<Game> = AddCardFirstPlayerDeck(aggregateId, CARD)
@@ -152,7 +152,7 @@ internal class Given_GameWaitingDealerWith3PlayersAndFirstDeck11Cards_When_addCa
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -167,17 +167,17 @@ internal class Given_GameWaitingDealerWith3PlayersAndFirstDeck11Cards_When_addCa
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ace)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Two)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Three)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Four)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Five)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Six)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Seven)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Eight)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Nine)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ten)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Jack)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ace)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Two)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Three)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Four)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Five)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Six)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Seven)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Eight)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Nine)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ten)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Jack)),
     )
 
     override fun `when`(): ICommand<Game> = AddCardFirstPlayerDeck(aggregateId, CARD)
@@ -193,7 +193,7 @@ internal class Given_GameWaitingDealerWith3PlayersAndFirstDeck13Cards_When_addCa
     companion object{
         val AGGREGATE_ID = GameIdentity.create()
         val PLAYER_ID1=PlayerIdentity.create()
-        val CARD= Card(Suits.Clover, Ranks.Ace)
+        val CARD= Card(Suit.Clover, Rank.Ace)
     }
     //Setup
     override val aggregateId: GameIdentity = AGGREGATE_ID
@@ -208,19 +208,19 @@ internal class Given_GameWaitingDealerWith3PlayersAndFirstDeck13Cards_When_addCa
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         PlayerAdded.create(aggregateId,PlayerIdentity.create()),
         CardDealingRequested.create(aggregateId, PLAYER_ID1),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ace)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Two)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Three)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Four)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Five)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Six)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Seven)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Eight)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Nine)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Ten)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Jack)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.Queen)),
-        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suits.Heart, Ranks.King)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ace)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Two)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Three)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Four)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Five)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Six)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Seven)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Eight)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Nine)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Ten)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Jack)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.Queen)),
+        CardAddedFirstPlayerDeck.create(aggregateId, Card(Suit.Heart, Rank.King)),
     )
 
     override fun `when`(): ICommand<Game> = AddCardFirstPlayerDeck(aggregateId, CARD)

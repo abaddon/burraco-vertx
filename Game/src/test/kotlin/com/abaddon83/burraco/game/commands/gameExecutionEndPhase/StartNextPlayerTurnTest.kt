@@ -4,12 +4,12 @@ import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.common.models.StraightIdentity
 import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.card.Ranks
-import com.abaddon83.burraco.game.models.card.Suits
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.helpers.DeckHelper
 import com.abaddon83.burraco.helpers.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -26,8 +26,8 @@ internal class Given_GameExecutionEndPhase_and_GameNotEnded_When_StartNextPlayer
         val PLAYER_ID3 = PlayerIdentity.create()
         val PLAYER_ID4 = PlayerIdentity.create()
         val STRAIGHT_ID = StraightIdentity.create()
-        val STRAIGHT_CARDS = listOf(Card(Suits.Heart, Ranks.Three), Card(Suits.Heart, Ranks.Four), Card(Suits.Heart, Ranks.Five))
-        val CARD_TO_DROP = Card(Suits.Heart, Ranks.Six)
+        val STRAIGHT_CARDS = listOf(Card(Suit.Heart, Rank.Three), Card(Suit.Heart, Rank.Four), Card(Suit.Heart, Rank.Five))
+        val CARD_TO_DROP = Card(Suit.Heart, Rank.Six)
         val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
             AGGREGATE_ID,
             listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
@@ -80,34 +80,34 @@ internal class Given_GameExecutionEndPhase_and_GamEnded_When_StartNextPlayerTurn
         val PLAYER_ID4 = PlayerIdentity.create()
         val STRAIGHT_ID1 = StraightIdentity.create()
         val STRAIGHT_CARDS = listOf(
-            Card(Suits.Heart, Ranks.Ace),
-            Card(Suits.Heart, Ranks.Two),
-            Card(Suits.Heart, Ranks.Three),
-            Card(Suits.Heart, Ranks.Four),
-            Card(Suits.Heart, Ranks.Five),
-            Card(Suits.Heart, Ranks.Six),
-            Card(Suits.Heart, Ranks.Seven),
-            Card(Suits.Heart, Ranks.Eight),
-            Card(Suits.Heart, Ranks.Nine),
-            Card(Suits.Heart, Ranks.Ten),
-            Card(Suits.Heart, Ranks.Jack)
+            Card(Suit.Heart, Rank.Ace),
+            Card(Suit.Heart, Rank.Two),
+            Card(Suit.Heart, Rank.Three),
+            Card(Suit.Heart, Rank.Four),
+            Card(Suit.Heart, Rank.Five),
+            Card(Suit.Heart, Rank.Six),
+            Card(Suit.Heart, Rank.Seven),
+            Card(Suit.Heart, Rank.Eight),
+            Card(Suit.Heart, Rank.Nine),
+            Card(Suit.Heart, Rank.Ten),
+            Card(Suit.Heart, Rank.Jack)
         )
         val STRAIGHT_ID2 = StraightIdentity.create()
         val STRAIGHT_CARDS2 = listOf(
-            Card(Suits.Pike, Ranks.Ace),
-            Card(Suits.Pike, Ranks.Two),
-            Card(Suits.Pike, Ranks.Three),
-            Card(Suits.Pike, Ranks.Four),
-            Card(Suits.Pike, Ranks.Five),
-            Card(Suits.Pike, Ranks.Six),
-            Card(Suits.Pike, Ranks.Seven),
-            Card(Suits.Pike, Ranks.Eight),
-            Card(Suits.Pike, Ranks.Nine),
-            Card(Suits.Pike, Ranks.Ten)
+            Card(Suit.Pike, Rank.Ace),
+            Card(Suit.Pike, Rank.Two),
+            Card(Suit.Pike, Rank.Three),
+            Card(Suit.Pike, Rank.Four),
+            Card(Suit.Pike, Rank.Five),
+            Card(Suit.Pike, Rank.Six),
+            Card(Suit.Pike, Rank.Seven),
+            Card(Suit.Pike, Rank.Eight),
+            Card(Suit.Pike, Rank.Nine),
+            Card(Suit.Pike, Rank.Ten)
         )
-        val CARD_TO_DROP = Card(Suits.Clover, Ranks.Six)
+        val CARD_TO_DROP = Card(Suit.Clover, Rank.Six)
         val PLAYER_DECK_CARD = STRAIGHT_CARDS2.plus(CARD_TO_DROP)
-        val DISCARD_DECK_CARD = Card(Suits.Heart, Ranks.Queen)
+        val DISCARD_DECK_CARD = Card(Suit.Heart, Rank.Queen)
         val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
             gameId = AGGREGATE_ID,
             players = listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
