@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.dealer.adapters.externalEventPublisher.kafka
 
-import com.abaddon83.burraco.common.VertxCoroutineScope
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
@@ -9,14 +8,18 @@ import com.abaddon83.burraco.dealer.events.CardDealtToDeck
 import com.abaddon83.burraco.dealer.events.DealerEvent
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.ExternalEventPublisherPort
+import io.vertx.core.Vertx
 import io.vertx.core.impl.logging.Logger
 import io.vertx.core.impl.logging.LoggerFactory
-import kotlinx.coroutines.withContext
+import io.vertx.kafka.client.producer.KafkaProducer
 
 class KafkaExternalEventPublisherAdapter(
-    vertxCoroutineScope: VertxCoroutineScope,
+    vertx: Vertx,
     kafkaConfig: KafkaProducerConfig
-) : KafkaProducerVerticle<DealerEvent, Dealer>(vertxCoroutineScope, kafkaConfig), ExternalEventPublisherPort {
+) : KafkaProducerVerticle<DealerEvent, Dealer>(
+    KafkaProducer.create(vertx, kafkaConfig.producerConfig()),
+    kafkaConfig.topic()
+), ExternalEventPublisherPort {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun chooseExternalEvent(aggregate: Dealer, domainEvent: DealerEvent): ExternalEvent? {
@@ -33,7 +36,7 @@ class KafkaExternalEventPublisherAdapter(
     override suspend fun publish(
         aggregate: Dealer,
         event: DealerEvent
-    ): Result<Unit> = withContext(vertxCoroutineScope.coroutineContext()) {
+    ): Result<Unit> = runCatching {
         publishOnKafka(aggregate, event)
     }
 

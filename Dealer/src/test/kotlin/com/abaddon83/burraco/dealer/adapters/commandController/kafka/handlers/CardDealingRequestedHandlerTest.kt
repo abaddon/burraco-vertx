@@ -26,7 +26,7 @@ internal class CardDealingRequestedHandlerTest {
         inMemoryEventStoreRepository,
         DummyExternalEventPublisherAdapter()
     )
-    private val cardsRequestedToDealerHandler = CardsRequestedToDealerHandler(
+    private val cardsRequestedToDealerHandler = CardsRequestedToDealerHandlerKafka(
         CommandControllerAdapter(commandHandler),
         Vertx.vertx()
     )

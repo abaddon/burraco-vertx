@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.dealer.models
 
-import java.util.*
 import com.abaddon83.burraco.dealer.models.Suit.*
 
 enum class Suit(val label: String){

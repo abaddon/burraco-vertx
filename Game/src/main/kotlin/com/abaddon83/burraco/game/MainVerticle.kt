@@ -1,7 +1,5 @@
 package com.abaddon83.burraco.game
 
-import com.abaddon83.burraco.common.VertxCoroutineScope
-import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.game.adapters.commandController.kafka.KafkaDealerConsumerVerticle
 import com.abaddon83.burraco.game.adapters.commandController.rest.RestHttpServiceVerticle
@@ -39,7 +37,7 @@ class MainVerticle(
     override fun start(startPromise: Promise<Void>?) {
         log.info("Game Starting...")
         try {
-            val commandControllerAdapter = buildCommandControllerAdapter(serviceConfig, VertxCoroutineScope(vertx))
+            val commandControllerAdapter = buildCommandControllerAdapter(serviceConfig)
             val serverOpts = DeploymentOptions().setConfig(config())
             //list of verticle to deploy
             val allFutures: List<Future<Any>> = listOf(
@@ -101,13 +99,10 @@ class MainVerticle(
         return done
     }
 
-    private fun buildCommandControllerAdapter(
-        serviceConfig: ServiceConfig,
-        vertxCoroutineScope: VertxCoroutineScope
-    ): CommandControllerAdapter {
+    private fun buildCommandControllerAdapter(serviceConfig: ServiceConfig): CommandControllerAdapter {
         //GameEventsPublisher
         val externalEventPublisher =
-            KafkaExternalEventPublisherAdapter(vertxCoroutineScope, serviceConfig.kafkaGameProducer)
+            KafkaExternalEventPublisherAdapter(vertx, serviceConfig.kafkaGameProducer)
 
         //Repository
         val repository = EventStoreDBRepository<Game>(

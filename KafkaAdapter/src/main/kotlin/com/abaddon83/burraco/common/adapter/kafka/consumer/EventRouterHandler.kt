@@ -1,16 +1,16 @@
 package com.abaddon83.burraco.common.adapter.kafka.consumer
 
+import com.abaddon83.burraco.common.adapter.kafka.Handler
 import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
-import io.vertx.core.Handler
 import io.vertx.kafka.client.consumer.KafkaConsumerRecord
 
 class EventRouterHandler private constructor(
-    private val eventsHandlers: Map<String, Handler<KafkaEvent>>
+    private val eventsHandlers: Map<String, KafkaEventHandler>
 ) : Handler<KafkaConsumerRecord<String, String>> {
 
-    constructor() : this(mapOf<String, Handler<KafkaEvent>>())
+    constructor() : this(mapOf<String, KafkaEventHandler>())
 
-    fun addHandler(eventName: String, handler: EventHandler): EventRouterHandler =
+    fun addHandler(eventName: String, handler: KafkaEventHandler): EventRouterHandler =
         EventRouterHandler(eventsHandlers.plus(eventName to handler))
 
     override fun handle(event: KafkaConsumerRecord<String, String>?) {

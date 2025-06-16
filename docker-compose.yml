@@ -85,7 +85,7 @@ services:
   redpanda:
     container_name: redpanda
     environment:
-      REDPANDA_VERSION: "v25.1.3"
+      REDPANDA_VERSION: "v25.1.5"
     command:
       - redpanda
       - start
@@ -108,7 +108,7 @@ services:
       # Tells Seastar (the framework Redpanda uses under the hood) to use 1 core on the system.
       - --smp 1
       - --default-log-level=info
-    image: docker.redpanda.com/redpandadata/redpanda:v25.1.3
+    image: docker.redpanda.com/redpandadata/redpanda:v25.1.5
     volumes:
       - redpanda-hd0:/var/lib/redpanda/data
     networks:
@@ -121,13 +121,13 @@ services:
 
   console:
     container_name: redpanda-console
-    image: docker.redpanda.com/redpandadata/console:v3.1.0
+    image: docker.redpanda.com/redpandadata/console:v3.1.1
     networks:
       - burraco-net
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     environment:
-      REDPANDA_CONSOLE_VERSION: "v3.1.0"
+      REDPANDA_CONSOLE_VERSION: "v3.1.1"
       CONFIG_FILEPATH: /tmp/config.yml
       CONSOLE_CONFIG_FILE: |
         kafka:

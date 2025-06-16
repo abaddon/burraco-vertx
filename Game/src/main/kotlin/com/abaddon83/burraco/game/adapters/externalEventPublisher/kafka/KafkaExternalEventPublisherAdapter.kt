@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka
 
-import com.abaddon83.burraco.common.VertxCoroutineScope
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
@@ -11,12 +10,16 @@ import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import com.abaddon83.burraco.game.ports.ExternalEventPublisherPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
-import kotlinx.coroutines.withContext
+import io.vertx.core.Vertx
+import io.vertx.kafka.client.producer.KafkaProducer
 
 class KafkaExternalEventPublisherAdapter(
-    vertxCoroutineScope: VertxCoroutineScope,
+    vertx: Vertx,
     kafkaConfig: KafkaProducerConfig
-) : KafkaProducerVerticle<GameEvent, Game>(vertxCoroutineScope, kafkaConfig), ExternalEventPublisherPort {
+) : KafkaProducerVerticle<GameEvent, Game>(
+    KafkaProducer.create(vertx, kafkaConfig.producerConfig()),
+    kafkaConfig.topic()
+), ExternalEventPublisherPort {
 
     override fun chooseExternalEvent(aggregate: Game, domainEvent: GameEvent): ExternalEvent? {
         return when (domainEvent) {
@@ -32,7 +35,7 @@ class KafkaExternalEventPublisherAdapter(
     override suspend fun publish(
         aggregate: Game,
         event: GameEvent
-    ): Result<Unit> = withContext(vertxCoroutineScope.coroutineContext()) {
+    ): Result<Unit> = runCatching {
         publishOnKafka(aggregate, event)
     }
 

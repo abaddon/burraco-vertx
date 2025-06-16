@@ -22,7 +22,7 @@ import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
-data class Dealer private constructor(
+data class Dealer(
     override val id: DealerIdentity,
     override val version: Long,
     val gameIdentity: GameIdentity,
@@ -101,7 +101,7 @@ data class Dealer private constructor(
     private fun apply(event: DeckCreated): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
         val newDealer = copy(
-            version = this.version + 1,
+            version = 0,
             id = event.aggregateId,
             gameIdentity = event.gameId,
             players = event.playersId.map { Player.create(it) },

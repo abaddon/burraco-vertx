@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.dealer
 
-import com.abaddon83.burraco.common.VertxCoroutineScope
 import com.abaddon83.burraco.dealer.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.dealer.adapters.commandController.kafka.KafkaGameConsumerAdapter
 import com.abaddon83.burraco.dealer.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
@@ -8,7 +7,13 @@ import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.models.Dealer
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
-import io.vertx.core.*
+import io.vertx.core.AbstractVerticle
+import io.vertx.core.AsyncResult
+import io.vertx.core.DeploymentOptions
+import io.vertx.core.Future
+import io.vertx.core.Promise
+import io.vertx.core.Verticle
+import io.vertx.core.Vertx
 
 class MainVerticle(
     private val serviceConfig: ServiceConfig
@@ -27,10 +32,7 @@ class MainVerticle(
     override fun start(startPromise: Promise<Void>?) {
         log.info("Dealer Starting...")
         try {
-            val commandControllerAdapter = buildCommandController(
-                serviceConfig,
-                VertxCoroutineScope(vertx)
-            )
+            val commandControllerAdapter = buildCommandController(serviceConfig)
             val serverOpts = DeploymentOptions().setConfig(config())
 
             //list of verticle to deploy
@@ -92,13 +94,10 @@ class MainVerticle(
     }
 
     private fun buildCommandController(
-        serviceConfig: ServiceConfig,
-        vertxCoroutineScope: VertxCoroutineScope
+        serviceConfig: ServiceConfig
     ): CommandControllerAdapter {
-
-        val coroutineContext = vertxCoroutineScope.coroutineContext()
         val externalEventPublisher =
-            KafkaExternalEventPublisherAdapter(vertxCoroutineScope, serviceConfig.dealerEventPublisher)
+            KafkaExternalEventPublisherAdapter(vertx, serviceConfig.dealerEventPublisher)
 
         //Repository
         val repository = EventStoreDBRepository<Dealer>(

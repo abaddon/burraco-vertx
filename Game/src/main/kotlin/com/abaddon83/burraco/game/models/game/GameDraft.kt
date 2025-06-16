@@ -60,7 +60,7 @@ data class GameDraft constructor(
 
     private fun apply(event: GameCreated): GameDraft {
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.simpleName, event.messageId, event.aggregateId)
-        return copy(id = event.aggregateId, version = version + 1)
+        return copy(id = event.aggregateId, version = 0)
     }
 
     private fun apply(event: PlayerAdded): GameDraft {
