@@ -31,10 +31,7 @@ internal class DealerServiceTest {
         inMemoryRepository,
         DummyExternalEventPublisherAdapter()
     )
-    private val commandControllerAdapter = CommandControllerAdapter(
-        aggregateDealerCommandHandler
-    )
-    private val dealerService = DealerService(commandControllerAdapter)
+    private val dealerService = DealerService(aggregateDealerCommandHandler)
 
 
     @Test

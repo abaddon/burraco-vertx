@@ -45,6 +45,9 @@ internal class StraightHelperTest {
         assertEquals(expectedCards, straight.cards)
     }
 
+    /* CLAUDE: the expected order [card: Pike-2, card: Heart-8, card: Heart-7, card: Heart-6, card: Heart-5, card: Heart-4, card: Heart-3, card: Heart-2] is valid because
+    the card Pike-2 before the Heart-8 has to be considered as Jolly card, so the order is correct.
+     */
     @Test
     fun `Given a list #3 of cards when the Straight is created then the card should sorted properly`() {
         val expectedCards = listOf(
@@ -63,6 +66,9 @@ internal class StraightHelperTest {
         assertEquals(expectedCards, straight.cards)
     }
 
+    /* CLAUDE: the expected order [card: Jolly-J, card: Heart-8, card: Heart-7, card: Heart-6, card: Heart-5, card: Heart-4, card: Heart-3, card: Heart-2] is valid because
+    the card Jolly-J before Heart-8 has to be considered valid but even the jolly carf after Heart-2 can be considered a valid sequence.
+     */
     @Test
     fun `Given a list #4 of cards when the Straight is created then the card should sorted properly`() {
         val expectedCards = listOf(
@@ -98,6 +104,9 @@ internal class StraightHelperTest {
         assertEquals(expectedCards, straight.cards)
     }
 
+    /* CLAUDE: the list of cards in the expectedCards is valid and can generate a Straight because one of the Heart-2 cards
+    can be used as jolly and fix the Heart-6 gap.
+     */
     @Test
     fun `Given a list #6 of cards when the Straight is created then the card should sorted properly`() {
         val expectedCards = listOf(
@@ -115,6 +124,9 @@ internal class StraightHelperTest {
         assertEquals(expectedCards, straight.cards)
     }
 
+    /* CLAUDE: the expected order [card: Heart-2, card: Heart-6, card: Heart-5, card: Heart-4, card: Heart-3, card: Heart-2, card: Heart-A] is valid because
+    the card Heart-2 before the Heart-6 has to be considered as Jolly card, so the order is correct.
+     */
     @Test
     fun `Given a list #7 of cards when the Straight is created then the card should sorted properly`() {
         val expectedCards = listOf(
