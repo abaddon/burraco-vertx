@@ -9,6 +9,8 @@ import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.dealer.events.CardDealtToDeck
 import com.abaddon83.burraco.dealer.events.CardDealtToDiscardDeck
 import com.abaddon83.burraco.dealer.events.CardDealtToPlayer
+import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck1
+import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck2
 import com.abaddon83.burraco.dealer.models.Card
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.helper.KafkaContainerTest
