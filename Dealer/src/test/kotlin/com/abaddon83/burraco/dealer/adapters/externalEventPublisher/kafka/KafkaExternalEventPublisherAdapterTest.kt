@@ -7,6 +7,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.dealer.events.CardDealtToDeck
+import com.abaddon83.burraco.dealer.events.CardDealtToDiscardDeck
 import com.abaddon83.burraco.dealer.events.CardDealtToPlayer
 import com.abaddon83.burraco.dealer.models.Card
 import com.abaddon83.burraco.dealer.models.Dealer
@@ -71,6 +72,87 @@ class KafkaExternalEventPublisherAdapterTest : KafkaContainerTest() {
         val card = Card(Suit.Pike, Rank.King)
         val dealer = createMockDealer(dealerIdentity, gameIdentity)
         val event = CardDealtToPlayer.create(dealerIdentity, gameIdentity, playerIdentity, card)
+
+        // When
+        runBlocking {
+            kafkaExternalEventPublisherAdapter.publish(dealer, event)
+        }
+
+        // Then
+        testContext.awaitCompletion(2, TimeUnit.SECONDS)
+        assertEquals(expectedEventsCount, actualEvents.size)
+        consumer.close().onComplete { testContext.completeNow() }
+    }
+
+    @Test
+    fun `given a Dealer with a CardDealtToDiscardDeck domain event then a CardDealtToDiscardDeckExternalEvent is published on kafka`(testContext: VertxTestContext) {
+        // Given
+        val actualEvents = mutableListOf<String>()
+        val expectedEventsCount = 1
+        val consumer = initConsumer(topic) {
+            println("Received event: ${it.value()}")
+            actualEvents.add(it.value())
+        }
+
+        val dealerIdentity = DealerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val card = Card(Suit.Clover, Rank.Seven)
+        val dealer = createMockDealer(dealerIdentity, gameIdentity)
+        val event = CardDealtToDiscardDeck.create(dealerIdentity, gameIdentity, card)
+
+        // When
+        runBlocking {
+            kafkaExternalEventPublisherAdapter.publish(dealer, event)
+        }
+
+        // Then
+        testContext.awaitCompletion(2, TimeUnit.SECONDS)
+        assertEquals(expectedEventsCount, actualEvents.size)
+        consumer.close().onComplete { testContext.completeNow() }
+    }
+
+    @Test
+    fun `given a Dealer with a CardDealtToPlayerDeck1 domain event then a CardDealtToPlayerDeck1ExternalEvent is published on kafka`(testContext: VertxTestContext) {
+        // Given
+        val actualEvents = mutableListOf<String>()
+        val expectedEventsCount = 1
+        val consumer = initConsumer(topic) {
+            println("Received event: ${it.value()}")
+            actualEvents.add(it.value())
+        }
+
+        val dealerIdentity = DealerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val card = Card(Suit.Tile, Rank.Queen)
+        val dealer = createMockDealer(dealerIdentity, gameIdentity)
+        val event = CardDealtToPlayerDeck1.create(dealerIdentity, gameIdentity, card)
+
+        // When
+        runBlocking {
+            kafkaExternalEventPublisherAdapter.publish(dealer, event)
+        }
+
+        // Then
+        testContext.awaitCompletion(2, TimeUnit.SECONDS)
+        assertEquals(expectedEventsCount, actualEvents.size)
+        consumer.close().onComplete { testContext.completeNow() }
+    }
+
+    @Test
+    fun `given a Dealer with a CardDealtToPlayerDeck2 domain event then a CardDealtToPlayerDeck2ExternalEvent is published on kafka`(testContext: VertxTestContext) {
+        // Given
+        val actualEvents = mutableListOf<String>()
+        val expectedEventsCount = 1
+        val consumer = initConsumer(topic) {
+            println("Received event: ${it.value()}")
+            actualEvents.add(it.value())
+        }
+
+        val dealerIdentity = DealerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val card = Card(Suit.Pike, Rank.Ten)
+        val dealer = createMockDealer(dealerIdentity, gameIdentity)
+        val event = CardDealtToPlayerDeck2.create(dealerIdentity, gameIdentity, card)
 
         // When
         runBlocking {
