@@ -1,7 +1,6 @@
-package com.abaddon83.burraco.helpers
+package com.abaddon83.burraco.helper
 
-import com.abaddon83.burraco.game.events.game.GameEvent
-import io.vertx.core.Future
+import com.abaddon83.burraco.dealer.events.DealerEvent
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.junit5.VertxExtension
@@ -17,7 +16,7 @@ import org.apache.kafka.clients.admin.AdminClientConfig
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.junit.jupiter.api.extension.ExtendWith
-import org.testcontainers.containers.KafkaContainer
+import org.testcontainers.kafka.KafkaContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
@@ -33,7 +32,7 @@ abstract class KafkaContainerTest {
     }
 
     @Container
-    internal val kafka: KafkaContainer = KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"))
+    internal val kafka: KafkaContainer = KafkaContainer(DockerImageName.parse("apache/kafka"))
 
 
     private fun producerConfig(): Map<String, String> = mapOf<String, String>(
@@ -89,7 +88,7 @@ abstract class KafkaContainerTest {
         getProducer().write(KafkaProducerRecord.create(topic, key, value))
     }
 
-    internal fun <T : GameEvent> publishMessage(topic: String, key: String, value: T) {
+    internal fun <T : DealerEvent> publishMessage(topic: String, key: String, value: T) {
         publishMessage(topic, key, value.toJson())
     }
 

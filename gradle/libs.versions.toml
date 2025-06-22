@@ -89,7 +89,12 @@ common = [
     "jackson-databind",
     "jackson-annotations"
 ]
-commonTest = ["vertx-junit5"]
+commonTest = [
+    "vertx-junit5",
+    "testcontainers",
+    "testcontainer-kafka",
+    "testcontainer-junit"
+]
 
 kafkaAdapter = [
     "kotlinxDatetime",

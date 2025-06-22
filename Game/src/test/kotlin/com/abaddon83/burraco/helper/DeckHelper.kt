@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.helpers
+package com.abaddon83.burraco.helper
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity

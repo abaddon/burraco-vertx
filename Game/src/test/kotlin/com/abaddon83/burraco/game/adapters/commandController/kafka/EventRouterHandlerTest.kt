@@ -51,13 +51,13 @@ internal class EventRouterHandlerTest {
         }
     }
 
-    internal class DummyKafkaEventHandler() : KafkaEventHandler() {
+    internal class DummyKafkaEventHandler() : KafkaEventHandler("event1") {
 
         override fun getCoroutineIOScope(): CoroutineScope {
             return CoroutineScope(Dispatchers.IO + SupervisorJob())
         }
 
-        override suspend fun handleKafkaEventRequest(event: KafkaEvent?): Validated<*, *> {
+        override suspend fun handleKafkaEventRequest(event: KafkaEvent): Validated<*, *> {
             return Validated.Valid(Unit)
         }
 

@@ -8,8 +8,8 @@ import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
-import com.abaddon83.burraco.helpers.DeckHelper.generateFakeDealerEvents
-import com.abaddon83.burraco.helpers.GameDecksHelper
+import com.abaddon83.burraco.helper.DeckHelper.generateFakeDealerEvents
+import com.abaddon83.burraco.helper.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent

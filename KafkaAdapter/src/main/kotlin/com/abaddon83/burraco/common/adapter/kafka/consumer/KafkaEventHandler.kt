@@ -8,9 +8,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-abstract class KafkaEventHandler() : Handler<KafkaEvent> {
+abstract class KafkaEventHandler(private val expectedEventName: String) : Handler<KafkaEvent> {
 
     override fun handle(event: KafkaEvent?) {
+        checkNotNull(event)
+        check(event.eventName == expectedEventName)
         val job = getCoroutineIOScope().launch {
             val outcome = handleKafkaEventRequest(event)
             logOutcome(outcome)
@@ -28,6 +30,6 @@ abstract class KafkaEventHandler() : Handler<KafkaEvent> {
 
     abstract fun getCoroutineIOScope(): CoroutineScope
 
-    abstract suspend fun handleKafkaEventRequest(event: KafkaEvent?): Validated<*, *>
+    abstract suspend fun handleKafkaEventRequest(event: KafkaEvent): Validated<*, *>
 
 }

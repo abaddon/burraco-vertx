@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.testHelpers
+package com.abaddon83.burraco.helper
 
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.AdminClientConfig
@@ -7,7 +7,6 @@ import org.apache.kafka.clients.consumer.*
 import org.junit.jupiter.api.BeforeAll
 import org.testcontainers.containers.KafkaContainer
 import org.testcontainers.utility.DockerImageName
-import java.time.Duration
 import java.util.Properties
 
 

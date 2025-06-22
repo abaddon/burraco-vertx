@@ -2,12 +2,11 @@ package com.abaddon83.burraco.dealer.services
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.dealer.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.common.models.DealerIdentity
-import com.abaddon83.burraco.testHelpers.DummyExternalEventPublisherAdapter
+import com.abaddon83.burraco.helper.DummyExternalEventPublisherAdapter
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.core.persistence.InMemoryEventStoreRepository
