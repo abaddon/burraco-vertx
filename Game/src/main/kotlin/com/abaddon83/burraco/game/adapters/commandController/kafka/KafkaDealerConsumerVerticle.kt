@@ -16,5 +16,4 @@ class KafkaDealerConsumerVerticle(
     override fun loadHandlers(): EventRouterHandler = EventRouterHandler()
         .addHandler("CardDealtToDeck", AddCardDeckHandlerKafka(controllerAdapter))
         .addHandler("CardDealtToPlayer", AddCardPlayerHandlerKafka(controllerAdapter))
-
 }

@@ -15,5 +15,5 @@ data class CardDealtToPlayerDeck2ExternalEvent(
     val cardLabel: String,
 ) : ExternalEvent {
     override val eventOwner: String = "Dealer"
-    override val eventName: String = "CardDealtToDiscardDeck"
+    override val eventName: String = "CardDealtToPlayerDeck2"
 }
