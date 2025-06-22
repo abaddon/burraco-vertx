@@ -11,16 +11,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+private const val CARDS_REQUESTED_TO_DEALER = "CardsRequestedToDealer"
+
 class CardsRequestedToDealerHandlerKafka(
     private val commandController: CommandControllerPort
-) : KafkaEventHandler() {
+) : KafkaEventHandler(CARDS_REQUESTED_TO_DEALER) {
 
     override fun getCoroutineIOScope(): CoroutineScope =
         CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    override suspend fun handleKafkaEventRequest(event: KafkaEvent?): Validated<*, *> {
-        checkNotNull(event)
-        check(event.eventName == CardsRequestedToDealer::class.java.simpleName)
+    override suspend fun handleKafkaEventRequest(event: KafkaEvent): Validated<*, *> {
         log.info("Event ${event.eventName} received")
         val cardsRequestedToDealerEvent = Json.decodeValue(event.eventPayload, CardsRequestedToDealer::class.java)
         return commandController.cardRequestedToDealer(

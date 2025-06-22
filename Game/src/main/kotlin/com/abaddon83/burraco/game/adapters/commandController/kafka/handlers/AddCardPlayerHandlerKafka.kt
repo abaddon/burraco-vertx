@@ -2,7 +2,7 @@ package com.abaddon83.burraco.game.adapters.commandController.kafka.handlers
 
 import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaEventHandler
-import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToDeckExternalEvent
+import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerExternalEvent
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.ports.CommandControllerPort
@@ -12,10 +12,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
-private const val CARD_DEALT_TO_DECK = "CardDealtToDeck"
+private const val CARD_DEALT_TO_PLAYER = "CardDealtToPlayer"
 
-class AddCardDeckHandlerKafka(private val controllerAdapter: CommandControllerPort) :
-    KafkaEventHandler(CARD_DEALT_TO_DECK) {
+class AddCardPlayerHandlerKafka(private val controllerAdapter: CommandControllerPort) :
+    KafkaEventHandler(CARD_DEALT_TO_PLAYER) {
 
 
     override fun getCoroutineIOScope(): CoroutineScope =
@@ -23,12 +23,13 @@ class AddCardDeckHandlerKafka(private val controllerAdapter: CommandControllerPo
 
     override suspend fun handleKafkaEventRequest(event: KafkaEvent): Validated<*, *> {
         log.info("Event ${event.eventName} received")
-        val cardDealtToDeckExternalEventEvent =
-            Json.decodeValue(event.eventPayload, CardDealtToDeckExternalEvent::class.java)
-        val card = Card.fromLabel(cardDealtToDeckExternalEventEvent.cardLabel)
-        val gameIdentity = cardDealtToDeckExternalEventEvent.gameIdentity
+        val cardDealtToPlayerExternalEventEvent =
+            Json.decodeValue(event.eventPayload, CardDealtToPlayerExternalEvent::class.java)
+        val card = Card.fromLabel(cardDealtToPlayerExternalEventEvent.cardLabel)
+        val gameIdentity = cardDealtToPlayerExternalEventEvent.gameIdentity
+        val playerIdentity = cardDealtToPlayerExternalEventEvent.playerIdentity
 
-        return controllerAdapter.addCardDeck(gameIdentity, card)
+        return controllerAdapter.addCardPlayer(gameIdentity, playerIdentity, card)
     }
 
 

@@ -7,7 +7,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
-import com.abaddon83.burraco.helpers.KafkaContainerTest
+import com.abaddon83.burraco.helper.KafkaContainerTest
 import io.vertx.core.Handler
 import io.vertx.junit5.VertxTestContext
 import kotlinx.coroutines.runBlocking

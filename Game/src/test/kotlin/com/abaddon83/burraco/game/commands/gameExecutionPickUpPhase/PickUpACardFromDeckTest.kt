@@ -5,8 +5,8 @@ import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.helpers.DeckHelper
-import com.abaddon83.burraco.helpers.GameDecksHelper
+import com.abaddon83.burraco.helper.DeckHelper
+import com.abaddon83.burraco.helper.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent

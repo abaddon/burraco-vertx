@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.testHelpers
+package com.abaddon83.burraco.helper
 
 
 import com.abaddon83.burraco.dealer.events.DealerEvent

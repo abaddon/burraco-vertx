@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.helpers
+package com.abaddon83.burraco.helper
 
 import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.card.Card

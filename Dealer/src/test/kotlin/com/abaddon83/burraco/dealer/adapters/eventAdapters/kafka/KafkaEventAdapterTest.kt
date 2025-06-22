@@ -1,21 +1,8 @@
 package com.abaddon83.burraco.dealer.adapters.eventAdapters.kafka
 
-import com.abaddon83.burraco.common.models.GameIdentity
-import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.dealer.events.CardDealtToDiscardDeck
-import com.abaddon83.burraco.dealer.events.DeckCreated
-import com.abaddon83.burraco.dealer.models.*
-import com.abaddon83.burraco.testHelpers.WithKafkaContainer
-import io.vertx.core.Vertx
+import com.abaddon83.burraco.helper.WithKafkaContainer
 import io.vertx.junit5.VertxExtension
-import io.vertx.junit5.VertxTestContext
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.time.Duration
 
 @ExtendWith(VertxExtension::class)
 internal class KafkaEventAdapterTest : WithKafkaContainer() {
