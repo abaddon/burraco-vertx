@@ -14,7 +14,6 @@ class KafkaEvent(
 
     companion object{
         fun <E1: ExternalEvent>from(externalEvent: E1): KafkaEvent {
-            println(Json.encode(externalEvent))
             return KafkaEvent(externalEvent.eventName, Json.encode(externalEvent))
         }
 

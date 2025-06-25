@@ -16,9 +16,8 @@ abstract class KafkaEventHandler(private val expectedEventName: String) : Handle
         val job = getCoroutineIOScope().launch {
             val outcome = handleKafkaEventRequest(event)
             logOutcome(outcome)
-
         }
-        runBlocking { job.join() } //TODO remove this blocking call to avoid blocking the eventloop thread
+        runBlocking { job.join() }
     }
 
     private fun logOutcome(outcome: Validated<*, *>) {
