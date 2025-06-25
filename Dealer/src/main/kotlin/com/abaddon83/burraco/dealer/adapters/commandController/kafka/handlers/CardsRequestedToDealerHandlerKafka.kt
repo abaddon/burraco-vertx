@@ -13,9 +13,8 @@ import kotlinx.coroutines.SupervisorJob
 
 private const val CARDS_REQUESTED_TO_DEALER = "CardsRequestedToDealer"
 
-class CardsRequestedToDealerHandlerKafka(
-    private val commandController: CommandControllerPort
-) : KafkaEventHandler(CARDS_REQUESTED_TO_DEALER) {
+class CardsRequestedToDealerHandlerKafka(private val commandController: CommandControllerPort) :
+    KafkaEventHandler(CARDS_REQUESTED_TO_DEALER) {
 
     override fun getCoroutineIOScope(): CoroutineScope =
         CoroutineScope(Dispatchers.IO + SupervisorJob())

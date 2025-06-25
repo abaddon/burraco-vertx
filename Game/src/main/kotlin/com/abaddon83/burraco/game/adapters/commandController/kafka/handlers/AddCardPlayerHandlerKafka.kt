@@ -14,7 +14,7 @@ import kotlinx.coroutines.SupervisorJob
 
 private const val CARD_DEALT_TO_PLAYER = "CardDealtToPlayer"
 
-class AddCardPlayerHandlerKafka(private val controllerAdapter: CommandControllerPort) :
+class AddCardPlayerHandlerKafka(private val commandController: CommandControllerPort) :
     KafkaEventHandler(CARD_DEALT_TO_PLAYER) {
 
 
@@ -29,7 +29,7 @@ class AddCardPlayerHandlerKafka(private val controllerAdapter: CommandController
         val gameIdentity = cardDealtToPlayerExternalEventEvent.gameIdentity
         val playerIdentity = cardDealtToPlayerExternalEventEvent.playerIdentity
 
-        return controllerAdapter.addCardPlayer(gameIdentity, playerIdentity, card)
+        return commandController.addCardPlayer(gameIdentity, playerIdentity, card)
     }
 
 

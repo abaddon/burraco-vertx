@@ -6,7 +6,7 @@ import com.abaddon83.burraco.dealer.ServiceConfig
 import com.abaddon83.burraco.dealer.adapters.commandController.kafka.handlers.CardsRequestedToDealerHandlerKafka
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
 
-class KafkaGameConsumerAdapter(
+class KafkaGameConsumerVerticle(
     serviceConfig: ServiceConfig,
     private val commandController: CommandControllerPort
 ) : KafkaConsumerVerticle(serviceConfig.gameEventConsumer) {

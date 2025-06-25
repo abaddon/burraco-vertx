@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.dealer
 
 import com.abaddon83.burraco.dealer.adapters.commandController.CommandControllerAdapter
-import com.abaddon83.burraco.dealer.adapters.commandController.kafka.KafkaGameConsumerAdapter
+import com.abaddon83.burraco.dealer.adapters.commandController.kafka.KafkaGameConsumerVerticle
 import com.abaddon83.burraco.dealer.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.models.Dealer
@@ -37,7 +37,7 @@ class MainVerticle(
 
             //list of verticle to deploy
             val allFutures: List<Future<Any>> = listOf(
-                deploy(KafkaGameConsumerAdapter(serviceConfig, commandControllerAdapter), serverOpts).future()
+                deploy(KafkaGameConsumerVerticle(serviceConfig, commandControllerAdapter), serverOpts).future()
             )
 
             Future.all(allFutures).onComplete {
