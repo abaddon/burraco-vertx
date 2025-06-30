@@ -6,6 +6,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.player.DomainError
 import com.abaddon83.burraco.player.DomainResult
 import com.abaddon83.burraco.player.command.playerDraft.CreatePlayer
+import com.abaddon83.burraco.player.command.playerDraft.DeletePlayer
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.port.CommandControllerPort
 import com.abaddon83.burraco.player.port.Outcome
@@ -17,6 +18,11 @@ class CommandControllerAdapter(override val playerCommandHandler: IAggregateComm
 
     override suspend fun createPlayer(gameIdentity: GameIdentity, user: String): Outcome {
         val cmd = CreatePlayer(PlayerIdentity.create(), gameIdentity, user)
+        return executeCommand(cmd)
+    }
+
+    override suspend fun deletePlayer(playerIdentity: PlayerIdentity): Outcome {
+        val cmd = DeletePlayer(playerIdentity)
         return executeCommand(cmd)
     }
 

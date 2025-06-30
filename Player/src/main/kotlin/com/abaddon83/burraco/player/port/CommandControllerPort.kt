@@ -2,6 +2,7 @@ package com.abaddon83.burraco.player.port
 
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.player.DomainError
 import com.abaddon83.burraco.player.DomainResult
 import com.abaddon83.burraco.player.model.player.Player
@@ -14,8 +15,9 @@ interface CommandControllerPort {
     val playerCommandHandler: IAggregateCommandHandler<Player>
 
     suspend fun createPlayer(gameIdentity: GameIdentity, user: String): Outcome
-//
-//    suspend fun addPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome
+
+    suspend fun deletePlayer(playerIdentity: PlayerIdentity): Outcome
+
 //
 //    suspend fun requestDealCards(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome
 //

@@ -7,6 +7,8 @@ import com.abaddon83.burraco.player.DomainError
 import com.abaddon83.burraco.player.DomainResult
 import com.abaddon83.burraco.player.command.playerDraft.CreatePlayer
 import com.abaddon83.burraco.player.event.PlayerCreated
+import com.abaddon83.burraco.player.event.PlayerDeleted
+import com.abaddon83.burraco.player.model.player.DeletedPlayer
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -125,5 +127,67 @@ internal class CommandControllerAdapterTest {
         assertEquals(gameIdentity2, playerCreatedEvent2.gameIdentity)
         assertEquals(user, playerCreatedEvent1.user)
         assertEquals(user, playerCreatedEvent2.user)
+    }
+
+    @Test
+    fun `given existing player when deletePlayer then returns Valid DomainResult with DeletedPlayer`() = runBlocking {
+        // Given - First create a player
+        val gameIdentity = GameIdentity.create()
+        val user = "testUser"
+        val createResult = commandControllerAdapter.createPlayer(gameIdentity, user)
+        assertTrue(createResult is Validated.Valid)
+        val playerIdentity = ((createResult as Validated.Valid).value.events.first() as PlayerCreated).aggregateId
+
+        // When - Delete the player
+        val result = commandControllerAdapter.deletePlayer(playerIdentity)
+
+        // Then
+        assertTrue(result is Validated.Valid)
+        val domainResult = (result as Validated.Valid).value
+        assertTrue(domainResult.events.any { it is PlayerDeleted })
+
+        val playerDeletedEvent = domainResult.events.first() as PlayerDeleted
+        assertEquals(playerIdentity, playerDeletedEvent.aggregateId)
+
+        assertTrue(domainResult.player is DeletedPlayer)
+        val deletedPlayer = domainResult.player as DeletedPlayer
+        assertEquals(playerIdentity, deletedPlayer.id)
+        assertEquals(gameIdentity, deletedPlayer.gameIdentity)
+        assertEquals(user, deletedPlayer.user)
+    }
+
+    @Test
+    fun `given non-existing player when deletePlayer then returns Invalid DomainError`() = runBlocking {
+        // Given
+        val nonExistingPlayerIdentity = PlayerIdentity.create()
+
+        // When
+        val result = commandControllerAdapter.deletePlayer(nonExistingPlayerIdentity)
+
+        // Then
+        assertTrue(result is Validated.Invalid)
+        val domainError = (result as Validated.Invalid).err
+        assertTrue(domainError is DomainError.ExceptionError)
+    }
+
+    @Test
+    fun `given deleted player when deletePlayer then returns Invalid DomainError`() = runBlocking {
+        // Given - First create and then delete a player
+        val gameIdentity = GameIdentity.create()
+        val user = "testUser"
+        val createResult = commandControllerAdapter.createPlayer(gameIdentity, user)
+        val playerIdentity = ((createResult as Validated.Valid).value.events.first() as PlayerCreated).aggregateId
+        
+        // Delete the player first time
+        val firstDeleteResult = commandControllerAdapter.deletePlayer(playerIdentity)
+        assertTrue(firstDeleteResult is Validated.Valid)
+
+        // When - Try to delete again
+        val result = commandControllerAdapter.deletePlayer(playerIdentity)
+
+        // Then
+        assertTrue(result is Validated.Invalid)
+        val domainError = (result as Validated.Invalid).err
+        assertTrue(domainError is DomainError.ExceptionError)
     }
 }
