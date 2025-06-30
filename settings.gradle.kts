@@ -24,5 +24,6 @@ include(":Common")
 include(":Dealer")
 include(":Game")
 include(":KafkaAdapter")
+include(":Player")
 
 rootProject.name = "burraco"

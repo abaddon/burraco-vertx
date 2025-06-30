@@ -16,7 +16,7 @@ private const val VALIDATION_MSG_GAME_EXIST = "Current game with id %s is alread
 private const val VALIDATION_MSG_PLAYER_ALREADY_ADDED = "The player %s is already a player of game %s"
 
 
-data class GameDraft constructor(
+data class GameDraft(
     override val id: GameIdentity,
     override val version: Long,
     override val players: List<WaitingPlayer>

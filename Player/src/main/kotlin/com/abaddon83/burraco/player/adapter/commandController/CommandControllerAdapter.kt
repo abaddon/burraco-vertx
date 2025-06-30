@@ -1,0 +1,37 @@
+package com.abaddon83.burraco.player.adapter.commandController
+
+import com.abaddon83.burraco.common.helpers.Validated
+import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.player.DomainError
+import com.abaddon83.burraco.player.DomainResult
+import com.abaddon83.burraco.player.command.playerDraft.CreatePlayer
+import com.abaddon83.burraco.player.model.player.Player
+import com.abaddon83.burraco.player.port.CommandControllerPort
+import com.abaddon83.burraco.player.port.Outcome
+import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
+import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
+
+class CommandControllerAdapter(override val playerCommandHandler: IAggregateCommandHandler<Player>) :
+    CommandControllerPort {
+
+    override suspend fun createPlayer(gameIdentity: GameIdentity, user: String): Outcome {
+        val cmd = CreatePlayer(PlayerIdentity.create(), gameIdentity, user)
+        return executeCommand(cmd)
+    }
+
+    private suspend fun executeCommand(command: ICommand<Player>): Outcome {
+        val result = playerCommandHandler.handle(command)
+        return when {
+            result.isSuccess -> Validated.Valid(
+                DomainResult(
+                    result.getOrThrow().uncommittedEvents(),
+                    result.getOrThrow()
+                )
+            )
+
+            result.isFailure -> Validated.Invalid(DomainError.ExceptionError(result.exceptionOrNull()!!))
+            else -> Validated.Invalid(DomainError.ExceptionError(IllegalStateException("Unexpected result state")))
+        }
+    }
+}
