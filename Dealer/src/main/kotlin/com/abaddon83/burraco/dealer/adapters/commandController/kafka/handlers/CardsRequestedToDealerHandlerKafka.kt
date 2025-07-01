@@ -2,7 +2,7 @@ package com.abaddon83.burraco.dealer.adapters.commandController.kafka.handlers
 
 import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaEventHandler
-import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealer
+import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealerExternalEvent
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
@@ -21,7 +21,7 @@ class CardsRequestedToDealerHandlerKafka(private val commandController: CommandC
 
     override suspend fun handleKafkaEventRequest(event: KafkaEvent): Validated<*, *> {
         log.info("Event ${event.eventName} received")
-        val cardsRequestedToDealerEvent = Json.decodeValue(event.eventPayload, CardsRequestedToDealer::class.java)
+        val cardsRequestedToDealerEvent = Json.decodeValue(event.eventPayload, CardsRequestedToDealerExternalEvent::class.java)
         return commandController.cardRequestedToDealer(
             cardsRequestedToDealerEvent.aggregateIdentity,
             cardsRequestedToDealerEvent.players

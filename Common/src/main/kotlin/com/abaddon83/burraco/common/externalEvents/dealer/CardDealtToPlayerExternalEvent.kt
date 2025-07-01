@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.common.externalEvents.dealer
 
-import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
@@ -15,7 +14,4 @@ data class CardDealtToPlayerExternalEvent(
     val playerIdentity: PlayerIdentity,
     @JsonProperty("cardLabel")
     val cardLabel: String,
-) : ExternalEvent {
-    override val eventOwner: String = "Dealer"
-    override val eventName: String = "CardDealtToPlayer"
-}
+) : DealerExternalEvent(aggregateIdentity, DealerEventName.CardDealtToPlayer)

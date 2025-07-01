@@ -3,7 +3,7 @@ package com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
-import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealer
+import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealerExternalEvent
 import com.abaddon83.burraco.game.events.game.CardDealingRequested
 import com.abaddon83.burraco.game.events.game.GameEvent
 import com.abaddon83.burraco.game.models.game.Game
@@ -25,7 +25,7 @@ class KafkaExternalEventPublisherAdapter(
         return when (domainEvent) {
             is CardDealingRequested -> {
                 val listPlayerIdentities = (aggregate as GameWaitingDealer).players.map { it.id }
-                CardsRequestedToDealer(domainEvent.aggregateId, listPlayerIdentities)
+                CardsRequestedToDealerExternalEvent(domainEvent.aggregateId, listPlayerIdentities)
             }
 
             else -> null
