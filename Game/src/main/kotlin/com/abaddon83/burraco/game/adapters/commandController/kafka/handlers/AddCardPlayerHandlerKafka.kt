@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
-private const val CARD_DEALT_TO_PLAYER = "CardDealtToPlayer"
+const val CARD_DEALT_TO_PLAYER = "CardDealtToPlayer"
 
 class AddCardPlayerHandlerKafka(private val commandController: CommandControllerPort) :
     KafkaEventHandler(CARD_DEALT_TO_PLAYER) {
