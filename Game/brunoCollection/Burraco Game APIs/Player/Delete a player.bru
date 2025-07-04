@@ -1,0 +1,15 @@
+meta {
+  name: Delete a player
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{playerUrl}}/players/:playerId
+  body: none
+  auth: none
+}
+
+params:path {
+  playerId: 
+}

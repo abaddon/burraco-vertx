@@ -1,5 +1,10 @@
 package com.abaddon83.burraco.player
 
+import com.abaddon83.burraco.player.adapter.commandController.CommandControllerAdapter
+import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceVerticle
+import com.abaddon83.burraco.player.adapter.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
+import com.abaddon83.burraco.player.command.AggregatePlayerCommandHandler
+import com.abaddon83.burraco.player.model.player.PlayerDraft
 import com.abaddon83.burraco.player.model.player.Player
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
@@ -32,11 +37,10 @@ class MainVerticle(
         log.info("Player service starting...")
         try {
             val serverOpts = DeploymentOptions().setConfig(config())
+            val commandControllerAdapter = buildCommandControllerAdapter()
             
-            // TODO: Add verticles for REST API and Kafka consumers when needed
             val allFutures: List<Future<Any>> = listOf(
-                // For now, just deploy a simple health check or placeholder verticle
-                Future.succeededFuture()
+                deploy(RestHttpServiceVerticle(serviceConfig, commandControllerAdapter), serverOpts).future()
             )
 
             Future.all(allFutures).onComplete {
@@ -95,6 +99,22 @@ class MainVerticle(
     private fun buildRepository(): EventStoreDBRepository<Player> {
         return EventStoreDBRepository(
             serviceConfig.eventStore.eventStoreDBRepositoryConfig()
-        ) { Player.empty() }
+        ) { PlayerDraft.empty() }
+    }
+
+    private fun buildCommandControllerAdapter(): CommandControllerAdapter {
+        // External Event Publisher
+        val externalEventPublisher = 
+            KafkaExternalEventPublisherAdapter(vertx, serviceConfig.kafkaPlayerProducer)
+        
+        // Repository
+        val repository = buildRepository()
+        
+        val aggregatePlayerCommandHandler = AggregatePlayerCommandHandler(
+            repository,
+            externalEventPublisher
+        )
+        
+        return CommandControllerAdapter(aggregatePlayerCommandHandler)
     }
 }

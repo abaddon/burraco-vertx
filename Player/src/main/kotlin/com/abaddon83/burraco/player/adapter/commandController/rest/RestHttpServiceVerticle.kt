@@ -1,12 +1,11 @@
-package com.abaddon83.burraco.game.adapters.commandController.rest
+package com.abaddon83.burraco.player.adapter.commandController.rest
 
 import com.abaddon83.burraco.common.vertx.AbstractHttpServiceVerticle
-import com.abaddon83.burraco.game.HealthCheck
-import com.abaddon83.burraco.game.ServiceConfig
-import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.AddPlayerRoutingHandler
-import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.NewGameRoutingHandler
-import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.RequestDealCardsRoutingHandler
-import com.abaddon83.burraco.game.ports.CommandControllerPort
+import com.abaddon83.burraco.player.HealthCheck
+import com.abaddon83.burraco.player.ServiceConfig
+import com.abaddon83.burraco.player.adapter.commandController.rest.handlers.CreatePlayerRoutingHandler
+import com.abaddon83.burraco.player.adapter.commandController.rest.handlers.DeletePlayerRoutingHandler
+import com.abaddon83.burraco.player.port.CommandControllerPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.vertx.core.Promise
 import io.vertx.core.buffer.Buffer
@@ -15,12 +14,10 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.openapi.RouterBuilder
 import java.io.File
 
-
 class RestHttpServiceVerticle(
     private val serviceConfig: ServiceConfig,
     private var commandController: CommandControllerPort
 ) : AbstractHttpServiceVerticle() {
-
 
     override fun start(startFuture: Promise<Void>?) {
         startHttpServer(startFuture);
@@ -36,10 +33,8 @@ class RestHttpServiceVerticle(
             }
             .onSuccess { routerBuilder ->
                 routerBuilder.operation("healthCheck").handler(healthCheck.build())
-                routerBuilder.operation("newGame").handler(NewGameRoutingHandler(commandController))
-                routerBuilder.operation("addPlayer").handler(AddPlayerRoutingHandler(commandController))
-                routerBuilder.operation("requestDealCards").handler(RequestDealCardsRoutingHandler(commandController))
-//                routerBuilder.operation("startGame").handler(StartGameRoutingHandler(controllerAdapter))
+                routerBuilder.operation("createPlayer").handler(CreatePlayerRoutingHandler(commandController))
+                routerBuilder.operation("deletePlayer").handler(DeletePlayerRoutingHandler(commandController))
 
                 //generate the router
                 val router = routerBuilder.createRouter()
@@ -49,7 +44,7 @@ class RestHttpServiceVerticle(
                         .response()
                         .setStatusCode(404)
                         .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                        .end(errorResponse(404, routingContext.failure()?.message ?: "Not Found"))
+                        .end(errorResponse(404, routingContext.failure().message ?: "Not Found"))
                 }
                 //generate the 400 error handler
                 router.errorHandler(400) { routingContext ->
@@ -57,7 +52,7 @@ class RestHttpServiceVerticle(
                         .response()
                         .setStatusCode(400)
                         .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                        .end(errorResponse(400, routingContext.failure()?.message ?: "Validation Exception"))
+                        .end(errorResponse(400, routingContext.failure().message ?: "Validation Exception"))
                 }
 
                 //server creation
@@ -136,5 +131,4 @@ class RestHttpServiceVerticle(
 
         return path
     }
-
 }

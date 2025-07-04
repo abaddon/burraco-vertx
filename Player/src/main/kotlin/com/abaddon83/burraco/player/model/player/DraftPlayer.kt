@@ -37,7 +37,7 @@ class PlayerDraft(
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
         return PlayerDraft(
             id = event.aggregateId,
-            version = event.version,
+            version = 0,
             gameIdentity = event.gameIdentity,
             user = event.user
         )
@@ -47,7 +47,7 @@ class PlayerDraft(
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
         return DeletedPlayer(
             id = event.aggregateId,
-            version = event.version,
+            version = version + 1,
             gameIdentity = this.gameIdentity,
             user = this.user
         )

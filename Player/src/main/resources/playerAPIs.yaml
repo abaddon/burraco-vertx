@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 info:
-  title: Burraco Game APIs
+  title: Burraco Player APIs
   version: 0.0.1
 
 servers:
@@ -12,7 +12,7 @@ servers:
         default: localhost
         description: Address of the server
       port:
-        default: "8081"
+        default: "8082"
         description: Port of the server
       protocol:
         default: http
@@ -32,19 +32,43 @@ paths:
         '200':
           $ref: '#/components/responses/HealthCheckResponse'
 
-  /player/join:
+  /player:
     post:
-      operationId: 'playerJoin'
-      summary: 'Join to a game'
-      description: 'Public API to join to a new game'
+      operationId: 'createPlayer'
+      summary: 'Create a new player'
+      description: 'Public API to create a new player for a game'
       tags:
         - Player
         - Public
       requestBody:
-        $ref: '#/components/requestBodies/PlayerJoinRequest'
+        $ref: '#/components/requestBodies/CreatePlayerRequest'
       responses:
         '200':
-          $ref: '#/components/responses/PlayerJoinedResponse'
+          $ref: '#/components/responses/PlayerResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /players/{playerId}:
+    delete:
+      operationId: 'deletePlayer'
+      summary: 'Delete a player'
+      description: 'Public API to delete an existing player'
+      tags:
+        - Player
+        - Public
+      parameters:
+        - name: 'playerId'
+          description: 'Player identifier'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          $ref: '#/components/responses/PlayerResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
 
 components:
   schemas:
@@ -64,72 +88,53 @@ components:
           type: string
         status:
           type: string
-    Game:
+    Player:
       type: object
       properties:
+        playerId:
+          type: string
+          format: uuid
         gameId:
           type: string
           format: uuid
-        type:
+        user:
           type: string
-          enum:
-            - BURRACO
         status:
           type: string
           enum:
             - DRAFT
-            - STARTED
-            - RUNNING
-            - ENDED
-        player:
-          type: array
-          items:
-            $ref: "#/components/schemas/PlayerId"
+            - DELETED
     PlayerId:
       type: string
       format: uuid
     GameId:
       type: string
       format: uuid
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type: integer
+        errorMessages:
+          type: array
+          items:
+            type: object
 
   requestBodies:
-    NewGameRequest:
-      description: 'Player join to a game.'
+    CreatePlayerRequest:
+      description: 'Create player request.'
       content:
         application/json:
           schema:
             type: object
             required:
               - gameId
+              - user
             properties:
-              gameType:
+              gameId:
+                $ref: "#/components/schemas/GameId"
+              user:
                 type: string
-                enum:
-                  - BURRACO
-
-    AddPlayerRequest:
-      description: 'Add player request.'
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - playerId
-            properties:
-              playerId:
-                $ref: "#/components/schemas/PlayerId"
-
-    RequestDealCardsRequest:
-      description: 'Add player request.'
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - playerId
-            properties:
-              playerId:
-                $ref: "#/components/schemas/PlayerId"
 
   responses:
     HealthCheckResponse:
@@ -138,15 +143,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/HealthCheck'
-    NewGameResponse:
-      description: 'New Burraco game response'
+    PlayerResponse:
+      description: 'Player response'
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Game'
-    GameResponse:
-      description: 'Burraco game response'
+            $ref: '#/components/schemas/Player'
+    ErrorResponse:
+      description: 'Error response'
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Game'
+            $ref: '#/components/schemas/ErrorMessage'
