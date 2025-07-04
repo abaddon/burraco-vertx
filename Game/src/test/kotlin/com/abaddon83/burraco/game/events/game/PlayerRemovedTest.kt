@@ -2,6 +2,7 @@ package com.abaddon83.burraco.game.events.game
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.event.game.PlayerRemoved
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.commands.gameExecutionPlayPhase
 
 import com.abaddon83.burraco.common.models.StraightIdentity
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameExecutionPlayPhase
 import com.abaddon83.burraco.common.models.GameIdentity

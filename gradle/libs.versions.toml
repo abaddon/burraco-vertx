@@ -134,6 +134,7 @@ game = [
 gameTest = [
     "vertx-junit5",
     "vertx-web-client",
+    "kotlinxCoroutinesTest",
     "testcontainers",
     "testcontainer-kafka",
     "testcontainer-junit",
@@ -161,6 +162,35 @@ dealer = [
     "hoplite-yaml",
 ]
 dealerTest = [
+    "vertx-junit5",
+    "vertx-web-client",
+    "kotlinxCoroutinesTest",
+    "testcontainers",
+    "testcontainer-kafka",
+    "testcontainer-junit",
+    "kcqrs-test"
+]
+
+player = [
+    "kotlinxDatetime",
+    "kotlinxSerialization",
+    "kotlinxCoroutines",
+    "kcqrs-core",
+    "kcqrs-EventStoreDB",
+    "vertx-config",
+    "vertx-config-hocon",
+    "vertx-web-openapi",
+    "vertx-health-check",
+    "vertx-lang-kotlin",
+    "vertx-lang-kotlin-coroutines",
+    "vertx-kafka-client",
+    "vertx-service-discovery",
+    "jackson-annotations",
+    "jackson-databind",
+    "hoplite-core",
+    "hoplite-yaml",
+]
+playerTest = [
     "vertx-junit5",
     "vertx-web-client",
     "kotlinxCoroutinesTest",

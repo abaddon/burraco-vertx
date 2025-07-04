@@ -1,12 +1,12 @@
 package com.abaddon83.burraco.game.models.player
 
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.helpers.score
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.game.models.Tris
-import com.abaddon83.burraco.game.models.card.Card
 
-data class ScorePlayer private constructor(
+data class ScorePlayer(
     override val id: PlayerIdentity,
     override val cards: List<Card>,
     val listOfTris: List<Tris>,
@@ -21,8 +21,8 @@ data class ScorePlayer private constructor(
                 .plus(player.cards)
 
             val score = player.listOfTris.score() +
-                    player.listOfStraight.score() +
-                    totalCards.score()
+                    player.listOfStraight.score()
+            //+ totalCards.score()
 
             return ScorePlayer(
                 player.id,

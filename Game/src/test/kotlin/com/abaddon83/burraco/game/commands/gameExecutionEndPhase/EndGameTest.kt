@@ -1,15 +1,24 @@
 package com.abaddon83.burraco.game.commands.gameExecutionEndPhase
 
-import com.abaddon83.burraco.game.events.game.*
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.common.models.StraightIdentity
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
+import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
+import com.abaddon83.burraco.common.models.event.game.CardsDiscarded
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromDiscardPile
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromPlayerDeckDuringTurn
+import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.GameEnded
+import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.common.models.event.game.GameStarted
+import com.abaddon83.burraco.common.models.event.game.PlayerAdded
+import com.abaddon83.burraco.common.models.event.game.StraightDropped
 import com.abaddon83.burraco.helper.DeckHelper
 import com.abaddon83.burraco.helper.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -56,7 +65,7 @@ internal class Given_GameExecutionEndPhase_and_GameNotEnded_When_EndGame_Then_ex
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS)),
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS),
             CardsDiscarded.create(aggregateId, PLAYER_ID1,CARD_TO_DROP)
         )
     )
@@ -136,9 +145,9 @@ internal class Given_GameExecutionEndPhase_and_GamEnded_When_EndGame_Then_event 
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID1, STRAIGHT_CARDS.plus(DISCARD_DECK_CARD))),
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID1, STRAIGHT_CARDS.plus(DISCARD_DECK_CARD)),
             CardsPickedFromPlayerDeckDuringTurn.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromPlayerDeck1()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID2, STRAIGHT_CARDS2)),
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID2, STRAIGHT_CARDS2),
             CardsDiscarded.create(aggregateId, PLAYER_ID1,CARD_TO_DROP)
         )
     )

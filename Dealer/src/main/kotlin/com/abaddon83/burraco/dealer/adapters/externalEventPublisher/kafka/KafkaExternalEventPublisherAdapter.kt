@@ -8,12 +8,12 @@ import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToDiscardDeck
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerDeck1ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerDeck2ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerExternalEvent
-import com.abaddon83.burraco.dealer.events.CardDealtToDeck
-import com.abaddon83.burraco.dealer.events.CardDealtToDiscardDeck
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayer
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck1
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck2
-import com.abaddon83.burraco.dealer.events.DealerEvent
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDeck
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDiscardDeck
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayer
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck1
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck2
+import com.abaddon83.burraco.common.models.event.dealer.DealerEvent
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.ExternalEventPublisherPort
 import io.vertx.core.Vertx
@@ -35,32 +35,32 @@ class KafkaExternalEventPublisherAdapter(
             is CardDealtToDeck -> CardDealtToDeckExternalEvent(
                 domainEvent.aggregateId,
                 domainEvent.gameId,
-                domainEvent.card.label()
+                domainEvent.card.label
             )
 
             is CardDealtToPlayer -> CardDealtToPlayerExternalEvent(
                 domainEvent.aggregateId,
                 domainEvent.gameId,
                 domainEvent.playerId,
-                domainEvent.card.label()
+                domainEvent.card.label
             )
 
             is CardDealtToDiscardDeck -> CardDealtToDiscardDeckExternalEvent(
                 domainEvent.aggregateId,
                 domainEvent.gameId,
-                domainEvent.card.label()
+                domainEvent.card.label
             )
 
             is CardDealtToPlayerDeck1 -> CardDealtToPlayerDeck1ExternalEvent(
                 domainEvent.aggregateId,
                 domainEvent.gameId,
-                domainEvent.card.label()
+                domainEvent.card.label
             )
 
             is CardDealtToPlayerDeck2 -> CardDealtToPlayerDeck2ExternalEvent(
                 domainEvent.aggregateId,
                 domainEvent.gameId,
-                domainEvent.card.label()
+                domainEvent.card.label
             )
 
             else -> null

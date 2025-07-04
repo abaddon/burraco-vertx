@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.helper
 
-import com.abaddon83.burraco.game.events.game.GameEvent
+import com.abaddon83.burraco.common.models.event.game.GameEvent
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.junit5.VertxExtension

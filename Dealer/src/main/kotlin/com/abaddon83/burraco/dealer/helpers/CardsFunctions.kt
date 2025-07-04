@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.dealer.helpers
 
-import com.abaddon83.burraco.dealer.models.Card
+import com.abaddon83.burraco.common.models.card.Card
 
 
 fun Iterable<Card>.removeCards(cardsToRemove: List<Card>): List<Card> =

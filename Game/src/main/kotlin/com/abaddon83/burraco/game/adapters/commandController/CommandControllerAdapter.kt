@@ -9,7 +9,7 @@ import com.abaddon83.burraco.game.commands.gameDraft.AddPlayer
 import com.abaddon83.burraco.game.commands.gameDraft.CreateGame
 import com.abaddon83.burraco.game.commands.gameDraft.RequestDealCards
 import com.abaddon83.burraco.game.commands.gameWaitingDealer.*
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.ports.CommandControllerPort
 import com.abaddon83.burraco.game.ports.Outcome

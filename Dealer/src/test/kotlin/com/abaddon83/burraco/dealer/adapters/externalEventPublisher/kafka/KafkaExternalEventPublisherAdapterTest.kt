@@ -4,14 +4,14 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
-import com.abaddon83.burraco.dealer.events.CardDealtToDeck
-import com.abaddon83.burraco.dealer.events.CardDealtToDiscardDeck
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayer
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck1
-import com.abaddon83.burraco.dealer.events.CardDealtToPlayerDeck2
-import com.abaddon83.burraco.dealer.models.Card
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDeck
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDiscardDeck
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayer
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck1
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck2
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.helper.KafkaContainerTest
 import io.vertx.junit5.VertxTestContext
@@ -32,7 +32,9 @@ class KafkaExternalEventPublisherAdapterTest : KafkaContainerTest() {
     }
 
     @Test
-    fun `given a Dealer with a CardDealtToDeck domain event then a CardDealtToDeckExternalEvent is published on kafka`(testContext: VertxTestContext) {
+    fun `given a Dealer with a CardDealtToDeck domain event then a CardDealtToDeckExternalEvent is published on kafka`(
+        testContext: VertxTestContext
+    ) {
         // Given
         val actualEvents = mutableListOf<String>()
         val expectedEventsCount = 1
@@ -59,7 +61,9 @@ class KafkaExternalEventPublisherAdapterTest : KafkaContainerTest() {
     }
 
     @Test
-    fun `given a Dealer with a CardDealtToPlayer domain event then a CardDealtToPlayerExternalEvent is published on kafka`(testContext: VertxTestContext) {
+    fun `given a Dealer with a CardDealtToPlayer domain event then a CardDealtToPlayerExternalEvent is published on kafka`(
+        testContext: VertxTestContext
+    ) {
         // Given
         val actualEvents = mutableListOf<String>()
         val expectedEventsCount = 1
@@ -87,7 +91,9 @@ class KafkaExternalEventPublisherAdapterTest : KafkaContainerTest() {
     }
 
     @Test
-    fun `given a Dealer with a CardDealtToDiscardDeck domain event then a CardDealtToDiscardDeckExternalEvent is published on kafka`(testContext: VertxTestContext) {
+    fun `given a Dealer with a CardDealtToDiscardDeck domain event then a CardDealtToDiscardDeckExternalEvent is published on kafka`(
+        testContext: VertxTestContext
+    ) {
         // Given
         val actualEvents = mutableListOf<String>()
         val expectedEventsCount = 1
@@ -114,7 +120,9 @@ class KafkaExternalEventPublisherAdapterTest : KafkaContainerTest() {
     }
 
     @Test
-    fun `given a Dealer with a CardDealtToPlayerDeck1 domain event then a CardDealtToPlayerDeck1ExternalEvent is published on kafka`(testContext: VertxTestContext) {
+    fun `given a Dealer with a CardDealtToPlayerDeck1 domain event then a CardDealtToPlayerDeck1ExternalEvent is published on kafka`(
+        testContext: VertxTestContext
+    ) {
         // Given
         val actualEvents = mutableListOf<String>()
         val expectedEventsCount = 1
@@ -141,7 +149,9 @@ class KafkaExternalEventPublisherAdapterTest : KafkaContainerTest() {
     }
 
     @Test
-    fun `given a Dealer with a CardDealtToPlayerDeck2 domain event then a CardDealtToPlayerDeck2ExternalEvent is published on kafka`(testContext: VertxTestContext) {
+    fun `given a Dealer with a CardDealtToPlayerDeck2 domain event then a CardDealtToPlayerDeck2ExternalEvent is published on kafka`(
+        testContext: VertxTestContext
+    ) {
         // Given
         val actualEvents = mutableListOf<String>()
         val expectedEventsCount = 1

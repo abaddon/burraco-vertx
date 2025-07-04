@@ -1,12 +1,12 @@
 package com.abaddon83.burraco.game.models
 
 import com.abaddon83.burraco.common.models.TrisIdentity
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
 import com.abaddon83.burraco.game.helpers.containsJolly
-import com.abaddon83.burraco.game.models.card.Card
 
-data class Tris private constructor(
+data class Tris(
     val id: TrisIdentity,
     override val cards: List<Card>
 ) : Burraco {

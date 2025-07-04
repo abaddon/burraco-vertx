@@ -10,7 +10,7 @@ import com.abaddon83.burraco.game.ServiceConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestApiHttpConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
 import com.abaddon83.burraco.game.adapters.eventStore.config.EventStoreConfig
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.game.models.game.GameWaitingDealer
@@ -158,6 +158,7 @@ internal class RestHttpServiceVerticleTest {
             val restApiConfig = RestHttpServiceConfig("test", "./gameAPIs.yaml", RestApiHttpConfig(PORT, ADDRESS, ROOT))
             val serviceConfig = ServiceConfig(
                 restApiConfig,
+                KafkaConsumerConfig.empty(),
                 KafkaConsumerConfig.empty(),
                 KafkaProducerConfig.empty(),
                 EventStoreConfig.empty()

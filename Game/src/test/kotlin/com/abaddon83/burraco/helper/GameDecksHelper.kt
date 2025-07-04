@@ -1,7 +1,12 @@
 package com.abaddon83.burraco.helper
 
-import com.abaddon83.burraco.game.events.game.*
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.event.game.CardAddedDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedDiscardDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedFirstPlayerDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedPlayer
+import com.abaddon83.burraco.common.models.event.game.CardAddedSecondPlayerDeck
+import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.common.models.card.Card
 
 data class GameDecksHelper(
     val playersCardsEvents: List<CardAddedPlayer>,

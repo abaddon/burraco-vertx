@@ -3,7 +3,7 @@ package com.abaddon83.burraco.game.helpers
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.game.models.Straight
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 
 object StraightHelper {

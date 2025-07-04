@@ -2,8 +2,8 @@ package com.abaddon83.burraco.player.model.player
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.player.event.PlayerCreated
-import com.abaddon83.burraco.player.event.PlayerDeleted
+import com.abaddon83.burraco.common.models.event.player.PlayerCreated
+import com.abaddon83.burraco.common.models.event.player.PlayerDeleted
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

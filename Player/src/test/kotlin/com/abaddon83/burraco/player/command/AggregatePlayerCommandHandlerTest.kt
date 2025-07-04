@@ -2,8 +2,8 @@ package com.abaddon83.burraco.player.command
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.player.event.PlayerCreated
-import com.abaddon83.burraco.player.event.PlayerEvent
+import com.abaddon83.burraco.common.models.event.player.PlayerCreated
+import com.abaddon83.burraco.common.models.event.player.PlayerEvent
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.port.ExternalEventPublisherPort

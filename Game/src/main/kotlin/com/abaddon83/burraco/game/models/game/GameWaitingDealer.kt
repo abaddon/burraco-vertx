@@ -2,18 +2,18 @@ package com.abaddon83.burraco.game.models.game
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.game.events.game.CardAddedDeck
-import com.abaddon83.burraco.game.events.game.CardAddedDiscardDeck
-import com.abaddon83.burraco.game.events.game.CardAddedFirstPlayerDeck
-import com.abaddon83.burraco.game.events.game.CardAddedPlayer
-import com.abaddon83.burraco.game.events.game.CardAddedSecondPlayerDeck
-import com.abaddon83.burraco.game.events.game.GameStarted
+import com.abaddon83.burraco.common.models.event.game.CardAddedDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedDiscardDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedFirstPlayerDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedPlayer
+import com.abaddon83.burraco.common.models.event.game.CardAddedSecondPlayerDeck
+import com.abaddon83.burraco.common.models.event.game.GameStarted
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
 import com.abaddon83.burraco.game.helpers.playerCards
 import com.abaddon83.burraco.game.helpers.updatePlayer
 import com.abaddon83.burraco.game.helpers.validPlayer
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 

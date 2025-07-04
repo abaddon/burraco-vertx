@@ -1,15 +1,21 @@
 package com.abaddon83.burraco.game.commands.gameExecutionPlayPhase
 
-import com.abaddon83.burraco.game.events.game.*
-import com.abaddon83.burraco.game.models.Straight
-import com.abaddon83.burraco.common.models.StraightIdentity
-import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.game.Game
-import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.StraightIdentity
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
+import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
+import com.abaddon83.burraco.common.models.event.game.CardsAddedToStraight
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromDiscardPile
+import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.common.models.event.game.GameStarted
+import com.abaddon83.burraco.common.models.event.game.PlayerAdded
+import com.abaddon83.burraco.common.models.event.game.StraightDropped
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.helper.DeckHelper
 import com.abaddon83.burraco.helper.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -27,9 +33,15 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAddValidCardsToStrai
         val PLAYER_ID3 = PlayerIdentity.create()
         val PLAYER_ID4 = PlayerIdentity.create()
         val STRAIGHT_ID = StraightIdentity.create()
-        val STRAIGHT_CARDS = listOf(Card(Suit.Heart, Rank.Three), Card(Suit.Heart, Rank.Four), Card(Suit.Heart, Rank.Five))
+        val STRAIGHT_CARDS =
+            listOf(Card(Suit.Heart, Rank.Three), Card(Suit.Heart, Rank.Four), Card(Suit.Heart, Rank.Five))
         val CARDS_TO_APPEND = listOf(Card(Suit.Heart, Rank.Six))
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS.plus(CARDS_TO_APPEND))
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID1,
+            STRAIGHT_CARDS.plus(CARDS_TO_APPEND)
+        )
     }
 
     //Setup
@@ -52,14 +64,14 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAddValidCardsToStrai
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS))
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS)
         )
     )
 
     override fun `when`(): ICommand<Game> = AppendCardsOnStraight(aggregateId, PLAYER_ID1, STRAIGHT_ID, CARDS_TO_APPEND)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        CardsAddedToStraight.create(aggregateId, PLAYER_ID1,STRAIGHT_ID,CARDS_TO_APPEND)
+        CardsAddedToStraight.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, CARDS_TO_APPEND)
     )
 
     override fun expectedException(): Exception? = null
@@ -75,7 +87,12 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAddValidCardsToStrai
         val PLAYER_ID4 = PlayerIdentity.create()
         val STRAIGHT_ID = StraightIdentity.create()
         val STRAIGHT_CARDS = listOf(Card(Suit.Tile, Rank.Three), Card(Suit.Tile, Rank.Four), Card(Suit.Tile, Rank.Five))
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS)
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID1,
+            STRAIGHT_CARDS
+        )
     }
 
     //Setup
@@ -98,11 +115,12 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAddValidCardsToStrai
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS))
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS)
         )
     )
 
-    override fun `when`(): ICommand<Game> = AppendCardsOnStraight(aggregateId, PLAYER_ID1, STRAIGHT_ID, listOf(Card(Suit.Tile, Rank.Six)))
+    override fun `when`(): ICommand<Game> =
+        AppendCardsOnStraight(aggregateId, PLAYER_ID1, STRAIGHT_ID, listOf(Card(Suit.Tile, Rank.Six)))
 
     override fun expected(): List<IDomainEvent> = listOf()
 
@@ -119,8 +137,14 @@ internal class Given_GameExecutionPlayPhase_When_WrongPlayerAddValidCardsToStrai
         val PLAYER_ID3 = PlayerIdentity.create()
         val PLAYER_ID4 = PlayerIdentity.create()
         val STRAIGHT_ID = StraightIdentity.create()
-        val STRAIGHT_CARDS = listOf(Card(Suit.Heart, Rank.Three), Card(Suit.Heart, Rank.Four), Card(Suit.Heart, Rank.Five))
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID2, STRAIGHT_CARDS)
+        val STRAIGHT_CARDS =
+            listOf(Card(Suit.Heart, Rank.Three), Card(Suit.Heart, Rank.Four), Card(Suit.Heart, Rank.Five))
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID2,
+            STRAIGHT_CARDS
+        )
     }
 
     //Setup
@@ -143,13 +167,15 @@ internal class Given_GameExecutionPlayPhase_When_WrongPlayerAddValidCardsToStrai
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS))
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS)
         )
     )
 
-    override fun `when`(): ICommand<Game> = AppendCardsOnStraight(aggregateId, PLAYER_ID2, STRAIGHT_ID, listOf(Card(Suit.Heart, Rank.Six)))
+    override fun `when`(): ICommand<Game> =
+        AppendCardsOnStraight(aggregateId, PLAYER_ID2, STRAIGHT_ID, listOf(Card(Suit.Heart, Rank.Six)))
 
     override fun expected(): List<IDomainEvent> = listOf()
 
-    override fun expectedException(): Exception? = IllegalArgumentException("It's not the turn of the player ${PLAYER_ID2.valueAsString()}")
+    override fun expectedException(): Exception? =
+        IllegalArgumentException("It's not the turn of the player ${PLAYER_ID2.valueAsString()}")
 }

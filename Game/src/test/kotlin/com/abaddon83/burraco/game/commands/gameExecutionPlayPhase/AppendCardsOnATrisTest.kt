@@ -1,15 +1,21 @@
 package com.abaddon83.burraco.game.commands.gameExecutionPlayPhase
 
-import com.abaddon83.burraco.game.events.game.*
-import com.abaddon83.burraco.game.models.Tris
-import com.abaddon83.burraco.common.models.TrisIdentity
-import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.game.Game
-import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.TrisIdentity
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
+import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
+import com.abaddon83.burraco.common.models.event.game.CardsAddedToTris
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromDiscardPile
+import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.common.models.event.game.GameStarted
+import com.abaddon83.burraco.common.models.event.game.PlayerAdded
+import com.abaddon83.burraco.common.models.event.game.TrisDropped
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.helper.DeckHelper
 import com.abaddon83.burraco.helper.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -29,8 +35,11 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnAValidTr
         val TRIS_ID = TrisIdentity.create()
         val TRIS_CARDS = listOf(Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six), Card(Suit.Clover, Rank.Six))
         val APPEND_TRIS_CARDS = listOf(Card(Suit.Jolly, Rank.Jolly))
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, TRIS_CARDS.plus(
-            APPEND_TRIS_CARDS))
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, TRIS_CARDS.plus(
+                APPEND_TRIS_CARDS
+            )
+        )
     }
 
     //Setup
@@ -53,7 +62,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnAValidTr
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            TrisDropped.create(aggregateId, PLAYER_ID1, Tris.create(TRIS_ID, TRIS_CARDS))
+            TrisDropped.create(aggregateId, PLAYER_ID1, TRIS_ID, TRIS_CARDS)
         )
     )
 
@@ -77,7 +86,12 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnAValidTr
         val TRIS_ID = TrisIdentity.create()
         val TRIS_CARDS = listOf(Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six), Card(Suit.Clover, Rank.Six))
         val APPEND_TRIS_CARDS = listOf(Card(Suit.Jolly, Rank.Jolly))
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, TRIS_CARDS)
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID1,
+            TRIS_CARDS
+        )
     }
 
     //Setup
@@ -100,7 +114,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnAValidTr
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            TrisDropped.create(aggregateId, PLAYER_ID1, Tris.create(TRIS_ID, TRIS_CARDS))
+            TrisDropped.create(aggregateId, PLAYER_ID1, TRIS_ID, TRIS_CARDS)
         )
     )
 
@@ -108,7 +122,8 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnAValidTr
 
     override fun expected(): List<IDomainEvent> = listOf()
 
-    override fun expectedException(): Exception? = IllegalArgumentException("Cards to append to the tris ${TRIS_ID.valueAsString()} don't belong to player ${PLAYER_ID1.valueAsString()}")
+    override fun expectedException(): Exception? =
+        IllegalArgumentException("Cards to append to the tris ${TRIS_ID.valueAsString()} don't belong to player ${PLAYER_ID1.valueAsString()}")
 }
 
 internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnInValidTrisWithCards_Then_exception :
@@ -122,7 +137,12 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnInValidT
         val TRIS_ID = TrisIdentity.create()
         val TRIS_CARDS = listOf(Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six), Card(Suit.Clover, Rank.Six))
         val APPEND_TRIS_CARDS = listOf(Card(Suit.Heart, Rank.Seven))
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, TRIS_CARDS)
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID1,
+            TRIS_CARDS
+        )
     }
 
     //Setup
@@ -145,7 +165,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnInValidT
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            TrisDropped.create(aggregateId, PLAYER_ID1, Tris.create(TRIS_ID, TRIS_CARDS))
+            TrisDropped.create(aggregateId, PLAYER_ID1, TRIS_ID, TRIS_CARDS)
         )
     )
 
@@ -153,7 +173,8 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerAppenCardsOnInValidT
 
     override fun expected(): List<IDomainEvent> = listOf()
 
-    override fun expectedException(): Exception? = IllegalArgumentException("Cards can't be added to Tris ${TRIS_ID.valueAsString()}")
+    override fun expectedException(): Exception? =
+        IllegalArgumentException("Cards can't be added to Tris ${TRIS_ID.valueAsString()}")
 }
 
 internal class Given_GameExecutionPlayPhase_When_WrongPlayerAppenCardsOnAValidTrisWithCards_Then_exception :
@@ -167,8 +188,11 @@ internal class Given_GameExecutionPlayPhase_When_WrongPlayerAppenCardsOnAValidTr
         val TRIS_ID = TrisIdentity.create()
         val TRIS_CARDS = listOf(Card(Suit.Heart, Rank.Six), Card(Suit.Heart, Rank.Six), Card(Suit.Clover, Rank.Six))
         val APPEND_TRIS_CARDS = listOf(Card(Suit.Jolly, Rank.Jolly))
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID2, TRIS_CARDS.plus(
-            APPEND_TRIS_CARDS))
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID2, TRIS_CARDS.plus(
+                APPEND_TRIS_CARDS
+            )
+        )
     }
 
     //Setup
@@ -191,7 +215,7 @@ internal class Given_GameExecutionPlayPhase_When_WrongPlayerAppenCardsOnAValidTr
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            TrisDropped.create(aggregateId, PLAYER_ID1, Tris.create(TRIS_ID, TRIS_CARDS))
+            TrisDropped.create(aggregateId, PLAYER_ID1, TRIS_ID, TRIS_CARDS)
         )
     )
 
@@ -199,5 +223,6 @@ internal class Given_GameExecutionPlayPhase_When_WrongPlayerAppenCardsOnAValidTr
 
     override fun expected(): List<IDomainEvent> = listOf()
 
-    override fun expectedException(): Exception? = IllegalArgumentException("It's not the turn of the player ${PLAYER_ID2.valueAsString()}")
+    override fun expectedException(): Exception? =
+        IllegalArgumentException("It's not the turn of the player ${PLAYER_ID2.valueAsString()}")
 }

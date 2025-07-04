@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.helper
 
-import com.abaddon83.burraco.dealer.events.DealerEvent
+import com.abaddon83.burraco.common.models.event.dealer.DealerEvent
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.junit5.VertxExtension
@@ -20,7 +20,6 @@ import org.testcontainers.kafka.KafkaContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
-import java.time.Duration
 import java.util.UUID
 
 @Testcontainers

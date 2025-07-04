@@ -4,14 +4,31 @@ import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.StraightIdentity
 import com.abaddon83.burraco.common.models.TrisIdentity
-import com.abaddon83.burraco.game.events.game.*
-import com.abaddon83.burraco.game.helpers.*
+import com.abaddon83.burraco.common.models.card.Card
+import com.abaddon83.burraco.common.models.event.game.CardsAddedToStraight
+import com.abaddon83.burraco.common.models.event.game.CardsAddedToTris
+import com.abaddon83.burraco.common.models.event.game.CardsDiscarded
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromPlayerDeckDuringTurn
+import com.abaddon83.burraco.common.models.event.game.StraightDropped
+import com.abaddon83.burraco.common.models.event.game.TrisDropped
 import com.abaddon83.burraco.game.helpers.StraightHelper.validStraight
+import com.abaddon83.burraco.game.helpers.TeamsHelper
 import com.abaddon83.burraco.game.helpers.TrisHelper.validTris
+import com.abaddon83.burraco.game.helpers.cardsBelongPlayer
+import com.abaddon83.burraco.game.helpers.playerCards
+import com.abaddon83.burraco.game.helpers.playerTeam
+import com.abaddon83.burraco.game.helpers.straight
+import com.abaddon83.burraco.game.helpers.straightBelongPlayer
+import com.abaddon83.burraco.game.helpers.tris
+import com.abaddon83.burraco.game.helpers.trisBelongPlayer
+import com.abaddon83.burraco.game.helpers.updatePlayer
+import com.abaddon83.burraco.game.helpers.updateStraight
+import com.abaddon83.burraco.game.helpers.updateTeam
+import com.abaddon83.burraco.game.helpers.updateTris
+import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.game.models.Team
 import com.abaddon83.burraco.game.models.Tris
-import com.abaddon83.burraco.game.models.card.Card
 import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
@@ -28,7 +45,7 @@ data class GameExecutionPlayPhase(
     val playerDeck2: PlayerDeck?,
     val discardPile: DiscardPile,
     val teams: List<Team>
-) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile,teams) {
+) : GameExecution(id, version, players, playerTurn, deck, playerDeck1, playerDeck2, discardPile, teams) {
 
     companion object Factory {
         fun from(game: GameExecutionPickUpPhase): GameExecutionPlayPhase = GameExecutionPlayPhase(
@@ -53,9 +70,9 @@ data class GameExecutionPlayPhase(
                 tris.cards
             )
         ) { "Tris's cards don't belong to player ${playerIdentity.valueAsString()}" }
-        require(validRemainingCards(playerIdentity,tris.cards)) {"Not enough cards remaining on the player's hand"}
+        require(validRemainingCards(playerIdentity, tris.cards)) { "Not enough cards remaining on the player's hand" }
 
-        return raiseEvent(TrisDropped.create(id, playerIdentity, tris)) as GameExecutionPlayPhase
+        return raiseEvent(TrisDropped.create(id, playerIdentity, tris.id, tris.cards)) as GameExecutionPlayPhase
     }
 
     fun appendCardsOnTris(
@@ -84,7 +101,7 @@ data class GameExecutionPlayPhase(
                     .orEmpty()
             )
         ) { "Cards can't be added to Tris ${trisIdentity.valueAsString()}" }
-        require(validRemainingCards(playerIdentity,cards)) {"Not enough cards remaining on the player's hand"}
+        require(validRemainingCards(playerIdentity, cards)) { "Not enough cards remaining on the player's hand" }
 
         return raiseEvent(CardsAddedToTris.create(id, playerIdentity, trisIdentity, cards)) as GameExecutionPlayPhase
     }
@@ -99,9 +116,21 @@ data class GameExecutionPlayPhase(
                 straight.cards
             )
         ) { "Straight's cards don't belong to player ${playerIdentity.valueAsString()}" }
-        require(validRemainingCards(playerIdentity,straight.cards)) {"Not enough cards remaining on the player's hand"}
+        require(
+            validRemainingCards(
+                playerIdentity,
+                straight.cards
+            )
+        ) { "Not enough cards remaining on the player's hand" }
 
-        return raiseEvent(StraightDropped.create(id, playerIdentity, straight)) as GameExecutionPlayPhase
+        return raiseEvent(
+            StraightDropped.create(
+                id,
+                playerIdentity,
+                straight.id,
+                straight.cards
+            )
+        ) as GameExecutionPlayPhase
     }
 
     fun appendCardsOnStraight(
@@ -130,19 +159,36 @@ data class GameExecutionPlayPhase(
                     .orEmpty()
             )
         ) { "Cards can't be added to straight ${straightIdentity.valueAsString()}" }
-        require(validRemainingCards(playerIdentity,cards)) {"Not enough cards remaining on the player's hand"}
+        require(validRemainingCards(playerIdentity, cards)) { "Not enough cards remaining on the player's hand" }
 
-        return raiseEvent(CardsAddedToStraight.create(id, playerIdentity, straightIdentity, cards)) as GameExecutionPlayPhase
+        return raiseEvent(
+            CardsAddedToStraight.create(
+                id,
+                playerIdentity,
+                straightIdentity,
+                cards
+            )
+        ) as GameExecutionPlayPhase
     }
 
     fun pickupPlayerDeck(playerIdentity: PlayerIdentity): GameExecutionPlayPhase {
         require(players.validPlayer(playerIdentity)) { "Player ${playerIdentity.valueAsString()} is not a player of the game ${id.valueAsString()}" }
         require(playerTurn == playerIdentity) { "It's not the turn of the player ${playerIdentity.valueAsString()}" }
-        require(players.playerCards(playerIdentity).isNullOrEmpty()){"Player ${playerIdentity.valueAsString()} still has cards in their hand" }
-        require(playerDeckAvailable().isNotEmpty()){"No more player deck available"}
-        require(!(teams.playerTeam(playerIdentity)?.playerDeckPickedUp ?: false)){"Player ${playerIdentity.valueAsString()}'s team has already pickedUp its playerDeck"}
+        require(
+            players.playerCards(playerIdentity).isNullOrEmpty()
+        ) { "Player ${playerIdentity.valueAsString()} still has cards in their hand" }
+        require(playerDeckAvailable().isNotEmpty()) { "No more player deck available" }
+        require(
+            !(teams.playerTeam(playerIdentity)?.playerDeckPickedUp ?: false)
+        ) { "Player ${playerIdentity.valueAsString()}'s team has already pickedUp its playerDeck" }
 
-        return raiseEvent(CardsPickedFromPlayerDeckDuringTurn.create(id, playerIdentity, playerDeckAvailable())) as GameExecutionPlayPhase
+        return raiseEvent(
+            CardsPickedFromPlayerDeckDuringTurn.create(
+                id,
+                playerIdentity,
+                playerDeckAvailable()
+            )
+        ) as GameExecutionPlayPhase
     }
 
     fun dropCardOnDiscardPile(playerIdentity: PlayerIdentity, card: Card): GameExecutionEndPhase {
@@ -165,10 +211,17 @@ data class GameExecutionPlayPhase(
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
             player.copy(
                 cards = player.cards.minus(event.cards),
-                listOfTris = player.listOfTris.plus(Tris.create(event.trisIdentity,event.cards))
+                listOfTris = player.listOfTris.plus(Tris.create(event.trisIdentity, event.cards))
             )
         }
-        log.debug("Tris has ${updatedPlayers.tris(event.playerIdentity,event.trisIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        log.debug(
+            "Tris has ${
+                updatedPlayers.tris(
+                    event.playerIdentity,
+                    event.trisIdentity
+                )?.cards?.size
+            } cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards"
+        )
         return copy(players = updatedPlayers)
     }
 
@@ -183,7 +236,14 @@ data class GameExecutionPlayPhase(
                 }
             )
         }
-        log.debug("Tris has ${updatedPlayers.tris(event.playerIdentity,event.trisIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        log.debug(
+            "Tris has ${
+                updatedPlayers.tris(
+                    event.playerIdentity,
+                    event.trisIdentity
+                )?.cards?.size
+            } cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards"
+        )
         return copy(players = updatedPlayers)
     }
 
@@ -193,10 +253,17 @@ data class GameExecutionPlayPhase(
         val updatedPlayers = players.updatePlayer(event.playerIdentity) { player ->
             player.copy(
                 cards = player.cards.minus(event.cards),
-                listOfStraight = player.listOfStraight.plus(Straight.create(event.straightIdentity,event.cards))
+                listOfStraight = player.listOfStraight.plus(Straight.create(event.straightIdentity, event.cards))
             )
         }
-        log.debug("Straight has ${updatedPlayers.straight(event.playerIdentity,event.straightIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        log.debug(
+            "Straight has ${
+                updatedPlayers.straight(
+                    event.playerIdentity,
+                    event.straightIdentity
+                )?.cards?.size
+            } cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards"
+        )
         return copy(players = updatedPlayers)
     }
 
@@ -212,7 +279,14 @@ data class GameExecutionPlayPhase(
             )
         }
 
-        log.debug("Straight has ${updatedPlayers.straight(event.playerIdentity,event.straightIdentity)?.cards?.size} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        log.debug(
+            "Straight has ${
+                updatedPlayers.straight(
+                    event.playerIdentity,
+                    event.straightIdentity
+                )?.cards?.size
+            } cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards"
+        )
         return copy(players = updatedPlayers)
     }
 
@@ -226,24 +300,25 @@ data class GameExecutionPlayPhase(
         }
 
         //TODO to review, there is an hidden event  :(
-        val updatedTeams: List<Team> = when(teams.playerTeam(event.playerIdentity)){
-            is Team -> teams.updateTeam(event.playerIdentity){ team ->
+        val updatedTeams: List<Team> = when (teams.playerTeam(event.playerIdentity)) {
+            is Team -> teams.updateTeam(event.playerIdentity) { team ->
                 team.copy(playerDeckPickedUp = true)
             }
+
             else -> {
-                if(players.size == 3)
-                    TeamsHelper.buildTeamsWith3Players(event.playerIdentity,players.map { it.id })
+                if (players.size == 3)
+                    TeamsHelper.buildTeamsWith3Players(event.playerIdentity, players.map { it.id })
                 else {
                     assert(false) { "Something bad happened" }
                     teams
                 }
             }
         }
-        val updatedAggregate= when(playerDeck1){
+        val updatedAggregate = when (playerDeck1) {
             is PlayerDeck -> copy(playerDeck1 = null, players = updatedPlayers, teams = updatedTeams)
 
             else -> {
-                when(playerDeck2){
+                when (playerDeck2) {
                     is PlayerDeck -> copy(playerDeck2 = null, players = updatedPlayers, teams = updatedTeams)
                     else -> {
                         log.error("Event ${event.messageId} is wrong! The event is ignored ")
@@ -252,7 +327,13 @@ data class GameExecutionPlayPhase(
                 }
             }
         }
-        log.debug("PlayerDeck1 has ${updatedAggregate.playerDeck1?.numCards()?:0} cards, PlayerDeck2 has ${updatedAggregate.playerDeck2?.numCards()?:0} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        log.debug(
+            "PlayerDeck1 has ${updatedAggregate.playerDeck1?.numCards() ?: 0} cards, PlayerDeck2 has ${updatedAggregate.playerDeck2?.numCards() ?: 0} cards and Player ${event.playerIdentity.valueAsString()} has ${
+                updatedPlayers.playerCards(
+                    event.playerIdentity
+                )?.size
+            } cards"
+        )
         return updatedAggregate
     }
 
@@ -263,18 +344,24 @@ data class GameExecutionPlayPhase(
             player.copy(cards = player.cards.minus(event.card))
         }
 
-        val updatedAggregate = GameExecutionEndPhase.from(copy(players = updatedPlayers, discardPile = discardPile.addCard(event.card)))
-        log.debug("DiscardPile has ${updatedAggregate.discardPile.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${updatedPlayers.playerCards(event.playerIdentity)?.size} cards")
+        val updatedAggregate =
+            GameExecutionEndPhase.from(copy(players = updatedPlayers, discardPile = discardPile.addCard(event.card)))
+        log.debug(
+            "DiscardPile has ${updatedAggregate.discardPile.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${
+                updatedPlayers.playerCards(
+                    event.playerIdentity
+                )?.size
+            } cards"
+        )
         return updatedAggregate
     }
 
 
-
-    private fun playerDeckAvailable(): List<Card>{
-        return when(playerDeck1){
+    private fun playerDeckAvailable(): List<Card> {
+        return when (playerDeck1) {
             is PlayerDeck -> playerDeck1.cards
             else -> {
-                when(playerDeck2){
+                when (playerDeck2) {
                     is PlayerDeck -> playerDeck2.cards
                     else -> listOf()
                 }
@@ -284,17 +371,18 @@ data class GameExecutionPlayPhase(
 
     private fun validRemainingCards(playerIdentity: PlayerIdentity, cardsToDrop: List<Card>): Boolean {
 
-        val minCardsAcceptable=when(val team = teams.playerTeam(playerIdentity)){
-            is Team ->{
+        val minCardsAcceptable = when (val team = teams.playerTeam(playerIdentity)) {
+            is Team -> {
                 if (!team.playerDeckPickedUp) /*Team need to pickup a discardPile*/
                     0
-                else{ /*Team pickedup the discardPile*/
-                    if(teamsHasAtLeastBurraco(team)) /*Team has a burraco*/
+                else { /*Team pickedup the discardPile*/
+                    if (teamsHasAtLeastBurraco(team)) /*Team has a burraco*/
                         1
                     else /*Team doesn't have a burraco*/
                         2
                 }
             }
+
             else -> {
                 /*Team need to pickup a discardPile*/
                 0

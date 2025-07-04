@@ -1,12 +1,11 @@
 package com.abaddon83.burraco.game.events.game
 
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
+import com.abaddon83.burraco.common.models.event.game.CardAddedPlayer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import java.util.*
 
 internal class CardAddedPlayerTest{
     @Test

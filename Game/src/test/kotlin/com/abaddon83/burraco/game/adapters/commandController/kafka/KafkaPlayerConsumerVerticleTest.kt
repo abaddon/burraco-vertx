@@ -1,17 +1,17 @@
 package com.abaddon83.burraco.game.adapters.commandController.kafka
 
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaConsumerConfig
+import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.game.ServiceConfig
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter
+import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestApiHttpConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.config.RestHttpServiceConfig
 import com.abaddon83.burraco.game.adapters.eventStore.config.EventStoreConfig
 import com.abaddon83.burraco.game.commands.AggregateGameCommandHandler
 import com.abaddon83.burraco.game.helpers.DummyExternalEventPublisherAdapter
+import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
-import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import io.github.abaddon.kcqrs.core.persistence.InMemoryEventStoreRepository
-import io.github.abaddon.kcqrs.eventstoredb.eventstore.config.EventStoreDBRepositoryConfig
-import io.github.abaddon.kcqrs.eventstoredb.eventstore.config.EventStoreDBSettings
 import io.vertx.junit5.VertxExtension
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -24,13 +24,13 @@ internal class KafkaPlayerConsumerVerticleTest {
         val restHttpServiceConfig = RestHttpServiceConfig(
             serviceName = "test-service",
             openApiPath = "test.yaml",
-            http = RestHttpServiceConfig.HttpConfig(
+            http = RestApiHttpConfig(
                 port = 8080,
                 address = "localhost",
                 root = "/"
             )
         )
-        
+
         val kafkaConsumerConfig = KafkaConsumerConfig(
             topic = "test-topic",
             properties = mapOf(
@@ -42,7 +42,7 @@ internal class KafkaPlayerConsumerVerticleTest {
                 "value.deserializer" to "org.apache.kafka.common.serialization.StringDeserializer"
             )
         )
-        
+
         val kafkaProducerConfig = KafkaProducerConfig(
             topic = "test-topic",
             properties = mapOf(
@@ -51,14 +51,14 @@ internal class KafkaPlayerConsumerVerticleTest {
                 "value.serializer" to "org.apache.kafka.common.serialization.StringSerializer"
             )
         )
-        
+
         val eventStoreConfig = EventStoreConfig(
             streamName = "test-stream",
             maxReadPageSize = 100,
             maxWritePageSize = 200,
-            eventStoreDB = EventStoreDBSettings(connectionString = "test://localhost:2113")
+            eventStoreDB = EventStoreConfig.EventStoreDB(connectionString = "test://localhost:2113")
         )
-        
+
         return ServiceConfig(
             restHttpService = restHttpServiceConfig,
             kafkaDealerConsumer = kafkaConsumerConfig,
@@ -71,8 +71,8 @@ internal class KafkaPlayerConsumerVerticleTest {
     @Test
     fun `Given a KafkaPlayerConsumerVerticle, when loadHandlers is called, then handlers are correctly configured`() {
         val serviceConfig = createTestServiceConfig()
-        
-        val inMemoryEventStoreRepository = InMemoryEventStoreRepository(
+
+        val inMemoryEventStoreRepository: InMemoryEventStoreRepository<Game> = InMemoryEventStoreRepository(
             "stream",
             { GameDraft.empty() }
         )
@@ -81,14 +81,14 @@ internal class KafkaPlayerConsumerVerticleTest {
             DummyExternalEventPublisherAdapter()
         )
         val commandControllerAdapter = CommandControllerAdapter(commandHandler)
-        
+
         val kafkaPlayerConsumerVerticle = KafkaPlayerConsumerVerticle(
             serviceConfig,
             commandControllerAdapter
         )
-        
+
         val handlers = kafkaPlayerConsumerVerticle.loadHandlers()
-        
+
         assertNotNull(handlers)
     }
 }

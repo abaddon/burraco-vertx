@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.dealer.helpers
 
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Ranks
 import com.abaddon83.burraco.common.models.card.Suit

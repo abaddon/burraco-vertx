@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.dealer.commands
 
-import com.abaddon83.burraco.dealer.events.DealerEvent
+import com.abaddon83.burraco.common.models.event.dealer.DealerEvent
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.ExternalEventPublisherPort
 import io.github.abaddon.kcqrs.core.domain.AggregateCommandHandler

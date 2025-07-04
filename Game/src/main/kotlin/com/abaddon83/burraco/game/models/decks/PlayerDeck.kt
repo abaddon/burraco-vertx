@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.models.decks
 
 import com.abaddon83.burraco.game.helpers.GameConfig.AVAILABLE_PLAYER_DECK_SIZE
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 
 data class PlayerDeck constructor(override val cards: List<Card>) : IDeck {
 

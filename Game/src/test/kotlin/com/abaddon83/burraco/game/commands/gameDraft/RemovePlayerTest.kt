@@ -1,9 +1,9 @@
 package com.abaddon83.burraco.game.commands.gameDraft
 
-import com.abaddon83.burraco.game.events.game.GameCreated
-import com.abaddon83.burraco.game.events.game.GameEvent
-import com.abaddon83.burraco.game.events.game.PlayerAdded
-import com.abaddon83.burraco.game.events.game.PlayerRemoved
+import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.common.models.event.game.PlayerAdded
+import com.abaddon83.burraco.common.models.event.game.PlayerRemoved
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity

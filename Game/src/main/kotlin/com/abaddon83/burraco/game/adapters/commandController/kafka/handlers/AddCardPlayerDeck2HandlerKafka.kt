@@ -4,7 +4,7 @@ import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaEventHandler
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerDeck2ExternalEvent
 import com.abaddon83.burraco.common.helpers.Validated
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.ports.CommandControllerPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.vertx.core.json.Json

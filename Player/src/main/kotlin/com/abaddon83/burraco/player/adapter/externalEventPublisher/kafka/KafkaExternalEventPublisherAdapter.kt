@@ -4,8 +4,8 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.player.PlayerCreated as PlayerCreatedExternalEvent
-import com.abaddon83.burraco.player.event.PlayerCreated
-import com.abaddon83.burraco.player.event.PlayerEvent
+import com.abaddon83.burraco.common.models.event.player.PlayerCreated
+import com.abaddon83.burraco.common.models.event.player.PlayerEvent
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.port.ExternalEventPublisherPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log

@@ -2,8 +2,8 @@ package com.abaddon83.burraco.game.models.game
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.game.events.game.GameEnded
-import com.abaddon83.burraco.game.events.game.NextPlayerTurnStarted
+import com.abaddon83.burraco.common.models.event.game.GameEnded
+import com.abaddon83.burraco.common.models.event.game.NextPlayerTurnStarted
 import com.abaddon83.burraco.game.helpers.playerCards
 import com.abaddon83.burraco.game.helpers.playerTeam
 import com.abaddon83.burraco.game.models.Team

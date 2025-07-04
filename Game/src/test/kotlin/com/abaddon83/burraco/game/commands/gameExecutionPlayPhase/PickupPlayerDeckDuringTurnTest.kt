@@ -1,15 +1,21 @@
 package com.abaddon83.burraco.game.commands.gameExecutionPlayPhase
 
-import com.abaddon83.burraco.game.events.game.*
-import com.abaddon83.burraco.game.models.Straight
-import com.abaddon83.burraco.common.models.StraightIdentity
-import com.abaddon83.burraco.game.models.card.Card
-import com.abaddon83.burraco.game.models.game.Game
-import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.StraightIdentity
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
+import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromDiscardPile
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromPlayerDeckDuringTurn
+import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.common.models.event.game.GameStarted
+import com.abaddon83.burraco.common.models.event.game.PlayerAdded
+import com.abaddon83.burraco.common.models.event.game.StraightDropped
+import com.abaddon83.burraco.game.models.game.Game
+import com.abaddon83.burraco.game.models.game.GameDraft
 import com.abaddon83.burraco.helper.DeckHelper
 import com.abaddon83.burraco.helper.GameDecksHelper
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -41,7 +47,13 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithNoCardsPickUpPla
             Card(Suit.Heart, Rank.Jack)
         )
         val DISCARD_DECK_CARD = Card(Suit.Heart, Rank.Queen)
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS, DISCARD_DECK_CARD)
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID1,
+            STRAIGHT_CARDS,
+            DISCARD_DECK_CARD
+        )
     }
 
     //Setup
@@ -64,7 +76,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithNoCardsPickUpPla
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS.plus(DISCARD_DECK_CARD)))
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS.plus(DISCARD_DECK_CARD))
         )
     )
 
@@ -100,7 +112,13 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithCardsPickUpPlaye
             Card(Suit.Heart, Rank.Jack)
         )
         val DISCARD_DECK_CARD = Card(Suit.Heart, Rank.Queen)
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS, DISCARD_DECK_CARD)
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID1,
+            STRAIGHT_CARDS,
+            DISCARD_DECK_CARD
+        )
     }
 
     //Setup
@@ -123,7 +141,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithCardsPickUpPlaye
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS))
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS)
         )
     )
 
@@ -131,7 +149,8 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithCardsPickUpPlaye
 
     override fun expected(): List<IDomainEvent> = listOf()
 
-    override fun expectedException(): Exception? = IllegalArgumentException("Player ${PLAYER_ID1.valueAsString()} still has cards in their hand")
+    override fun expectedException(): Exception? =
+        IllegalArgumentException("Player ${PLAYER_ID1.valueAsString()} still has cards in their hand")
 }
 
 internal class Given_GameExecutionPlayPhase_When_RightPlayerWithNoCardsPickUpPlayerDeck2Times_Then_event :
@@ -170,7 +189,14 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithNoCardsPickUpPla
             Card(Suit.Pike, Rank.Ten),
             Card(Suit.Pike, Rank.Jack)
         )
-        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(AGGREGATE_ID, listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4), PLAYER_ID1, STRAIGHT_CARDS, DISCARD_DECK_CARD,STRAIGHT_CARDS2)
+        val gameDecksHelper: GameDecksHelper = DeckHelper.generateFakeDealerEvents(
+            AGGREGATE_ID,
+            listOf(PLAYER_ID1, PLAYER_ID2, PLAYER_ID3, PLAYER_ID4),
+            PLAYER_ID1,
+            STRAIGHT_CARDS,
+            DISCARD_DECK_CARD,
+            STRAIGHT_CARDS2
+        )
     }
 
     //Setup
@@ -193,9 +219,17 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithNoCardsPickUpPla
         listOf(
             GameStarted.create(aggregateId),
             CardsPickedFromDiscardPile.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromDiscardDeck()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS.plus(DISCARD_DECK_CARD))),
-            CardsPickedFromPlayerDeckDuringTurn.create(aggregateId, PLAYER_ID1, gameDecksHelper.getCardsFromPlayerDeck1()),
-            StraightDropped.create(aggregateId, PLAYER_ID1, Straight.create(STRAIGHT_ID, STRAIGHT_CARDS2))
+            StraightDropped.create(
+                aggregateId,
+                PLAYER_ID1,
+                STRAIGHT_ID, STRAIGHT_CARDS.plus(DISCARD_DECK_CARD)
+            ),
+            CardsPickedFromPlayerDeckDuringTurn.create(
+                aggregateId,
+                PLAYER_ID1,
+                gameDecksHelper.getCardsFromPlayerDeck1()
+            ),
+            StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS2)
         )
     )
 
@@ -203,7 +237,8 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerWithNoCardsPickUpPla
 
     override fun expected(): List<IDomainEvent> = listOf()
 
-    override fun expectedException(): Exception? = IllegalArgumentException("Player ${PLAYER_ID1.valueAsString()}'s team has already pickedUp its playerDeck")
+    override fun expectedException(): Exception? =
+        IllegalArgumentException("Player ${PLAYER_ID1.valueAsString()}'s team has already pickedUp its playerDeck")
 }
 
 //

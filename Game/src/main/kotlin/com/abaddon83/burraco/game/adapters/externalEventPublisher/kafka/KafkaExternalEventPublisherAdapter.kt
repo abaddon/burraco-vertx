@@ -4,8 +4,10 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealerExternalEvent
-import com.abaddon83.burraco.game.events.game.CardDealingRequested
-import com.abaddon83.burraco.game.events.game.GameEvent
+import com.abaddon83.burraco.common.externalEvents.game.GameCreatedExternalEvent
+import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
+import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.GameEvent
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameWaitingDealer
 import com.abaddon83.burraco.game.ports.ExternalEventPublisherPort
@@ -26,6 +28,11 @@ class KafkaExternalEventPublisherAdapter(
             is CardDealingRequested -> {
                 val listPlayerIdentities = (aggregate as GameWaitingDealer).players.map { it.id }
                 CardsRequestedToDealerExternalEvent(domainEvent.aggregateId, listPlayerIdentities)
+            }
+
+            is GameCreated -> {
+                // GameCreated event does not have an associated ExternalEvent
+                GameCreatedExternalEvent(domainEvent.aggregateId)
             }
 
             else -> null

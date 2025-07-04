@@ -4,7 +4,7 @@ import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.common.models.StraightIdentity
 import com.abaddon83.burraco.game.models.Tris
 import com.abaddon83.burraco.common.models.TrisIdentity
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.player.Player
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.player.PlayerInGame

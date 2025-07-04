@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.game.adapters.externalEventPublisher.kafka
 
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
-import com.abaddon83.burraco.game.events.game.CardDealingRequested
+import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.models.game.GameDraft

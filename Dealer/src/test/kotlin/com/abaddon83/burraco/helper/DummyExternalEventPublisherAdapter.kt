@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.helper
 
 
-import com.abaddon83.burraco.dealer.events.DealerEvent
+import com.abaddon83.burraco.common.models.event.dealer.DealerEvent
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.ExternalEventPublisherPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log

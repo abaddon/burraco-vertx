@@ -16,12 +16,12 @@ dependencies {
 
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
     implementation(libs.bundles.logs)
-    implementation(libs.bundles.game)
+    implementation(libs.bundles.player)
     implementation(project(":Common"))
     implementation(project(":KafkaAdapter"))
 
     testImplementation(kotlin("test"))
-    testImplementation(libs.bundles.gameTest)
+    testImplementation(libs.bundles.playerTest)
     testImplementation(libs.bundles.logs)
 }
 

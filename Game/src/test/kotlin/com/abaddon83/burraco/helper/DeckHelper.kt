@@ -6,15 +6,15 @@ import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Ranks
 import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.common.models.card.Suits
-import com.abaddon83.burraco.game.events.game.CardAddedDeck
-import com.abaddon83.burraco.game.events.game.CardAddedDiscardDeck
-import com.abaddon83.burraco.game.events.game.CardAddedFirstPlayerDeck
-import com.abaddon83.burraco.game.events.game.CardAddedPlayer
-import com.abaddon83.burraco.game.events.game.CardAddedSecondPlayerDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedDiscardDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedFirstPlayerDeck
+import com.abaddon83.burraco.common.models.event.game.CardAddedPlayer
+import com.abaddon83.burraco.common.models.event.game.CardAddedSecondPlayerDeck
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.GameConfig.deckSize
 import com.abaddon83.burraco.game.helpers.removeCards
-import com.abaddon83.burraco.game.models.card.Card
+import com.abaddon83.burraco.common.models.card.Card
 
 object DeckHelper {
 

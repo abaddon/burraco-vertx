@@ -19,7 +19,7 @@ data class GamePlayer(
     val tris: List<BurracoTris> = listOf(),
     val scale: List<BurracoScale> = listOf(),
 
-    ): Projection<GamePlayer> {
+    ): IProjection {
 
     constructor(): this(
         key = GamePlayerKey(PlayerIdentity(),GameIdentity()),

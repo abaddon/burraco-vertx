@@ -3,9 +3,13 @@ package com.abaddon83.burraco.dealer.services
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
-import com.abaddon83.burraco.dealer.events.*
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.common.models.DealerIdentity
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDeck
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDiscardDeck
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayer
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck1
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck2
 import com.abaddon83.burraco.helper.DummyExternalEventPublisherAdapter
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log

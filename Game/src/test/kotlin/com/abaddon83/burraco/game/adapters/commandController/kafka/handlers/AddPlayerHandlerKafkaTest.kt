@@ -19,7 +19,7 @@ internal class AddPlayerHandlerKafkaTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
-    private val inMemoryEventStoreRepository = InMemoryEventStoreRepository(
+    private val inMemoryEventStoreRepository: InMemoryEventStoreRepository<Game> = InMemoryEventStoreRepository(
         "stream",
         { GameDraft.empty() }
     )
@@ -35,7 +35,7 @@ internal class AddPlayerHandlerKafkaTest {
     fun `Given a KafkaEvent containing PlayerCreated, when processed, then addPlayer command executed`() {
         val gameIdentity = GameIdentity.create()
         val playerIdentity = PlayerIdentity.create()
-        
+
         val playerCreatedPayload = """
             {
                 "aggregateIdentity": {"identity": "${playerIdentity.valueAsString()}"},
@@ -44,9 +44,9 @@ internal class AddPlayerHandlerKafkaTest {
                 "eventName": "PlayerCreated"
             }
         """.trimIndent()
-        
+
         val event = KafkaEvent("PlayerCreated", playerCreatedPayload)
-        
+
         assertDoesNotThrow {
             addPlayerHandler.handle(event)
         }
@@ -56,7 +56,7 @@ internal class AddPlayerHandlerKafkaTest {
     fun `Given a KafkaEvent containing PlayerCreated for non-existent game, when processed, then event is committed`() {
         val gameIdentity = GameIdentity.create()
         val playerIdentity = PlayerIdentity.create()
-        
+
         val playerCreatedPayload = """
             {
                 "aggregateIdentity": {"identity": "${playerIdentity.valueAsString()}"},
@@ -65,9 +65,9 @@ internal class AddPlayerHandlerKafkaTest {
                 "eventName": "PlayerCreated"
             }
         """.trimIndent()
-        
+
         val event = KafkaEvent("PlayerCreated", playerCreatedPayload)
-        
+
         assertDoesNotThrow {
             addPlayerHandler.handle(event)
         }

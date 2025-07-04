@@ -4,14 +4,13 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.helper.KafkaContainerTest
-import com.abaddon83.burraco.player.event.PlayerCreated
+import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import io.vertx.core.Handler
 import io.vertx.junit5.VertxTestContext
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 
 internal class KafkaExternalEventPublisherAdapterTest() : KafkaContainerTest() {

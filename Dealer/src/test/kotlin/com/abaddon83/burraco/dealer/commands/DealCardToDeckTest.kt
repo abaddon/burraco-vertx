@@ -3,9 +3,9 @@ package com.abaddon83.burraco.dealer.commands
 import com.abaddon83.burraco.common.models.DealerIdentity
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
-import com.abaddon83.burraco.dealer.events.CardDealtToDeck
-import com.abaddon83.burraco.dealer.events.DealerEvent
-import com.abaddon83.burraco.dealer.events.DeckCreated
+import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDeck
+import com.abaddon83.burraco.common.models.event.dealer.DealerEvent
+import com.abaddon83.burraco.common.models.event.dealer.DeckCreated
 import com.abaddon83.burraco.dealer.helpers.CardsHelper
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.helper.DummyExternalEventPublisherAdapter
