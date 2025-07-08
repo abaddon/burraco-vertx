@@ -56,7 +56,7 @@ internal class KafkaPlayerConsumerVerticleTest {
             streamName = "test-stream",
             maxReadPageSize = 100,
             maxWritePageSize = 200,
-            eventStoreDB = EventStoreConfig.EventStoreDB(connectionString = "test://localhost:2113")
+            connectionString = "test://localhost:2113"
         )
 
         return ServiceConfig(

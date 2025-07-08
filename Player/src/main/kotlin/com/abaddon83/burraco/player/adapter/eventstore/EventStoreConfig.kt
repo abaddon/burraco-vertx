@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.game.adapters.eventStore.config
+package com.abaddon83.burraco.player.adapter.eventstore
 
 import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepositoryConfig

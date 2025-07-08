@@ -35,25 +35,6 @@ abstract class KafkaProducerVerticle<DE : IDomainEvent, AR : AggregateRoot>(
             }.coAwait()
     }
 
-
-//    suspend fun publish(aggregate: AR, domainEvent: DE): Result<Unit> =
-//        withContext(vertxCoroutineScope.coroutineContext()) {
-//
-//            val externalEvent = chooseExternalEvent(aggregate, domainEvent)
-//
-//            externalEvent?.let { extEvent: ExternalEvent ->
-//                val kafkaEvent = KafkaEvent.from(extEvent)
-//                val record =
-//                    KafkaProducerRecord.create(topic, extEvent.aggregateIdentity.valueAsString(), kafkaEvent.toJson())
-//                producer.write(record)
-//                    .onFailure {
-//                        return@onFailure onFailure(it, aggregate, domainEvent, extEvent)
-//                    }.onSuccess {
-//                        return@onSuccess onSuccess(aggregate, domainEvent, extEvent)
-//                    }
-//            }
-//        }
-
     /**
      * Graceful shutdown of the producer
      */

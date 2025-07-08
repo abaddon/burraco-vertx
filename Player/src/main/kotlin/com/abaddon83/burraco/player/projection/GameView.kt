@@ -24,16 +24,21 @@ data class GameView(
     }
 
     override fun withPosition(event: IDomainEvent): IProjection {
-        TODO("Not yet implemented")
+        val updatedPositions = lastProcessedEvent
+        updatedPositions[event.aggregateType] = event.version
+        
+        return this.copy(
+            lastProcessedEvent = updatedPositions,
+            lastUpdated = Instant.now()
+        )
     }
 
     private fun apply(event: GameCreated): GameView {
         check(this.key == GameViewKey(GameIdentity.empty())) { "Check failed, the key is not empty" }
-        return GameView(
+        return this.copy(
             key = GameViewKey(event.aggregateId),
             players = emptyList(),
             state = GameState.DRAFT,
-            lastProcessedEvent = ConcurrentHashMap(),
             lastUpdated = Instant.now()
         )
     }

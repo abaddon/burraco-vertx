@@ -2,9 +2,15 @@ package com.abaddon83.burraco.player
 
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaConsumerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
+import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceConfig
+import com.abaddon83.burraco.player.adapter.eventstore.EventStoreConfig
+import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig
+import com.abaddon83.burraco.player.projection.GameViewProjectionHandler
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
+import io.github.abaddon.kcqrs.eventstoredb.config.SubscriptionFilterConfig
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepositoryConfig
+import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreSubscriptionConfig
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigRetrieverOptions
 import io.vertx.config.ConfigStoreOptions
@@ -19,7 +25,8 @@ data class ServiceConfig(
     val restHttpService: RestHttpServiceConfig,
     val kafkaGameConsumer: KafkaConsumerConfig,
     val kafkaPlayerProducer: KafkaProducerConfig,
-    val eventStore: EventStoreConfig
+    val eventStore: EventStoreConfig,
+    val gameProjection: GameViewProjectionConfig
 ) {
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
@@ -50,19 +57,6 @@ data class ServiceConfig(
 }
 
 @Serializable
-data class RestHttpServiceConfig(
-    val serviceName: String,
-    val openApiPath: String,
-    val http: RestApiHttpConfig
-) {
-    fun getHttpServerOptions(): io.vertx.core.http.HttpServerOptions {
-        return io.vertx.core.http.HttpServerOptions()
-            .setPort(http.port)
-            .setHost(http.address)
-    }
-}
-
-@Serializable
 data class RestApiHttpConfig(
     val port: Int,
     val address: String,
@@ -70,29 +64,17 @@ data class RestApiHttpConfig(
 )
 
 @Serializable
-data class EventStoreConfig(
-    val streamName: String,
-    val maxReadPageSize: Long,
-    val maxWritePageSize: Int,
-    val eventStoreDB: EventStoreDB
+data class GameProjectionConfig(
+    val gameStreamName: String,
+    val eventStoreConnectionString: String,
+    val startFromBeginning: Boolean = true
 ) {
-
-    fun eventStoreDBRepositoryConfig(): EventStoreDBRepositoryConfig =
-        EventStoreDBRepositoryConfig(
-            EventStoreDBConfig(
-                eventStoreDB.connectionString
-            ),
-            streamName,
-            maxReadPageSize,
-            maxWritePageSize
-        )
-
-    @Serializable
-    data class EventStoreDB(
-        val connectionString: String
-    )
-
+    fun getEventStoreDBConfig(): EventStoreDBConfig = EventStoreDBConfig(eventStoreConnectionString)
+    
+    
+    fun getSubscriptionFilterConfig(): SubscriptionFilterConfig? = null // No filter for now
+    
     companion object {
-        fun empty(): EventStoreConfig = EventStoreConfig("", 1, 1, EventStoreDB(""))
+        fun empty(): GameProjectionConfig = GameProjectionConfig("", "", true)
     }
 }

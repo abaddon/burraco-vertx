@@ -7,4 +7,10 @@ data class GameViewKey(
     private val gameId: GameIdentity,
 ) : IProjectionKey {
     override fun key(): String = gameId.valueAsString()
+
+    companion object {
+        fun empty(): GameViewKey {
+            return GameViewKey(GameIdentity.empty())
+        }
+    }
 }
