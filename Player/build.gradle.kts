@@ -5,11 +5,6 @@ plugins {
     // Apply Kotlin Serialization plugin from `gradle/libs.versions.toml`.
     alias(libs.plugins.kotlinPluginSerialization)
     alias(libs.plugins.shadowPlugin)
-    application
-}
-
-application {
-    mainClass = "com.abaddon83.burraco.player.MainVerticle"
 }
 
 dependencies {
@@ -34,10 +29,10 @@ tasks {
         archiveClassifier.set("all")
         archiveVersion.set(gitVersion)
         manifest {
-            attributes["Main-Class"] = application.mainClass
+            attributes["Main-Class"] = "com.abaddon83.burraco.player.MainVerticle"
         }
     }
-    
+
     register("printPlayerVersion") {
         doLast {
             println("Player module version: ${gitVersion.get()}")
