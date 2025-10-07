@@ -28,6 +28,7 @@ tasks {
         archiveBaseName.set("Game")
         archiveClassifier.set("all")
         archiveVersion.set(gitVersion)
+        mergeServiceFiles()
         manifest {
             attributes["Main-Class"] = "com.abaddon83.burraco.game.MainVerticle"
         }

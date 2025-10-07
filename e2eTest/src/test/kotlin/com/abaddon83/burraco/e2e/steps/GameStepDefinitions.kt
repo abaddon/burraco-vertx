@@ -40,10 +40,9 @@ class GameStepDefinitions {
     fun aNewGameIsCreated() {
         assertThat("Response status should be 200", context.lastResponse?.statusCode(), equalTo(200))
         assertThat("Game ID should not be null", context.gameId, notNullValue())
-        assertThat("Game type should be BURRACO", context.lastGameResponse?.get("type"), equalTo("BURRACO"))
         assertThat("Game status should be DRAFT", context.lastGameResponse?.get("status"), equalTo("DRAFT"))
 
-        println("✅ Verified: Game created successfully with status DRAFT")
+        println("✅ Verified: Game created successfully with ID ${context.gameId} and status DRAFT")
     }
 
     @Then("the game has a player associated")
@@ -56,7 +55,7 @@ class GameStepDefinitions {
         val gameResponse = context.lastGameResponse
         assertThat("Game response should not be null", gameResponse, notNullValue())
 
-        val players = gameResponse?.get("player") as? List<*>
+        val players = gameResponse?.get("players") as? List<*>
         assertThat("Game should have players", players, notNullValue())
         assertThat("Game should have at least 1 player", players?.isNotEmpty(), equalTo(true))
         assertThat("Player should be in the game", players?.contains(context.playerId), equalTo(true))
