@@ -20,24 +20,30 @@ services:
       context: Game
       dockerfile: Dockerfile
     depends_on:
-      #      - db
-      - eventstore
-      - redpanda
+      base-builder:
+        condition: service_completed_successfully
+      eventstore:
+        condition: service_started
+      redpanda:
+        condition: service_started
     ports:
       - "8081:8081"
     networks:
       burraco-net:
         aliases:
-          - dealer
+          - game
 
   dealer:
     build:
       context: Dealer
       dockerfile: Dockerfile
     depends_on:
-      #      - db
-      - eventstore
-      - redpanda
+      base-builder:
+        condition: service_completed_successfully
+      eventstore:
+        condition: service_started
+      redpanda:
+        condition: service_started
     #    ports:
     #      - "8082:8082"
     networks:

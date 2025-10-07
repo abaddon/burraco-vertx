@@ -12,7 +12,7 @@ COPY gradle ./gradle
 RUN chmod +x ./gradlew
 
 # Create directories for modules
-RUN mkdir -p buildSrc Common KafkaAdapter Game Dealer
+RUN mkdir -p buildSrc Common KafkaAdapter Game Dealer Player
 
 # Copy module-specific build files
 COPY buildSrc/build.gradle.kts ./buildSrc/
@@ -21,9 +21,11 @@ COPY buildSrc/src ./buildSrc/src
 # Libraries
 COPY Common/build.gradle.kts ./Common/
 COPY KafkaAdapter/build.gradle.kts ./KafkaAdapter/
+
 # Services
 COPY Game/build.gradle.kts ./Game/
 COPY Dealer/build.gradle.kts ./Dealer/
+COPY Player/build.gradle.kts ./Player/
 
 # Download all dependencies for both modules - this will be cached
 RUN ./gradlew dependencies --refresh-dependencies --no-daemon
@@ -33,6 +35,7 @@ COPY Common/src ./Common/src
 COPY KafkaAdapter/src ./KafkaAdapter/src
 COPY Game/src ./Game/src
 COPY Dealer/src ./Dealer/src
+COPY Player/src ./Player/src
 
 # Build all modules
 RUN ./gradlew clean build shadowJar -x test --no-daemon --build-cache
