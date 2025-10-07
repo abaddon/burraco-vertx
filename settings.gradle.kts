@@ -31,5 +31,6 @@ include(":Dealer")
 include(":Game")
 include(":KafkaAdapter")
 include(":Player")
+include(":e2eTest")
 
 rootProject.name = "burraco"

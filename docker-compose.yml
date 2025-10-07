@@ -23,15 +23,41 @@ services:
       base-builder:
         condition: service_completed_successfully
       eventstore:
-        condition: service_started
+        condition: service_healthy
       redpanda:
         condition: service_started
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "redpanda:9092"
+      EVENTSTORE_CONNECTION_STRING: "kurrentdb://eventstore:2113?tls=false&tlsVerifyCert=false"
     ports:
       - "8081:8081"
     networks:
       burraco-net:
         aliases:
           - game
+
+  player:
+    build:
+      context: Player
+      dockerfile: Dockerfile
+    depends_on:
+      base-builder:
+        condition: service_completed_successfully
+      eventstore:
+        condition: service_healthy
+      redpanda:
+        condition: service_started
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "redpanda:9092"
+      EVENTSTORE_CONNECTION_STRING: "kurrentdb://eventstore:2113?tls=false&tlsVerifyCert=false"
+      GAME_VIEW_PROJECTION_CONNECTION_STRING: "kurrentdb://eventstore:2113?tls=false&tlsVerifyCert=false"
+    ports:
+      - "8082:8082"
+    networks:
+      burraco-net:
+        aliases:
+          - player
+
 
   dealer:
     build:
@@ -41,9 +67,12 @@ services:
       base-builder:
         condition: service_completed_successfully
       eventstore:
-        condition: service_started
+        condition: service_healthy
       redpanda:
         condition: service_started
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "redpanda:9092"
+      EVENT_STORE_DB_CONNECTION_STRING: "kurrentdb://eventstore:2113?tls=false&tlsVerifyCert=false"
     #    ports:
     #      - "8082:8082"
     networks:
@@ -89,7 +118,6 @@ services:
           - eventstore
 
   redpanda:
-    container_name: redpanda
     environment:
       REDPANDA_VERSION: "v25.1.5"
     command:
@@ -126,7 +154,6 @@ services:
       - 19644:9644
 
   console:
-    container_name: redpanda-console
     image: docker.redpanda.com/redpandadata/console:v3.1.1
     networks:
       - burraco-net

@@ -12,7 +12,7 @@ COPY gradle ./gradle
 RUN chmod +x ./gradlew
 
 # Create directories for modules
-RUN mkdir -p buildSrc Common KafkaAdapter Game Dealer Player
+RUN mkdir -p buildSrc Common KafkaAdapter Game Dealer Player e2eTest
 
 # Copy module-specific build files
 COPY buildSrc/build.gradle.kts ./buildSrc/
@@ -26,6 +26,7 @@ COPY KafkaAdapter/build.gradle.kts ./KafkaAdapter/
 COPY Game/build.gradle.kts ./Game/
 COPY Dealer/build.gradle.kts ./Dealer/
 COPY Player/build.gradle.kts ./Player/
+COPY e2eTest/build.gradle.kts ./e2eTest/
 
 # Download all dependencies for both modules - this will be cached
 RUN ./gradlew dependencies --refresh-dependencies --no-daemon

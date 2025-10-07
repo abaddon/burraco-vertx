@@ -18,6 +18,9 @@ slf4j-api = "2.0.17"
 hoplite = "2.9.0"
 testcontainer = "1.21.0"
 shadow = "8.3.3"
+cucumber = "7.20.1"
+restAssured = "5.5.0"
+awaitility = "4.2.2"
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -62,6 +65,13 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainer" }
 testcontainer-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainer" }
 testcontainer-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainer" }
+
+cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
+rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "restAssured" }
+rest-assured-kotlin = { module = "io.rest-assured:kotlin-extensions", version.ref = "restAssured" }
+awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
+awaitility-kotlin = { module = "org.awaitility:awaitility-kotlin", version.ref = "awaitility" }
 
 
 # Libraries can be bundled together for easier import
@@ -198,6 +208,20 @@ playerTest = [
     "testcontainer-kafka",
     "testcontainer-junit",
     "kcqrs-test"
+]
+
+e2eTest = [
+    "cucumber-java",
+    "cucumber-junit-platform-engine",
+    "rest-assured",
+    "rest-assured-kotlin",
+    "awaitility",
+    "awaitility-kotlin",
+    "testcontainers",
+    "testcontainer-junit",
+    "vertx-kafka-client",
+    "jackson-databind",
+    "jackson-module-kotlin"
 ]
 
 [plugins]
