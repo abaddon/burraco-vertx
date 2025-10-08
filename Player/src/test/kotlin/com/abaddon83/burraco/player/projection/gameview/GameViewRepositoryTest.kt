@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test
 
 internal class GameViewRepositoryTest {
 
-    private lateinit var repository: GameViewRepository
+    private lateinit var repository: InMemoryGameViewRepository
 
     @BeforeEach
     fun setUp() {
-        repository = GameViewRepository()
+        repository = InMemoryGameViewRepository()
     }
 
     @Test

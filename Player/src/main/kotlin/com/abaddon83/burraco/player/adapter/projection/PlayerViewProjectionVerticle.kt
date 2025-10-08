@@ -14,20 +14,17 @@ class PlayerViewProjectionVerticle(
     private val repository: IProjectionRepository<PlayerView>
 ) : AbstractVerticle() {
 
-    private lateinit var projectionHandler: PlayerViewProjectionHandler
+    private val playerViewProjectionHandler = PlayerViewProjectionHandler(repository)
 
     override fun start(startPromise: Promise<Void>) {
         log.info("Starting PlayerView Projection Verticle...")
 
         try {
 
-            // Initialize projection handler
-            projectionHandler = PlayerViewProjectionHandler(repository)
-
             val eventStoreDomainEventSubscriber =
                 EventStoreDomainEventSubscriber<PlayerView>(playerEventStoreSubscriptionConfig)
 
-            eventStoreDomainEventSubscriber.subscribe(projectionHandler)
+            eventStoreDomainEventSubscriber.subscribe(playerViewProjectionHandler)
 
             log.info("PlayerView Projection Verticle started successfully")
             startPromise.complete()
@@ -42,7 +39,7 @@ class PlayerViewProjectionVerticle(
         log.info("Stopping PlayerView Projection Verticle...")
 
         try {
-            projectionHandler.stop(null)
+            playerViewProjectionHandler.stop(null)
 
             log.info("PlayerView Projection Verticle stopped successfully")
             stopPromise.complete()

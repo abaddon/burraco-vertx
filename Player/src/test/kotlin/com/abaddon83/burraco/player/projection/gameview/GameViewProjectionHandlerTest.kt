@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test
 
 internal class GameViewProjectionHandlerTest {
 
-    private lateinit var repository: GameViewRepository
+    private lateinit var repository: InMemoryGameViewRepository
     private lateinit var projectionHandler: GameViewProjectionHandler
     private lateinit var projectionKey: GameViewKey
 
     @BeforeEach
     fun setUp() {
-        repository = GameViewRepository()
+        repository = InMemoryGameViewRepository()
         projectionKey = GameViewKey(GameIdentity.empty())
         projectionHandler = GameViewProjectionHandler(
             repository = repository
