@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.dealer.adapters.commandController.kafka.handlers
 
-import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
+import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import com.abaddon83.burraco.dealer.adapters.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.models.Dealer

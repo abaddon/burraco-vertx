@@ -1,6 +1,5 @@
 package com.abaddon83.burraco.common.adapter.kafka.producer
 
-import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
@@ -23,7 +22,7 @@ abstract class KafkaProducerVerticle<DE : IDomainEvent, AR : AggregateRoot>(
             return Result.success(Unit)
         }
 
-        val kafkaEvent = KafkaEvent.from(externalEvent)
+        val kafkaEvent = externalEvent.toKafkaEvent()
         val record = KafkaProducerRecord.create(
             topic,
             externalEvent.aggregateIdentity.valueAsString(),

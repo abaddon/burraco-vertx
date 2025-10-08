@@ -1,6 +1,5 @@
-package com.abaddon83.burraco.common.adapter.kafka
+package com.abaddon83.burraco.common.externalEvents
 
-import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.vertx.core.json.Json
 
@@ -13,9 +12,9 @@ class KafkaEvent(
     fun toJson(): String = Json.encode(this);
 
     companion object{
-        fun <E1: ExternalEvent>from(externalEvent: E1): KafkaEvent {
-            return KafkaEvent(externalEvent.eventName, Json.encode(externalEvent))
-        }
+//        fun <E1: ExternalEvent>from(externalEvent: E1): KafkaEvent {
+//            return  KafkaEvent(externalEvent.eventName, Json.encode(externalEvent))
+//        }
 
 
         fun from(json: String): KafkaEvent =

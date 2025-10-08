@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.common.adapter.kafka.consumer
 
 import com.abaddon83.burraco.common.adapter.kafka.Handler
-import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
+import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import io.vertx.kafka.client.consumer.KafkaConsumerRecord
 
 class EventRouterHandler private constructor(

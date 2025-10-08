@@ -5,7 +5,7 @@ import io.github.abaddon.kcqrs.core.projections.IProjectionKey
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import java.util.concurrent.ConcurrentHashMap
 
-class PlayerViewRepository : IProjectionRepository<PlayerView> {
+class InMemoryPlayerViewRepository : IProjectionRepository<PlayerView> {
 
     private val projections = ConcurrentHashMap<String, PlayerView>()
 

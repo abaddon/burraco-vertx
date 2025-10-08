@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.game.adapters.commandController.kafka.handlers
 
-import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
+import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.game.adapters.commandController.CommandControllerAdapter

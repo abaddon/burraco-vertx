@@ -6,4 +6,6 @@ interface ExternalEvent {
     val eventName: String
     val eventOwner: String
     val aggregateIdentity: IIdentity
+
+    fun toKafkaEvent(): KafkaEvent
 }

@@ -77,19 +77,19 @@ object ContainerManager {
      * Stop all containers
      */
     fun stop() {
-        if (started) {
-            println("🛑 Stopping Burraco services...")
-
-            val projectRoot = File("..").canonicalFile
-            val stopProcess = ProcessBuilder("docker", "compose", "down")
-                .directory(projectRoot)
-                .redirectErrorStream(true)
-                .start()
-
-            stopProcess.waitFor(30, TimeUnit.SECONDS)
-            started = false
-            println("✅ All services stopped.")
-        }
+//        if (started) {
+//            println("🛑 Stopping Burraco services...")
+//
+//            val projectRoot = File("..").canonicalFile
+//            val stopProcess = ProcessBuilder("docker", "compose", "down")
+//                .directory(projectRoot)
+//                .redirectErrorStream(true)
+//                .start()
+//
+//            stopProcess.waitFor(30, TimeUnit.SECONDS)
+//            started = false
+//            println("✅ All services stopped.")
+//        }
     }
 
     /**

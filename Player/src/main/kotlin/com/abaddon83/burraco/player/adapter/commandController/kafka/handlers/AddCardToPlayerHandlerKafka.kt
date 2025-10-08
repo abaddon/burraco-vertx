@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.player.adapter.commandController.kafka.handlers
 
-import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
+import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaEventHandler
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerExternalEvent
 import com.abaddon83.burraco.common.helpers.Validated

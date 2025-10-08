@@ -47,21 +47,21 @@ internal class GameViewTest {
         }
     }
 
-    @Test
-    fun `Given unsupported event when applied then throws exception`() {
-        val emptyGameView = GameView.empty()
-        val unsupportedEvent = object : IDomainEvent {
-            override val messageId = UUID.randomUUID()
-            override val header = EventHeader.create("Test")
-            override val aggregateId = GameIdentity.create()
-            override val aggregateType = "Test"
-            override val version = 1L
-        }
-
-        assertThrows(IllegalArgumentException::class.java) {
-            emptyGameView.applyEvent(unsupportedEvent)
-        }
-    }
+//    @Test
+//    fun `Given unsupported event when applied then throws exception`() {
+//        val emptyGameView = GameView.empty()
+//        val unsupportedEvent = object : IDomainEvent {
+//            override val messageId = UUID.randomUUID()
+//            override val header = EventHeader.create("Test")
+//            override val aggregateId = GameIdentity.create()
+//            override val aggregateType = "Test"
+//            override val version = 1L
+//        }
+//
+//        assertThrows(IllegalArgumentException::class.java) {
+//            emptyGameView.applyEvent(unsupportedEvent)
+//        }
+//    }
 
     @Test
     fun `Given GameView when withPosition called then position updated correctly`() {

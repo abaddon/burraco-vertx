@@ -7,7 +7,7 @@ import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.player.projection.playerview.PlayerView
 import com.abaddon83.burraco.player.projection.playerview.PlayerViewKey
-import com.abaddon83.burraco.player.projection.playerview.PlayerViewRepository
+import com.abaddon83.burraco.player.projection.playerview.InMemoryPlayerViewRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -18,11 +18,11 @@ import java.util.concurrent.ConcurrentHashMap
 internal class QueryControllerAdapterTest {
 
     private lateinit var queryControllerAdapter: QueryControllerAdapter
-    private lateinit var playerViewRepository: PlayerViewRepository
+    private lateinit var playerViewRepository: InMemoryPlayerViewRepository
 
     @BeforeEach
     fun setUp() {
-        playerViewRepository = PlayerViewRepository()
+        playerViewRepository = InMemoryPlayerViewRepository()
         queryControllerAdapter = QueryControllerAdapter(playerViewRepository)
     }
 

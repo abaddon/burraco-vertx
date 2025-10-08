@@ -1,7 +1,9 @@
 package com.abaddon83.burraco.common.adapter.kafka
 
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
+import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import com.abaddon83.burraco.common.models.GameIdentity
+import io.vertx.core.json.Json
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -13,7 +15,7 @@ internal class KafkaEventTest{
     fun `Given a valid KafkaEvent, when execute toJson, then json created`() {
         val gameIdentity = GameIdentity.create()
         val externalEvent = DummyExternalEvent(gameIdentity)
-        val kafkaEvent = KafkaEvent.from(externalEvent)
+        val kafkaEvent = externalEvent.toKafkaEvent()
         val json = kafkaEvent.toJson()
         assertTrue(json.contains(gameIdentity.valueAsString()))
     }
@@ -33,6 +35,10 @@ internal class KafkaEventTest{
         override val aggregateIdentity: GameIdentity,
     ) : ExternalEvent {
         override val eventOwner: String = "Test"
+        override fun toKafkaEvent(): KafkaEvent {
+            return KafkaEvent(eventName, Json.encode(this))
+        }
+
         override val eventName: String = this::class.java.simpleName
 
     }

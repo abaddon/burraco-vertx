@@ -5,10 +5,10 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.player.port.QueryControllerPort
 import com.abaddon83.burraco.player.projection.playerview.PlayerView
 import com.abaddon83.burraco.player.projection.playerview.PlayerViewKey
-import com.abaddon83.burraco.player.projection.playerview.PlayerViewRepository
+import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
 
 class QueryControllerAdapter(
-    private val playerViewRepository: PlayerViewRepository
+    private val playerViewRepository: IProjectionRepository<PlayerView>
 ) : QueryControllerPort {
 
     override suspend fun getPlayerView(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity): Result<PlayerView> {

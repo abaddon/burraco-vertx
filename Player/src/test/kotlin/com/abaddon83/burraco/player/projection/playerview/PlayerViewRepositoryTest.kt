@@ -14,11 +14,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 internal class PlayerViewRepositoryTest {
 
-    private lateinit var repository: PlayerViewRepository
+    private lateinit var repository: InMemoryPlayerViewRepository
 
     @BeforeEach
     fun setup() {
-        repository = PlayerViewRepository()
+        repository = InMemoryPlayerViewRepository()
     }
 
     @Test

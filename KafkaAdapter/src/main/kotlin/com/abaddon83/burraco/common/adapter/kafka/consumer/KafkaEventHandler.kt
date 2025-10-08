@@ -1,7 +1,7 @@
 package com.abaddon83.burraco.common.adapter.kafka.consumer
 
 import com.abaddon83.burraco.common.adapter.kafka.Handler
-import com.abaddon83.burraco.common.adapter.kafka.KafkaEvent
+import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import com.abaddon83.burraco.common.helpers.Validated
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import kotlinx.coroutines.CoroutineScope
