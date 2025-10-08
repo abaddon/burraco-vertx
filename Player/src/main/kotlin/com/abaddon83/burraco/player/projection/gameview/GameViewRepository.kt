@@ -1,4 +1,4 @@
-package com.abaddon83.burraco.player.projection
+package com.abaddon83.burraco.player.projection.gameview
 
 import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
 import io.github.abaddon.kcqrs.core.projections.IProjectionKey

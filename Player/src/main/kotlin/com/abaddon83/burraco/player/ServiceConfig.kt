@@ -5,12 +5,9 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceConfig
 import com.abaddon83.burraco.player.adapter.eventstore.EventStoreConfig
 import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig
-import com.abaddon83.burraco.player.projection.GameViewProjectionHandler
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
 import io.github.abaddon.kcqrs.eventstoredb.config.SubscriptionFilterConfig
-import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepositoryConfig
-import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreSubscriptionConfig
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigRetrieverOptions
 import io.vertx.config.ConfigStoreOptions

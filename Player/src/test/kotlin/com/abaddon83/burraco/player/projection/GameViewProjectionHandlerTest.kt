@@ -3,6 +3,10 @@ package com.abaddon83.burraco.player.projection
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.event.game.GameCreated
 import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.player.projection.gameview.GameView
+import com.abaddon83.burraco.player.projection.gameview.GameViewKey
+import com.abaddon83.burraco.player.projection.gameview.GameViewProjectionHandler
+import com.abaddon83.burraco.player.projection.gameview.GameViewRepository
 import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*

@@ -2,6 +2,8 @@ package com.abaddon83.burraco.player.projection
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.player.projection.gameview.GameView
+import com.abaddon83.burraco.player.projection.gameview.GameViewKey
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.Instant

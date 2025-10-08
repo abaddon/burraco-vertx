@@ -1,6 +1,9 @@
 package com.abaddon83.burraco.player.projection
 
 import com.abaddon83.burraco.common.models.GameIdentity
+import com.abaddon83.burraco.player.projection.gameview.GameView
+import com.abaddon83.burraco.player.projection.gameview.GameViewKey
+import com.abaddon83.burraco.player.projection.gameview.GameViewRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach

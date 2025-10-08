@@ -1,8 +1,9 @@
-package com.abaddon83.burraco.player.projection
+package com.abaddon83.burraco.player.projection.gameview
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.player.projection.GameState
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.core.projections.IProjection
 import java.time.Instant

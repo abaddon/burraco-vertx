@@ -1,10 +1,10 @@
 package com.abaddon83.burraco.player.adapter.projection
 
 import com.abaddon83.burraco.common.models.GameIdentity
-import com.abaddon83.burraco.player.projection.GameView
-import com.abaddon83.burraco.player.projection.GameViewKey
-import com.abaddon83.burraco.player.projection.GameViewProjectionHandler
-import com.abaddon83.burraco.player.projection.GameViewRepository
+import com.abaddon83.burraco.player.projection.gameview.GameView
+import com.abaddon83.burraco.player.projection.gameview.GameViewKey
+import com.abaddon83.burraco.player.projection.gameview.GameViewProjectionHandler
+import com.abaddon83.burraco.player.projection.gameview.GameViewRepository
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDomainEventSubscriber
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreSubscriptionConfig

@@ -38,6 +38,17 @@ object HttpClient {
             .post("/games/$gameId/player/add")
     }
 
+    fun requestDealCards(gameId: String, playerId: String): Response {
+        return gameService()
+            .body(mapOf("playerId" to playerId))
+            .post("/games/$gameId/requestDealCards")
+    }
+
+    fun startGame(gameId: String): Response {
+        return gameService()
+            .post("/games/$gameId/start")
+    }
+
     fun getGameHealth(): Response {
         return gameService()
             .get("/health")
