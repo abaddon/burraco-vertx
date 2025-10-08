@@ -16,7 +16,8 @@ internal class GameProjectionConfigTest {
 
         val eventStoreConfig = config.getEventStoreDBConfig()
 
-        assertEquals(connectionString, eventStoreConfig.connectionString)
+        assertNotNull(eventStoreConfig)
+        assertEquals(connectionString, config.eventStoreConnectionString)
     }
 
     @Test

@@ -6,10 +6,9 @@ import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.player.DomainResult
-import com.abaddon83.burraco.player.ServiceConfig
-import com.abaddon83.burraco.player.EventStoreConfig
 import com.abaddon83.burraco.player.RestApiHttpConfig
-import com.abaddon83.burraco.player.RestHttpServiceConfig
+import com.abaddon83.burraco.player.ServiceConfig
+import com.abaddon83.burraco.player.adapter.eventstore.EventStoreConfig
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import com.abaddon83.burraco.player.port.CommandControllerPort
@@ -149,12 +148,14 @@ internal class RestHttpServiceVerticleTest {
         @BeforeAll
         @JvmStatic
         fun beforeAll(testContext: VertxTestContext) {
-            val restApiConfig = RestHttpServiceConfig("test", "./playerAPIs.yaml", RestApiHttpConfig(PORT, ADDRESS, ROOT))
+            val restApiConfig =
+                RestHttpServiceConfig("test", "./playerAPIs.yaml", RestApiHttpConfig(PORT, ADDRESS, ROOT))
             val serviceConfig = ServiceConfig(
                 restApiConfig,
                 KafkaConsumerConfig.empty(),
                 KafkaProducerConfig.empty(),
-                EventStoreConfig.empty()
+                EventStoreConfig.empty(),
+                com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig.empty()
             )
             val commandControllerAdapter = DummyCommandControllerAdapter(STREAM_NAME)
             val verticle = RestHttpServiceVerticle(serviceConfig, commandControllerAdapter)

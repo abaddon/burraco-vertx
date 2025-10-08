@@ -1,9 +1,7 @@
-package com.abaddon83.burraco.player.projection
+package com.abaddon83.burraco.player.projection.gameview
 
 import com.abaddon83.burraco.common.models.GameIdentity
-import com.abaddon83.burraco.player.projection.gameview.GameView
-import com.abaddon83.burraco.player.projection.gameview.GameViewKey
-import com.abaddon83.burraco.player.projection.gameview.GameViewRepository
+import com.abaddon83.burraco.player.projection.GameState
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -78,7 +76,7 @@ internal class GameViewRepositoryTest {
         assertEquals(1, repository.getAllProjections().size)
 
         repository.clear()
-        
+
         assertEquals(0, repository.getAllProjections().size)
         // Should return empty projection for any key after clear
         val result = repository.getByKey(key)

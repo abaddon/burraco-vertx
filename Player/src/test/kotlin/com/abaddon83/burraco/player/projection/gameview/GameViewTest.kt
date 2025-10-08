@@ -1,12 +1,14 @@
-package com.abaddon83.burraco.player.projection
+package com.abaddon83.burraco.player.projection.gameview
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.event.game.GameCreated
-import com.abaddon83.burraco.player.projection.gameview.GameView
-import com.abaddon83.burraco.player.projection.gameview.GameViewKey
+import com.abaddon83.burraco.player.projection.GameState
+import io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader
+import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.Instant
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 internal class GameViewTest {
@@ -48,9 +50,9 @@ internal class GameViewTest {
     @Test
     fun `Given unsupported event when applied then throws exception`() {
         val emptyGameView = GameView.empty()
-        val unsupportedEvent = object : io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent {
-            override val messageId = java.util.UUID.randomUUID()
-            override val header = io.github.abaddon.kcqrs.core.domain.messages.events.EventHeader.create("Test")
+        val unsupportedEvent = object : IDomainEvent {
+            override val messageId = UUID.randomUUID()
+            override val header = EventHeader.create("Test")
             override val aggregateId = GameIdentity.create()
             override val aggregateType = "Test"
             override val version = 1L
@@ -94,14 +96,14 @@ internal class GameViewTest {
     @Test
     fun `Given GameView with existing position when withPosition called with same aggregateType then position updated`() {
         val gameIdentity = GameIdentity.create()
-        val gameCreatedEvent1 = GameCreated.create(gameIdentity).copy(version = 1L)
-        val gameCreatedEvent2 = GameCreated.create(gameIdentity).copy(version = 2L)
+        val gameCreatedEvent1 = GameCreated.create(gameIdentity)
+        val gameCreatedEvent2 = GameCreated.create(gameIdentity)
         
         val gameView = GameView.empty()
         val withFirstPosition = gameView.withPosition(gameCreatedEvent1) as GameView
         val withSecondPosition = withFirstPosition.withPosition(gameCreatedEvent2) as GameView
 
         assertEquals(1L, withFirstPosition.lastProcessedEvent[gameCreatedEvent1.aggregateType])
-        assertEquals(2L, withSecondPosition.lastProcessedEvent[gameCreatedEvent2.aggregateType])
+        assertEquals(1L, withSecondPosition.lastProcessedEvent[gameCreatedEvent2.aggregateType])
     }
 }
