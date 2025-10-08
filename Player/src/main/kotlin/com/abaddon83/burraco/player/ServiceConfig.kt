@@ -5,6 +5,7 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceConfig
 import com.abaddon83.burraco.player.adapter.eventstore.EventStoreConfig
 import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig
+import com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionConfig
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
 import io.github.abaddon.kcqrs.eventstoredb.config.SubscriptionFilterConfig
@@ -24,7 +25,8 @@ data class ServiceConfig(
     val kafkaDealerConsumer: KafkaConsumerConfig,
     val kafkaPlayerProducer: KafkaProducerConfig,
     val eventStore: EventStoreConfig,
-    val gameProjection: GameViewProjectionConfig
+    val gameProjection: GameViewProjectionConfig,
+    val playerViewProjection: PlayerViewProjectionConfig
 ) {
     companion object {
         private val json = Json { ignoreUnknownKeys = true }

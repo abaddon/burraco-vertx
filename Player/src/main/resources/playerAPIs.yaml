@@ -70,6 +70,35 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
 
+  /player/{playerId}/game/{gameId}/view:
+    get:
+      operationId: 'getPlayerView'
+      summary: 'Get player view'
+      description: 'Public API to get the player view for a specific game'
+      tags:
+        - Player
+        - Public
+      parameters:
+        - name: 'playerId'
+          description: 'Player identifier'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: 'gameId'
+          description: 'Game identifier'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          $ref: '#/components/responses/PlayerViewResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+
 components:
   schemas:
     HealthCheck:
@@ -104,6 +133,31 @@ components:
           enum:
             - DRAFT
             - DELETED
+    PlayerView:
+      type: object
+      properties:
+        playerId:
+          type: string
+          format: uuid
+        gameId:
+          type: string
+          format: uuid
+        cards:
+          type: array
+          items:
+            type: string
+        sequences:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        ranks:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
     PlayerId:
       type: string
       format: uuid
@@ -149,6 +203,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Player'
+    PlayerViewResponse:
+      description: 'Player view response'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlayerView'
     ErrorResponse:
       description: 'Error response'
       content:

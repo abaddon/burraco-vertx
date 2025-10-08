@@ -5,6 +5,8 @@ import com.abaddon83.burraco.player.adapter.commandController.kafka.KafkaDealerC
 import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceVerticle
 import com.abaddon83.burraco.player.adapter.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionVerticle
+import com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionVerticle
+import com.abaddon83.burraco.player.adapter.queryController.QueryControllerAdapter
 import com.abaddon83.burraco.player.command.AggregatePlayerCommandHandler
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.model.player.PlayerDraft
@@ -22,6 +24,8 @@ import io.vertx.core.Vertx
 class MainVerticle(
     private val serviceConfig: ServiceConfig
 ) : AbstractVerticle() {
+
+    lateinit var playerViewProjectionVerticle: PlayerViewProjectionVerticle
 
 
     companion object {
@@ -41,9 +45,17 @@ class MainVerticle(
             val serverOpts = DeploymentOptions().setConfig(config())
             val commandControllerAdapter = buildCommandControllerAdapter()
 
+            // Initialize PlayerView projection
+            playerViewProjectionVerticle = PlayerViewProjectionVerticle(
+                serviceConfig.playerViewProjection.eventStoreSubscriptionConfig()
+            )
+
+            // Initialize Query Controller
+            val queryControllerAdapter = QueryControllerAdapter(playerViewProjectionVerticle.repository)
+
             val allFutures: List<Future<Any>> = listOf(
                 deploy(
-                    RestHttpServiceVerticle(serviceConfig, commandControllerAdapter),
+                    RestHttpServiceVerticle(serviceConfig, commandControllerAdapter, queryControllerAdapter),
                     serverOpts
                 ).future(),
                 deploy(
@@ -54,6 +66,10 @@ class MainVerticle(
                     GameViewProjectionVerticle(
                         serviceConfig.gameProjection.eventStoreSubscriptionConfig()
                     ),
+                    serverOpts
+                ).future(),
+                deploy(
+                    playerViewProjectionVerticle,
                     serverOpts
                 ).future()
             )

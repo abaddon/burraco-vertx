@@ -5,7 +5,9 @@ import com.abaddon83.burraco.player.HealthCheck
 import com.abaddon83.burraco.player.ServiceConfig
 import com.abaddon83.burraco.player.adapter.commandController.rest.handlers.CreatePlayerRoutingHandler
 import com.abaddon83.burraco.player.adapter.commandController.rest.handlers.DeletePlayerRoutingHandler
+import com.abaddon83.burraco.player.adapter.commandController.rest.handlers.GetPlayerViewRoutingHandler
 import com.abaddon83.burraco.player.port.CommandControllerPort
+import com.abaddon83.burraco.player.port.QueryControllerPort
 import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.vertx.core.Promise
 import io.vertx.core.buffer.Buffer
@@ -16,7 +18,8 @@ import java.io.File
 
 class RestHttpServiceVerticle(
     private val serviceConfig: ServiceConfig,
-    private var commandController: CommandControllerPort
+    private var commandController: CommandControllerPort,
+    private var queryController: QueryControllerPort
 ) : AbstractHttpServiceVerticle() {
 
     override fun start(startFuture: Promise<Void>?) {
@@ -35,6 +38,7 @@ class RestHttpServiceVerticle(
                 routerBuilder.operation("healthCheck").handler(healthCheck.build())
                 routerBuilder.operation("createPlayer").handler(CreatePlayerRoutingHandler(commandController))
                 routerBuilder.operation("deletePlayer").handler(DeletePlayerRoutingHandler(commandController))
+                routerBuilder.operation("getPlayerView").handler(GetPlayerViewRoutingHandler(queryController))
 
                 //generate the router
                 val router = routerBuilder.createRouter()

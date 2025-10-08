@@ -1,0 +1,20 @@
+package com.abaddon83.burraco.player.projection.playerview
+
+import com.abaddon83.burraco.common.models.event.player.PlayerCollectedCard
+import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
+import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
+import io.github.abaddon.kcqrs.core.projections.IProjectionKey
+import io.github.abaddon.kcqrs.eventstoredb.projection.EventStoreProjectionHandler
+
+class PlayerViewProjectionHandler(
+    repository: IProjectionRepository<PlayerView>
+) : EventStoreProjectionHandler<PlayerView>(
+    repository
+) {
+    override fun getProjectionKey(event: IDomainEvent): IProjectionKey {
+        return when (event) {
+            is PlayerCollectedCard -> PlayerViewKey(event.aggregateId, event.gameId)
+            else -> PlayerViewKey.empty()
+        }
+    }
+}

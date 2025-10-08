@@ -12,7 +12,9 @@ import com.abaddon83.burraco.player.adapter.eventstore.EventStoreConfig
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import com.abaddon83.burraco.player.port.CommandControllerPort
+import com.abaddon83.burraco.player.port.QueryControllerPort
 import com.abaddon83.burraco.player.port.Outcome
+import com.abaddon83.burraco.player.projection.playerview.PlayerView
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.domain.SimpleAggregateCommandHandler
 import io.github.abaddon.kcqrs.core.persistence.InMemoryEventStoreRepository
@@ -156,10 +158,12 @@ internal class RestHttpServiceVerticleTest {
                 KafkaConsumerConfig.empty(), // dealer consumer
                 KafkaProducerConfig.empty(),
                 EventStoreConfig.empty(),
-                com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig.empty()
+                com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig.empty(),
+                com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionConfig.empty()
             )
             val commandControllerAdapter = DummyCommandControllerAdapter(STREAM_NAME)
-            val verticle = RestHttpServiceVerticle(serviceConfig, commandControllerAdapter)
+            val queryControllerAdapter = DummyQueryControllerAdapter()
+            val verticle = RestHttpServiceVerticle(serviceConfig, commandControllerAdapter, queryControllerAdapter)
 
             vertx.deployVerticle(verticle).onComplete {
                 if (it.succeeded()) {
@@ -194,6 +198,12 @@ internal class RestHttpServiceVerticleTest {
             val player = PlayerDraft(playerIdentity, 1, gameIdentity, "testUser", emptyList())
                 .addCard(playerIdentity, gameIdentity, card)
             return Validated.Valid(DomainResult(listOf(), player))
+        }
+    }
+
+    class DummyQueryControllerAdapter : QueryControllerPort {
+        override suspend fun getPlayerView(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity): Result<PlayerView> {
+            return Result.success(PlayerView.empty())
         }
     }
 }
