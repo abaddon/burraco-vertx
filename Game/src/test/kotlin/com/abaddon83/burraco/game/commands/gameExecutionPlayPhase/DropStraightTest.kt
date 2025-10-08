@@ -71,7 +71,7 @@ internal class Given_GameExecutionPlayPhase_When_RightPlayerDropValidStraightWit
     override fun `when`(): ICommand<Game> = DropStraight(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS)
 
     override fun expected(): List<IDomainEvent> = listOf(
-        StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS)
+        StraightDropped.create(aggregateId, PLAYER_ID1, STRAIGHT_ID, STRAIGHT_CARDS.sortedByDescending { it.rank.position })
     )
 
     override fun expectedException(): Exception? = null
