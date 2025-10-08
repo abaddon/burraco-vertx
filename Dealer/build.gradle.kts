@@ -27,6 +27,7 @@ tasks {
         archiveBaseName.set("Dealer")
         archiveClassifier.set("all")
         archiveVersion.set(gitVersion)
+        mergeServiceFiles()
         manifest {
             attributes["Main-Class"] = "com.abaddon83.burraco.dealer.MainVerticle"
         }
@@ -36,11 +37,5 @@ tasks {
         doLast {
             println("Dealer module version: ${gitVersion.get()}")
         }
-    }
-}
-
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "com.abaddon83.burraco.dealer.MainVerticle"
     }
 }

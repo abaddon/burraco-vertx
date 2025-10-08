@@ -13,6 +13,11 @@ post {
 body:json {
   {
     "gameId": "{{gameId}}",
-    "user": "user4"
+    "user": "user1"
   }
+}
+
+script:post-response {
+  let data =res.getBody() ;
+  bru.setEnvVar("playerId",data.playerId);
 }

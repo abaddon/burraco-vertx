@@ -5,6 +5,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.event.game.GameCreated
 import com.abaddon83.burraco.player.projection.GameState
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.core.projections.IProjection
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
@@ -18,20 +19,25 @@ data class GameView(
 ) : IProjection {
 
     override fun applyEvent(event: IDomainEvent): IProjection {
-        when (event) {
-            is GameCreated -> return apply(event)
-            else -> throw IllegalArgumentException("Unsupported event type: ${event::class.java.simpleName}")
+        return when (event) {
+            is GameCreated -> apply(event)
+            else -> eventNotSupported(event)
         }
     }
 
     override fun withPosition(event: IDomainEvent): IProjection {
         val updatedPositions = lastProcessedEvent
         updatedPositions[event.aggregateType] = event.version
-        
+
         return this.copy(
             lastProcessedEvent = updatedPositions,
             lastUpdated = Instant.now()
         )
+    }
+
+    private fun eventNotSupported(event: IDomainEvent): GameView {
+        log.debug("Unsupported event type: ${event::class.java.simpleName}")
+        return this;
     }
 
     private fun apply(event: GameCreated): GameView {

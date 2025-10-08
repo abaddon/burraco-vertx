@@ -5,6 +5,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.event.player.PlayerCollectedCard
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
+import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
 import io.github.abaddon.kcqrs.core.projections.IProjection
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
@@ -19,9 +20,9 @@ data class PlayerView(
 ) : IProjection {
 
     override fun applyEvent(event: IDomainEvent): IProjection {
-        when (event) {
-            is PlayerCollectedCard -> return apply(event)
-            else -> throw IllegalArgumentException("Unsupported event type: ${event::class.java.simpleName}")
+        return when (event) {
+            is PlayerCollectedCard -> apply(event)
+            else -> eventNotSupported(event)
         }
     }
 
@@ -33,6 +34,11 @@ data class PlayerView(
             lastProcessedEvent = updatedPositions,
             lastUpdated = Instant.now()
         )
+    }
+
+    private fun eventNotSupported(event: IDomainEvent): PlayerView {
+        log.debug("Unsupported event type: ${event::class.java.simpleName}")
+        return this;
     }
 
     private fun apply(event: PlayerCollectedCard): PlayerView {
