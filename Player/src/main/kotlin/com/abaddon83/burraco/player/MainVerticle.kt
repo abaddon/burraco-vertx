@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.player
 
 import com.abaddon83.burraco.player.adapter.commandController.CommandControllerAdapter
+import com.abaddon83.burraco.player.adapter.commandController.kafka.KafkaDealerConsumerVerticle
 import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceVerticle
 import com.abaddon83.burraco.player.adapter.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionVerticle
@@ -43,6 +44,10 @@ class MainVerticle(
             val allFutures: List<Future<Any>> = listOf(
                 deploy(
                     RestHttpServiceVerticle(serviceConfig, commandControllerAdapter),
+                    serverOpts
+                ).future(),
+                deploy(
+                    KafkaDealerConsumerVerticle(serviceConfig, commandControllerAdapter),
                     serverOpts
                 ).future(),
                 deploy(

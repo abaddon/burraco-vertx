@@ -21,6 +21,7 @@ import kotlinx.serialization.json.Json
 data class ServiceConfig(
     val restHttpService: RestHttpServiceConfig,
     val kafkaGameConsumer: KafkaConsumerConfig,
+    val kafkaDealerConsumer: KafkaConsumerConfig,
     val kafkaPlayerProducer: KafkaProducerConfig,
     val eventStore: EventStoreConfig,
     val gameProjection: GameViewProjectionConfig

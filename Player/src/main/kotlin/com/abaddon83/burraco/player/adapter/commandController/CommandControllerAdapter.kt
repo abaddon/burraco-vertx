@@ -3,8 +3,10 @@ package com.abaddon83.burraco.player.adapter.commandController
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.player.DomainError
 import com.abaddon83.burraco.player.DomainResult
+import com.abaddon83.burraco.player.command.playerDraft.AddCardToPlayer
 import com.abaddon83.burraco.player.command.playerDraft.CreatePlayer
 import com.abaddon83.burraco.player.command.playerDraft.DeletePlayer
 import com.abaddon83.burraco.player.model.player.Player
@@ -23,6 +25,11 @@ class CommandControllerAdapter(override val playerCommandHandler: IAggregateComm
 
     override suspend fun deletePlayer(playerIdentity: PlayerIdentity): Outcome {
         val cmd = DeletePlayer(playerIdentity)
+        return executeCommand(cmd)
+    }
+
+    override suspend fun addCardToPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity, card: Card): Outcome {
+        val cmd = AddCardToPlayer(playerIdentity, gameIdentity, card)
         return executeCommand(cmd)
     }
 

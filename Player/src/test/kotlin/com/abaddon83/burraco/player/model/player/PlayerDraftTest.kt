@@ -2,6 +2,9 @@ package com.abaddon83.burraco.player.model.player
 
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
+import com.abaddon83.burraco.common.models.card.Card
+import com.abaddon83.burraco.common.models.card.Rank
+import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import com.abaddon83.burraco.common.models.event.player.PlayerDeleted
 import org.junit.jupiter.api.Assertions.*
@@ -145,5 +148,114 @@ internal class PlayerDraftTest {
             firstResult.createPlayer(playerIdentity, user, gameIdentity)
         }
         assertTrue(exception.message!!.contains("already created"))
+    }
+
+    @Test
+    fun `given PlayerDraft when addCard with matching playerId and gameId then returns PlayerDraft with card added`() {
+        // Given
+        val playerIdentity = PlayerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val user = "testUser"
+        val playerDraft = PlayerDraft(playerIdentity, 1, gameIdentity, user, emptyList())
+        val card = Card(Suit.Heart, Rank.Ace)
+
+        // When
+        val result = playerDraft.addCard(playerIdentity, gameIdentity, card)
+
+        // Then
+        assertEquals(playerIdentity, result.id)
+        assertEquals(gameIdentity, result.gameIdentity)
+        assertEquals(1, result.cards.size)
+        assertEquals(card, result.cards.first())
+        // Note: addCard does not raise events - it's triggered by external Dealer events
+        assertEquals(1, result.uncommittedEvents.size)
+    }
+
+    @Test
+    fun `given PlayerDraft with existing cards when addCard then appends card to list`() {
+        // Given
+        val playerIdentity = PlayerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val user = "testUser"
+        val existingCard = Card(Suit.Pike, Rank.King)
+        val playerDraft = PlayerDraft(playerIdentity, 1, gameIdentity, user, listOf(existingCard))
+        val newCard = Card(Suit.Heart, Rank.Ace)
+
+        // When
+        val result = playerDraft.addCard(playerIdentity, gameIdentity, newCard)
+
+        // Then
+        assertEquals(2, result.cards.size)
+        assertEquals(existingCard, result.cards[0])
+        assertEquals(newCard, result.cards[1])
+    }
+
+    @Test
+    fun `given PlayerDraft when addCard with wrong playerId then throws IllegalStateException`() {
+        // Given
+        val playerIdentity = PlayerIdentity.create()
+        val differentPlayerIdentity = PlayerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val user = "testUser"
+        val playerDraft = PlayerDraft(playerIdentity, 1, gameIdentity, user, emptyList())
+        val card = Card(Suit.Heart, Rank.Ace)
+
+        // When & Then
+        val exception = assertThrows<IllegalStateException> {
+            playerDraft.addCard(differentPlayerIdentity, gameIdentity, card)
+        }
+        assertTrue(exception.message!!.contains("Card dealt to player"))
+        assertTrue(exception.message!!.contains("but current player is"))
+    }
+
+    @Test
+    fun `given PlayerDraft when addCard with wrong gameId then throws IllegalStateException`() {
+        // Given
+        val playerIdentity = PlayerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val differentGameIdentity = GameIdentity.create()
+        val user = "testUser"
+        val playerDraft = PlayerDraft(playerIdentity, 1, gameIdentity, user, emptyList())
+        val card = Card(Suit.Heart, Rank.Ace)
+
+        // When & Then
+        val exception = assertThrows<IllegalStateException> {
+            playerDraft.addCard(playerIdentity, differentGameIdentity, card)
+        }
+        assertTrue(exception.message!!.contains("Card dealt for game"))
+        assertTrue(exception.message!!.contains("but current game is"))
+    }
+
+    @Test
+    fun `given PlayerDraft when adding multiple cards then all cards are stored in order`() {
+        // Given
+        val playerIdentity = PlayerIdentity.create()
+        val gameIdentity = GameIdentity.create()
+        val user = "testUser"
+        val playerDraft = PlayerDraft(playerIdentity, 1, gameIdentity, user, emptyList())
+
+        val card1 = Card(Suit.Heart, Rank.Ace)
+        val card2 = Card(Suit.Pike, Rank.King)
+        val card3 = Card(Suit.Tile, Rank.Queen)
+
+        // When
+        val result1 = playerDraft.addCard(playerIdentity, gameIdentity, card1)
+        val result2 = result1.addCard(playerIdentity, gameIdentity, card2)
+        val result3 = result2.addCard(playerIdentity, gameIdentity, card3)
+
+        // Then
+        assertEquals(3, result3.cards.size)
+        assertEquals(card1, result3.cards[0])
+        assertEquals(card2, result3.cards[1])
+        assertEquals(card3, result3.cards[2])
+    }
+
+    @Test
+    fun `given empty PlayerDraft when created with factory then has empty cards list`() {
+        // When
+        val emptyPlayerDraft = PlayerDraft.empty()
+
+        // Then
+        assertTrue(emptyPlayerDraft.cards.isEmpty())
     }
 }

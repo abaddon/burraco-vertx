@@ -153,6 +153,7 @@ internal class RestHttpServiceVerticleTest {
             val serviceConfig = ServiceConfig(
                 restApiConfig,
                 KafkaConsumerConfig.empty(),
+                KafkaConsumerConfig.empty(), // dealer consumer
                 KafkaProducerConfig.empty(),
                 EventStoreConfig.empty(),
                 com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig.empty()
@@ -186,6 +187,12 @@ internal class RestHttpServiceVerticleTest {
         override suspend fun deletePlayer(playerIdentity: PlayerIdentity): Outcome {
             val gameIdentity = GameIdentity.create()
             val player = PlayerDraft.empty().createPlayer(playerIdentity, "testUser", gameIdentity).deletePlayer()
+            return Validated.Valid(DomainResult(listOf(), player))
+        }
+
+        override suspend fun addCardToPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity, card: com.abaddon83.burraco.common.models.card.Card): Outcome {
+            val player = PlayerDraft(playerIdentity, 1, gameIdentity, "testUser", emptyList())
+                .addCard(playerIdentity, gameIdentity, card)
             return Validated.Valid(DomainResult(listOf(), player))
         }
     }
