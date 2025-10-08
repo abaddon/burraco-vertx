@@ -285,3 +285,7 @@ When adding new tests:
 - [Testcontainers Documentation](https://testcontainers.com/)
 - [REST-assured Documentation](https://rest-assured.io/)
 - [Gherkin Syntax](https://cucumber.io/docs/gherkin/reference/)
+
+## Generic rules to apply always ##
+- always think hard and produce a plan before execute any change
+- Always test any change

@@ -45,6 +45,7 @@ class PlayerStepDefinitions {
             // Step 2: Associate player with game in Game service
             println("🔗 Associating player ${context.playerId} with game $gameId...")
             val addPlayerResponse = HttpClient.addPlayerToGame(gameId, context.playerId!!)
+            context.lastResponse = addPlayerResponse
 
             if (addPlayerResponse.statusCode() == 200) {
                 val gameData = addPlayerResponse.body().jsonPath().getMap<String, Any>("")
@@ -52,6 +53,7 @@ class PlayerStepDefinitions {
                 println("✅ Player associated with game successfully")
             } else {
                 println("❌ Failed to associate player with game: ${addPlayerResponse.statusCode()}")
+                println("Response body: ${addPlayerResponse.body().asString()}")
             }
         } else {
             println("❌ Failed to create player: ${playerResponse.statusCode()}")
@@ -67,5 +69,11 @@ class PlayerStepDefinitions {
         assertThat("Player status should be DRAFT", context.lastPlayerResponse?.get("status"), equalTo("DRAFT"))
 
         println("✅ Verified: Player ${context.playerId} is associated to game ${context.gameId}")
+    }
+
+    @Then("the new player is not associated to the game because the game is full")
+    fun theNewPlayerIsNotAssociatedToTheGameBecauseTheGameIsFull() {
+        assertThat("Response status should be 400 (Bad Request)", context.lastResponse?.statusCode(), equalTo(400))
+        println("✅ Verified: Player association failed as expected - game is full")
     }
 }

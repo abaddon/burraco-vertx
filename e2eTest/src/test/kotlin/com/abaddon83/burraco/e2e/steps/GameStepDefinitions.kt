@@ -62,4 +62,18 @@ class GameStepDefinitions {
 
         println("✅ Verified: Player ${context.playerId} is associated with game ${context.gameId}")
     }
+
+    @Then("the game has {int} players associated")
+    fun theGameHasPlayersAssociated(expectedPlayerCount: Int) {
+        println("🔍 Verifying game has $expectedPlayerCount players...")
+
+        val gameResponse = context.lastGameResponse
+        assertThat("Game response should not be null", gameResponse, notNullValue())
+
+        val players = gameResponse?.get("players") as? List<*>
+        assertThat("Game should have players", players, notNullValue())
+        assertThat("Game should have exactly $expectedPlayerCount players", players?.size, equalTo(expectedPlayerCount))
+
+        println("✅ Verified: Game ${context.gameId} has $expectedPlayerCount players associated")
+    }
 }
