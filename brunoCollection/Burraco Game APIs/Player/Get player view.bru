@@ -1,0 +1,16 @@
+meta {
+  name: Get player view
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{playerUrl}}/player/:playerId/game/:gameId/view
+  body: none
+  auth: inherit
+}
+
+params:path {
+  playerId: {{playerId}}
+  gameId: {{gameId}}
+}

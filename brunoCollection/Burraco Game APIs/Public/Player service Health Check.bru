@@ -1,0 +1,11 @@
+meta {
+  name: Player service Health Check
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{playerUrl}}/health
+  body: none
+  auth: none
+}
