@@ -2,6 +2,7 @@ package com.abaddon83.burraco.common.adapter.kafka.consumer
 
 import com.abaddon83.burraco.common.adapter.kafka.Handler
 import com.abaddon83.burraco.common.externalEvents.KafkaEvent
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.kafka.client.consumer.KafkaConsumerRecord
 
 class EventRouterHandler private constructor(
@@ -16,10 +17,18 @@ class EventRouterHandler private constructor(
     override fun handle(event: KafkaConsumerRecord<String, String>?) {
         checkNotNull(event) { "received a record null" }
         val kafkaEvent = KafkaEvent.from(event.value())
-        val handler = eventsHandlers[kafkaEvent.eventName]
-        checkNotNull(handler) { "Handler for event ${kafkaEvent.eventName} not found" }
 
-        handler.handle(kafkaEvent)
+        val handler = eventsHandlers[kafkaEvent.eventName]
+
+        if (handler != null) {
+            handler.handle(kafkaEvent)
+        } else {
+            handleMissingHandler(kafkaEvent)
+        }
+    }
+
+    private fun handleMissingHandler(kafkaEvent: KafkaEvent) {
+        log.warn("No handler registered for event: ${kafkaEvent.eventName}")
     }
 
 }

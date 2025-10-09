@@ -2,7 +2,7 @@ FROM base-builder AS builder
 
 FROM openjdk:21-slim
 
-ENV VERTICLE_ORIGIN_PATH=/app/Game/build/libs/*-all.jar
+ENV VERTICLE_ORIGIN_PATH=/app/Game/build/libs/Game-all.jar
 ENV VERTICLE_FILE=game-service.jar
 
 # Set the location of the verticles

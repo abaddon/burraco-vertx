@@ -22,19 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 internal class EventRouterHandlerTest {
 
     @Test
-    fun `Given an EventRouterHandler empty when receive a record exception`() {
-        val eventRouterHandler = EventRouterHandler()
-        val kafkaEvent = KafkaEvent("event1", "")
-        val record: KafkaConsumerRecord<String, String> =
-            KafkaConsumerRecordImpl(ConsumerRecord("topic", 1, 0, "key", Json.encode(kafkaEvent)))
-
-        val exception = assertThrows(IllegalStateException::class.java) {
-            eventRouterHandler.handle(record)
-        }
-        assertEquals("Handler for event event1 not found", exception.message)
-    }
-
-    @Test
     fun `Given an EventRouterHandler with the right handler when receive a record, it's managed`() {
         val eventName = "event1"
         val dummyEventHandler = DummyKafkaEventHandler()

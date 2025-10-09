@@ -17,4 +17,9 @@ cd Dealer
 docker build -t dealer-service .
 cd ..
 
+echo "Building Player module..."
+cd Player
+docker build -t player-service .
+cd ..
+
 echo "All modules built successfully!"

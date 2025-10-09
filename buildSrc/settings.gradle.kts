@@ -10,7 +10,7 @@ dependencyResolutionManagement {
                 snapshotsOnly()
             }
         }
-        mavenLocal()
+        //mavenLocal()
     }
 
     // Reuse the version catalog from the main build.

@@ -1,7 +1,7 @@
 // This convention plugin applies git-based versioning to a project
 
 // Get the shared git version provider from the root project
-val gitVersionProvider =  provider { "dev-SNAPSHOT" }
+val gitVersionProvider =  provider { "" }
 
 // Set the project version
 version = gitVersionProvider.get()
