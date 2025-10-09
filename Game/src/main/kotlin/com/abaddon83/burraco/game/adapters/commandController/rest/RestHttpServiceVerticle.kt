@@ -7,7 +7,7 @@ import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.AddPl
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.NewGameRoutingHandler
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.RequestDealCardsRoutingHandler
 import com.abaddon83.burraco.game.ports.CommandControllerPort
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.core.Promise
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpHeaders

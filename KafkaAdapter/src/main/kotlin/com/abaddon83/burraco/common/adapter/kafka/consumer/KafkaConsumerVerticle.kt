@@ -1,6 +1,6 @@
 package com.abaddon83.burraco.common.adapter.kafka.consumer
 
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Promise
 import io.vertx.kafka.client.consumer.KafkaConsumer

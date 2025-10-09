@@ -5,7 +5,7 @@ import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaEventHandler
 import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealerExternalEvent
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.dealer.ports.CommandControllerPort
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.core.json.Json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

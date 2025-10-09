@@ -5,7 +5,7 @@ import com.abaddon83.burraco.dealer.adapters.commandController.kafka.KafkaGameCo
 import com.abaddon83.burraco.dealer.adapters.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.dealer.commands.AggregateDealerCommandHandler
 import com.abaddon83.burraco.dealer.models.Dealer
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.AsyncResult

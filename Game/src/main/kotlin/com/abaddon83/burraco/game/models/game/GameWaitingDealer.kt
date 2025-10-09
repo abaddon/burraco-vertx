@@ -15,7 +15,7 @@ import com.abaddon83.burraco.game.helpers.updatePlayer
 import com.abaddon83.burraco.game.helpers.validPlayer
 import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 data class GameWaitingDealer(
     override val id: GameIdentity,

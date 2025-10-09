@@ -3,7 +3,7 @@ package com.abaddon83.burraco.dealer
 import com.abaddon83.burraco.common.adapter.kafka.consumer.KafkaConsumerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.dealer.adapters.eventStore.config.EventStoreConfig
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigRetrieverOptions
 import io.vertx.config.ConfigStoreOptions

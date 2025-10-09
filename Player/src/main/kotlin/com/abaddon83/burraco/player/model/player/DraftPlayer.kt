@@ -7,7 +7,7 @@ import com.abaddon83.burraco.common.models.event.player.PlayerCollectedCard
 import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import com.abaddon83.burraco.common.models.event.player.PlayerDeleted
 import io.github.abaddon.kcqrs.core.IIdentity
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 private const val AGGREGATE_APPLY_EVENT_MSG = "The aggregate is applying the event {} with id {} to the aggregate {}"
 private const val VALIDATION_MSG_PLAYER_EXIST = "Current player with id %s is already created"

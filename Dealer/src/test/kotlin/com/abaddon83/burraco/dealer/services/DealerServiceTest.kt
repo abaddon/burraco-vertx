@@ -12,7 +12,7 @@ import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck1
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck2
 import com.abaddon83.burraco.helper.DummyExternalEventPublisherAdapter
 import io.github.abaddon.kcqrs.core.IIdentity
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.core.persistence.InMemoryEventStoreRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi

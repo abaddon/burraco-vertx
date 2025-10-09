@@ -8,7 +8,7 @@ import com.abaddon83.burraco.player.adapter.commandController.rest.handlers.Dele
 import com.abaddon83.burraco.player.adapter.commandController.rest.handlers.GetPlayerViewRoutingHandler
 import com.abaddon83.burraco.player.port.CommandControllerPort
 import com.abaddon83.burraco.player.port.QueryControllerPort
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.core.Promise
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpHeaders

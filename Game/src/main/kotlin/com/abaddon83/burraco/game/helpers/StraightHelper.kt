@@ -4,7 +4,7 @@ import com.abaddon83.burraco.common.models.card.Rank
 import com.abaddon83.burraco.common.models.card.Suit
 import com.abaddon83.burraco.game.models.Straight
 import com.abaddon83.burraco.common.models.card.Card
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 object StraightHelper {
 

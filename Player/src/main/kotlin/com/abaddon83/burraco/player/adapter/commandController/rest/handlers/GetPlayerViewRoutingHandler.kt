@@ -5,7 +5,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.player.adapter.commandController.rest.models.ErrorMsgModule
 import com.abaddon83.burraco.player.adapter.commandController.rest.models.PlayerViewModule
 import com.abaddon83.burraco.player.port.QueryControllerPort
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.core.Handler
 import io.vertx.core.http.HttpHeaders
 import io.vertx.core.json.Json

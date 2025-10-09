@@ -9,7 +9,7 @@ import com.abaddon83.burraco.common.models.event.game.PlayerRemoved
 import com.abaddon83.burraco.game.helpers.GameConfig
 import com.abaddon83.burraco.game.helpers.contains
 import com.abaddon83.burraco.game.models.player.WaitingPlayer
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 private const val AGGREGATE_APPLY_EVENT_MSG = "The aggregate is applying the event {} with id {} to the aggregate {}"
 private const val VALIDATION_MSG_GAME_EXIST = "Current game with id %s is already created"

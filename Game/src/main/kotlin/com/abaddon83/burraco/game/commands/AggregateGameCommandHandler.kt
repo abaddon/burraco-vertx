@@ -4,7 +4,7 @@ import com.abaddon83.burraco.common.models.event.game.GameEvent
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.ports.ExternalEventPublisherPort
 import io.github.abaddon.kcqrs.core.domain.AggregateCommandHandler
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.core.persistence.IAggregateRepository
 
 class AggregateGameCommandHandler(

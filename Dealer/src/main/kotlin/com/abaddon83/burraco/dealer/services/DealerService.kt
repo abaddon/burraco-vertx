@@ -18,7 +18,7 @@ import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
 import io.github.abaddon.kcqrs.core.domain.IAggregateCommandHandler
 import io.github.abaddon.kcqrs.core.domain.messages.commands.ICommand
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 
 sealed class DealerServiceResult<out TDomainError : DomainError, out DomainResult> {

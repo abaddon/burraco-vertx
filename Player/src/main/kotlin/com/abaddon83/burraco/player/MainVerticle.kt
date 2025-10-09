@@ -12,7 +12,7 @@ import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import com.abaddon83.burraco.player.projection.gameview.InMemoryGameViewRepository
 import com.abaddon83.burraco.player.projection.playerview.InMemoryPlayerViewRepository
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDBRepository
 import io.vertx.core.*
 

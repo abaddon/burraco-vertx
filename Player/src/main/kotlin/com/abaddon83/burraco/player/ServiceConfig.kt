@@ -6,7 +6,7 @@ import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServi
 import com.abaddon83.burraco.player.adapter.eventstore.EventStoreConfig
 import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig
 import com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionConfig
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
 import io.github.abaddon.kcqrs.eventstoredb.config.SubscriptionFilterConfig
 import io.vertx.config.ConfigRetriever

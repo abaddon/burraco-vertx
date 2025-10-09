@@ -5,7 +5,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.event.player.PlayerCollectedCard
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.core.projections.IProjection
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap

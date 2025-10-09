@@ -6,7 +6,7 @@ import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerExter
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.ports.CommandControllerPort
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.core.json.Json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

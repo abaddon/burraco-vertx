@@ -3,7 +3,7 @@ package com.abaddon83.burraco.player.adapter.commandController.rest.handlers
 import com.abaddon83.burraco.common.helpers.Validated
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.player.port.CommandControllerPort
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.validation.RequestParameters
 import io.vertx.ext.web.validation.ValidationHandler

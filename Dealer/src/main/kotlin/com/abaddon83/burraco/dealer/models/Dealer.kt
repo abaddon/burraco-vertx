@@ -21,7 +21,7 @@ import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_CARD
 import com.abaddon83.burraco.dealer.models.DealerConfig.MAX_PLAYER_DECK_CARD
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 data class Dealer(
     override val id: DealerIdentity,

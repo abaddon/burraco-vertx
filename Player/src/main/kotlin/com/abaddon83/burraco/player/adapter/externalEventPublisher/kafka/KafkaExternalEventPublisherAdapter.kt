@@ -8,7 +8,7 @@ import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import com.abaddon83.burraco.common.models.event.player.PlayerEvent
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.port.ExternalEventPublisherPort
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.vertx.core.Vertx
 import io.vertx.kafka.client.producer.KafkaProducer
 

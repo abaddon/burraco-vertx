@@ -2,7 +2,7 @@ package com.abaddon83.burraco.player.projection.playerview
 
 import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
 import io.github.abaddon.kcqrs.core.projections.IProjectionKey
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import java.util.concurrent.ConcurrentHashMap
 
 class InMemoryPlayerViewRepository : IProjectionRepository<PlayerView> {

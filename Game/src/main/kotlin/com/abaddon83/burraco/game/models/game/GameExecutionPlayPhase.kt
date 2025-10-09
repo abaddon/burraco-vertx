@@ -33,7 +33,7 @@ import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.game.models.player.PlayerInGame
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 data class GameExecutionPlayPhase(
     override val id: GameIdentity,

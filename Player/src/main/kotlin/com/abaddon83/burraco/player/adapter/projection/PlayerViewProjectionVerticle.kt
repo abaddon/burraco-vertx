@@ -2,7 +2,7 @@ package com.abaddon83.burraco.player.adapter.projection
 
 import com.abaddon83.burraco.player.projection.playerview.PlayerView
 import com.abaddon83.burraco.player.projection.playerview.PlayerViewProjectionHandler
-import io.github.abaddon.kcqrs.core.helpers.LoggerFactory.log
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreDomainEventSubscriber
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreSubscriptionConfig
