@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.common.adapter.kafka.producer
 
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
+import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import io.github.abaddon.kcqrs.core.domain.AggregateRoot
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.vertx.kafka.client.producer.KafkaProducer
@@ -16,13 +17,9 @@ abstract class KafkaProducerVerticle<DE : IDomainEvent, AR : AggregateRoot>(
     abstract fun chooseExternalEvent(aggregate: AR, domainEvent: DE): ExternalEvent?
 
     suspend fun publishOnKafka(aggregate: AR, domainEvent: DE): Result<Unit> = runCatching {
-        val externalEvent = chooseExternalEvent(aggregate, domainEvent)
+        val externalEvent = chooseExternalEvent(aggregate, domainEvent) ?: return Result.success(Unit)
 
-        if (externalEvent == null) {
-            return Result.success(Unit)
-        }
-
-        val kafkaEvent = externalEvent.toKafkaEvent()
+        val kafkaEvent = KafkaEvent.from(externalEvent)
         val record = KafkaProducerRecord.create(
             topic,
             externalEvent.aggregateIdentity.valueAsString(),

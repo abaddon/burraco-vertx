@@ -11,10 +11,10 @@ class KafkaEvent(
 ) {
     fun toJson(): String = Json.encode(this);
 
-    companion object{
-//        fun <E1: ExternalEvent>from(externalEvent: E1): KafkaEvent {
-//            return  KafkaEvent(externalEvent.eventName, Json.encode(externalEvent))
-//        }
+    companion object {
+        fun <E1 : ExternalEvent> from(externalEvent: E1): KafkaEvent {
+            return KafkaEvent(externalEvent.eventName, Json.encode(externalEvent))
+        }
 
 
         fun from(json: String): KafkaEvent =

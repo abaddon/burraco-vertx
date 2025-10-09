@@ -52,7 +52,7 @@ data class GameDraft(
     }
 
     fun requestDealCards(requestedBy: PlayerIdentity): GameWaitingDealer {
-        require(players.contains(requestedBy)) { "The player $requestedBy is not one of the players " }
+        require(players.contains(requestedBy)) { "The player ${requestedBy.identity} is not one of the players " }
         check(players.size in GameConfig.MIN_PLAYERS..GameConfig.MAX_PLAYERS) { "Not enough players to deal the playing cards, ( Min players required: ${GameConfig.MIN_PLAYERS})" }
 
         return raiseEvent(CardDealingRequested.create(id, requestedBy)) as GameWaitingDealer
