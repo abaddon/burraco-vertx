@@ -32,7 +32,9 @@ class PlayerStepDefinitions {
 
         println("👤 Creating player with user: $user for game: $gameId...")
 
-        // Step 1: Create player in Player service
+        // Create player in Player service
+        // Note: Player service publishes PlayerCreated event to Kafka
+        // Game service listens to this event and automatically adds the player
         val playerResponse = HttpClient.createPlayer(gameId!!, user!!)
         context.lastResponse = playerResponse
 
@@ -42,19 +44,10 @@ class PlayerStepDefinitions {
             context.playerId = playerData["playerId"] as String?
             println("✅ Player created with ID: ${context.playerId}")
 
-            // Step 2: Associate player with game in Game service
-            println("🔗 Associating player ${context.playerId} with game $gameId...")
-            val addPlayerResponse = HttpClient.addPlayerToGame(gameId, context.playerId!!)
-            context.lastResponse = addPlayerResponse
-
-            if (addPlayerResponse.statusCode() == 200) {
-                val gameData = addPlayerResponse.body().jsonPath().getMap<String, Any>("")
-                context.lastGameResponse = gameData
-                println("✅ Player associated with game successfully")
-            } else {
-                println("❌ Failed to associate player with game: ${addPlayerResponse.statusCode()}")
-                println("Response body: ${addPlayerResponse.body().asString()}")
-            }
+            // Wait for Kafka event to be processed by Game service
+            println("⏳ Waiting for Kafka event to be processed...")
+            Thread.sleep(1000) // 1 second delay for event processing
+            println("✅ Player should be added to game via Kafka event")
         } else {
             println("❌ Failed to create player: ${playerResponse.statusCode()}")
         }

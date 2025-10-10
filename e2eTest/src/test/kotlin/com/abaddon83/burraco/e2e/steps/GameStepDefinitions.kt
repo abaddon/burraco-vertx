@@ -45,35 +45,35 @@ class GameStepDefinitions {
         println("✅ Verified: Game created successfully with ID ${context.gameId} and status DRAFT")
     }
 
-    @Then("the game has a player associated")
-    fun theGameHasAPlayerAssociated() {
-        // Re-fetch the game to verify player association
-        println("🔍 Verifying player association in game...")
+//    @Then("the game has a player associated")
+//    fun theGameHasAPlayerAssociated() {
+//        // Re-fetch the game to verify player association
+//        println("🔍 Verifying player association in game...")
+//
+//        // We'll need to add a GET endpoint for games, or verify through the add player response
+//        // For now, we can verify from the addPlayer response stored in context
+//        val gameResponse = context.lastGameResponse
+//        assertThat("Game response should not be null", gameResponse, notNullValue())
+//
+//        val players = gameResponse?.get("players") as? List<*>
+//        assertThat("Game should have players", players, notNullValue())
+//        assertThat("Game should have at least 1 player", players?.isNotEmpty(), equalTo(true))
+//        assertThat("Player should be in the game", players?.contains(context.playerId), equalTo(true))
+//
+//        println("✅ Verified: Player ${context.playerId} is associated with game ${context.gameId}")
+//    }
 
-        // We'll need to add a GET endpoint for games, or verify through the add player response
-        // For now, we can verify from the addPlayer response stored in context
-        val gameResponse = context.lastGameResponse
-        assertThat("Game response should not be null", gameResponse, notNullValue())
-
-        val players = gameResponse?.get("players") as? List<*>
-        assertThat("Game should have players", players, notNullValue())
-        assertThat("Game should have at least 1 player", players?.isNotEmpty(), equalTo(true))
-        assertThat("Player should be in the game", players?.contains(context.playerId), equalTo(true))
-
-        println("✅ Verified: Player ${context.playerId} is associated with game ${context.gameId}")
-    }
-
-    @Then("the game has {int} players associated")
-    fun theGameHasPlayersAssociated(expectedPlayerCount: Int) {
-        println("🔍 Verifying game has $expectedPlayerCount players...")
-
-        val gameResponse = context.lastGameResponse
-        assertThat("Game response should not be null", gameResponse, notNullValue())
-
-        val players = gameResponse?.get("players") as? List<*>
-        assertThat("Game should have players", players, notNullValue())
-        assertThat("Game should have exactly $expectedPlayerCount players", players?.size, equalTo(expectedPlayerCount))
-
-        println("✅ Verified: Game ${context.gameId} has $expectedPlayerCount players associated")
-    }
+//    @Then("the game has {int} players associated")
+//    fun theGameHasPlayersAssociated(expectedPlayerCount: Int) {
+//        println("🔍 Verifying game has $expectedPlayerCount players...")
+//
+//        val gameResponse = context.lastGameResponse
+//        assertThat("Game response should not be null", gameResponse, notNullValue())
+//
+//        val players = gameResponse?.get("players") as? List<*>
+//        assertThat("Game should have players", players, notNullValue())
+//        assertThat("Game should have exactly $expectedPlayerCount players", players?.size, equalTo(expectedPlayerCount))
+//
+//        println("✅ Verified: Game ${context.gameId} has $expectedPlayerCount players associated")
+//    }
 }

@@ -61,6 +61,11 @@ object HttpClient {
             .post("/player")
     }
 
+    fun getPlayerView(playerId: String, gameId: String): Response {
+        return playerService()
+            .get("/player/$playerId/game/$gameId/view")
+    }
+
     fun getPlayerHealth(): Response {
         return playerService()
             .get("/health")

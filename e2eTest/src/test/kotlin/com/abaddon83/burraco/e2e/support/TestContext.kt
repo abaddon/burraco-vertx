@@ -9,6 +9,7 @@ import io.restassured.response.Response
 class TestContext {
     var gameId: String? = null
     var playerId: String? = null
+    var playerIds: MutableList<String> = mutableListOf()
     var lastResponse: Response? = null
     var lastGameResponse: Map<String, Any>? = null
     var lastPlayerResponse: Map<String, Any>? = null
@@ -16,6 +17,7 @@ class TestContext {
     fun reset() {
         gameId = null
         playerId = null
+        playerIds.clear()
         lastResponse = null
         lastGameResponse = null
         lastPlayerResponse = null
