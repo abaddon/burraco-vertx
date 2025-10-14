@@ -72,24 +72,70 @@ e2eTest/
 ### Execute Tests
 
 ```bash
-# Run all E2E tests
+# Run E2E tests with existing Docker images (faster)
 ./gradlew :e2eTest:test
 
+# Run E2E tests with FRESH Docker images (recommended for testing code changes)
+./gradlew :e2eTest:e2eTestClean
+
+# Clean only Docker images and containers (without running tests)
+./gradlew :e2eTest:cleanDockerImages
+
+# Build Docker images from scratch (without running tests)
+./gradlew :e2eTest:buildDockerImages
+
 # Run with detailed output
-./gradlew :e2eTest:test --info
+./gradlew :e2eTest:e2eTestClean --info
 
 # View test report
 open e2eTest/build/reports/tests/test/index.html
 ```
 
+### Available Gradle Tasks
+
+| Task | Description | When to Use |
+|------|-------------|-------------|
+| `:e2eTest:test` | Run E2E tests with existing images | Quick test run, no code changes |
+| `:e2eTest:e2eTestClean` | **Clean + Rebuild + Test** | After code changes (RECOMMENDED) |
+| `:e2eTest:cleanDockerImages` | Remove all Docker images/containers | Manual cleanup |
+| `:e2eTest:buildDockerImages` | Build fresh images without testing | Verify Docker build only |
+| `:e2eTest:buildServiceJars` | Build all service JARs | Verify compilation only |
+
 ### What Happens
 
-1. Testcontainers starts Docker containers defined in `docker-compose.yml`
-2. Wait strategies ensure services are healthy before tests run
-3. Cucumber discovers and executes `.feature` files
-4. Step definitions interact with services via HTTP and Kafka
-5. Assertions verify expected behavior
-6. Containers are automatically stopped and removed
+#### Normal Test Run (`:e2eTest:test`)
+1. Uses existing Docker images (if available)
+2. Starts containers with `docker-compose up -d`
+3. Waits for service health checks
+4. Cucumber discovers and executes `.feature` files
+5. Step definitions interact with services via HTTP and Kafka
+6. Assertions verify expected behavior
+7. Containers are automatically stopped and removed
+
+#### Clean Test Run (`:e2eTest:e2eTestClean`) - **RECOMMENDED**
+1. **Stops and removes** all running containers
+2. **Deletes all Docker images** (base-builder, game, player, dealer)
+3. **Rebuilds JARs** from source (`:Game:shadowJar`, `:Player:shadowJar`, etc.)
+4. **Rebuilds Docker images** with `--no-cache` flag (including DockerFile-base)
+5. **Starts containers** with fresh images
+6. **Runs all E2E tests**
+7. **Cleans up** containers after tests
+
+### Why Use e2eTestClean?
+
+The `e2eTestClean` task ensures you're testing the **latest version of your code** by:
+
+✅ **Forcing full rebuild** of all Docker images (no cache)
+✅ **Rebuilding base image** (DockerFile-base) with latest dependencies
+✅ **Ensuring code changes** are reflected in service containers
+✅ **Avoiding stale image issues** where tests pass but code is outdated
+✅ **Validating entire build** from source to container
+
+**Use this task whenever:**
+- You've made code changes to Game, Player, or Dealer services
+- You've updated dependencies in build.gradle.kts files
+- You want to ensure tests reflect the latest codebase
+- You're preparing for a deployment or PR review
 
 ## Writing New Tests
 

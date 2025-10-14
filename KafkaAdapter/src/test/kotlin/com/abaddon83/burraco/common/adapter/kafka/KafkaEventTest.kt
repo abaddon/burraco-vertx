@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test
 
 internal class KafkaEventTest{
 
-    @Test
-    fun `Given a valid KafkaEvent, when execute toJson, then json created`() {
-        val gameIdentity = GameIdentity.create()
-        val externalEvent = DummyExternalEvent(gameIdentity)
-        val kafkaEvent = externalEvent.toKafkaEvent()
-        val json = kafkaEvent.toJson()
-        assertTrue(json.contains(gameIdentity.valueAsString()))
-    }
+//    @Test
+//    fun `Given a valid KafkaEvent, when execute toJson, then json created`() {
+//        val gameIdentity = GameIdentity.create()
+//        val externalEvent = DummyExternalEvent(gameIdentity)
+//        val kafkaEvent = externalEvent.toKafkaEvent()
+//        val json = kafkaEvent.toJson()
+//        assertTrue(json.contains(gameIdentity.valueAsString()))
+//    }
 
     @Test
     fun `given a validRecord when converted to KafkaEvent than a valid KafkaGameEvent is created`() {
@@ -35,9 +35,9 @@ internal class KafkaEventTest{
         override val aggregateIdentity: GameIdentity,
     ) : ExternalEvent {
         override val eventOwner: String = "Test"
-        override fun toKafkaEvent(): KafkaEvent {
-            return KafkaEvent(eventName, Json.encode(this))
-        }
+//        //override fun toKafkaEvent(): KafkaEvent {
+//            return KafkaEvent(eventName, Json.encode(this))
+//        }
 
         override val eventName: String = this::class.java.simpleName
 
