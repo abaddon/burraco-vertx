@@ -1,5 +1,6 @@
 package com.abaddon83.burraco.player.projection.gameview
 
+import com.abaddon83.burraco.common.models.GameIdentity
 import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
 import io.github.abaddon.kcqrs.core.projections.IProjectionKey
 import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
@@ -30,9 +31,30 @@ class InMemoryGameViewRepository : IProjectionRepository<GameView> {
     }
     
     fun getAllProjections(): Map<String, GameView> = projections.toMap()
-    
+
     fun clear() {
         log.debug("Clearing all GameView projections")
         projections.clear()
+    }
+
+    /**
+     * Finds a GameView projection by GameIdentity
+     * @param gameId The game identity to search for
+     * @return GameView if found, null otherwise
+     */
+    suspend fun findByGameId(gameId: GameIdentity): GameView? {
+        val key = GameViewKey(gameId).key()
+        log.debug("Finding GameView by gameId: ${gameId.valueAsString()}, key: $key")
+
+        val gameView = projections[key]
+
+        // Don't return empty projections
+        if (gameView != null && gameView.key.gameIdentity != GameIdentity.empty()) {
+            log.debug("Found GameView for gameId: ${gameId.valueAsString()}")
+            return gameView
+        }
+
+        log.debug("GameView not found for gameId: ${gameId.valueAsString()}")
+        return null
     }
 }

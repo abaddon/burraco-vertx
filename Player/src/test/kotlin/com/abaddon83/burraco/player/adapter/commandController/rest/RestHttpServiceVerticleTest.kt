@@ -52,6 +52,14 @@ internal class RestHttpServiceVerticleTest {
     @Test
     fun `given I want to create a new player when call api create player then new player is created`(testContext: VertxTestContext) {
         val gameIdentity = GameIdentity.create()
+
+        // Pre-populate the repository with a game
+        val gameView = com.abaddon83.burraco.player.projection.gameview.GameView.empty()
+            .applyEvent(com.abaddon83.burraco.common.models.event.game.GameCreated.create(gameIdentity)) as com.abaddon83.burraco.player.projection.gameview.GameView
+        kotlinx.coroutines.runBlocking {
+            gameViewRepository.save(gameView)
+        }
+
         val bodyRequestMap = mapOf(
             "gameId" to gameIdentity.valueAsString(),
             "user" to "testUser"
@@ -146,6 +154,7 @@ internal class RestHttpServiceVerticleTest {
         private const val ADDRESS = "localhost"
         private const val ROOT = ""
         private const val STREAM_NAME = "RestApiVerticleTest"
+        private val gameViewRepository = com.abaddon83.burraco.player.projection.gameview.InMemoryGameViewRepository()
 
         @BeforeAll
         @JvmStatic
@@ -163,7 +172,7 @@ internal class RestHttpServiceVerticleTest {
             )
             val commandControllerAdapter = DummyCommandControllerAdapter(STREAM_NAME)
             val queryControllerAdapter = DummyQueryControllerAdapter()
-            val verticle = RestHttpServiceVerticle(serviceConfig, commandControllerAdapter, queryControllerAdapter)
+            val verticle = RestHttpServiceVerticle(serviceConfig, commandControllerAdapter, queryControllerAdapter, gameViewRepository)
 
             vertx.deployVerticle(verticle).onComplete {
                 if (it.succeeded()) {

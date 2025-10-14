@@ -59,7 +59,7 @@ class MainVerticle(
 
             // Initialize RestHttpServiceVerticle
             restHttpServiceVerticle =
-                RestHttpServiceVerticle(serviceConfig, commandControllerAdapter, queryControllerAdapter)
+                RestHttpServiceVerticle(serviceConfig, commandControllerAdapter, queryControllerAdapter, gameViewRepository)
 
             //Initialize Kafka Consumer Verticle
             kafkaDealerConsumerVerticle = KafkaDealerConsumerVerticle(serviceConfig, commandControllerAdapter)

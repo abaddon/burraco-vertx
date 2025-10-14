@@ -19,7 +19,8 @@ import java.io.File
 class RestHttpServiceVerticle(
     private val serviceConfig: ServiceConfig,
     private var commandController: CommandControllerPort,
-    private var queryController: QueryControllerPort
+    private var queryController: QueryControllerPort,
+    private var gameViewRepository: com.abaddon83.burraco.player.projection.gameview.InMemoryGameViewRepository
 ) : AbstractHttpServiceVerticle() {
 
     override fun start(startFuture: Promise<Void>?) {
@@ -36,7 +37,7 @@ class RestHttpServiceVerticle(
             }
             .onSuccess { routerBuilder ->
                 routerBuilder.operation("healthCheck").handler(healthCheck.build())
-                routerBuilder.operation("createPlayer").handler(CreatePlayerRoutingHandler(commandController))
+                routerBuilder.operation("createPlayer").handler(CreatePlayerRoutingHandler(commandController, gameViewRepository))
                 routerBuilder.operation("deletePlayer").handler(DeletePlayerRoutingHandler(commandController))
                 routerBuilder.operation("getPlayerView").handler(GetPlayerViewRoutingHandler(queryController))
 

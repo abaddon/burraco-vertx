@@ -4,9 +4,9 @@ import com.abaddon83.burraco.common.models.GameIdentity
 import io.github.abaddon.kcqrs.core.projections.IProjectionKey
 
 data class GameViewKey(
-    private val gameId: GameIdentity,
+    val gameIdentity: GameIdentity,
 ) : IProjectionKey {
-    override fun key(): String = gameId.valueAsString()
+    override fun key(): String = gameIdentity.valueAsString()
 
     companion object {
         fun empty(): GameViewKey {
