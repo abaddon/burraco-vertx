@@ -49,7 +49,7 @@ class PlayerStepDefinitions {
             Thread.sleep(1000) // 1 second delay for event processing
             println("✅ Player should be added to game via Kafka event")
         } else {
-            println("❌ Failed to create player: ${playerResponse.statusCode()}")
+            println("❌ Failed to create player: ${playerResponse.statusCode()} - ${playerResponse.body().asString()}")
         }
     }
 

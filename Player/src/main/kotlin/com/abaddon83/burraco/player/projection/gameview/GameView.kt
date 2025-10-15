@@ -3,6 +3,7 @@ package com.abaddon83.burraco.player.projection.gameview
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.PlayerAdded
 import com.abaddon83.burraco.player.projection.GameState
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
@@ -36,7 +37,7 @@ data class GameView(
     override fun applyEvent(event: IDomainEvent): IProjection {
         return when (event) {
             is GameCreated -> apply(event)
-            is com.abaddon83.burraco.common.models.event.game.PlayerAdded -> apply(event)
+            is PlayerAdded -> apply(event)
             else -> eventNotSupported(event)
         }
     }
@@ -67,8 +68,8 @@ data class GameView(
         )
     }
 
-    private fun apply(event: com.abaddon83.burraco.common.models.event.game.PlayerAdded): GameView {
-        log.debug("Applying PlayerAdded event to GameView: ${event.playerIdentity}")
+    private fun apply(event: PlayerAdded): GameView {
+        log.debug("Applying PlayerAdded event to GameView: {}", event.playerIdentity)
 
         // Idempotency check (in case event is replayed)
         if (players.contains(event.playerIdentity)) {

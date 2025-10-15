@@ -14,7 +14,7 @@ dependencyResolutionManagement {
                 snapshotsOnly()
             }
         }
-        //mavenLocal()
+        mavenLocal()
     }
 }
 

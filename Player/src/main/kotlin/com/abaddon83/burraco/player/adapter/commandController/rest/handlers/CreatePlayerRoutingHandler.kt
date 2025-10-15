@@ -31,7 +31,6 @@ class CreatePlayerRoutingHandler(
         // ============ VALIDATION LOGIC ============
         log.debug("Validating game ${gameIdentity.valueAsString()} before creating player")
         val gameView = gameViewRepository.findByGameId(gameIdentity)
-
         when {
             gameView == null -> responseWithError(
                 routingContext,
