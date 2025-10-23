@@ -22,9 +22,9 @@ class KafkaDealerConsumerVerticle(
 ) : KafkaConsumerVerticle(serviceConfig.kafkaDealerConsumer) {
 
     override fun loadHandlers(): EventRouterHandler = EventRouterHandler()
-        .addHandler(CARD_DEALT_TO_DECK, AddCardDeckHandlerKafka(commandController))
-        .addHandler(CARD_DEALT_TO_PLAYER, AddCardPlayerHandlerKafka(commandController))
-        .addHandler(CARD_DEALT_TO_PLAYER_DECK1, AddCardPlayerDeck1HandlerKafka(commandController))
-        .addHandler(CARD_DEALT_TO_PLAYER_DECK2, AddCardPlayerDeck2HandlerKafka(commandController))
-        .addHandler(CARD_DEALT_TO_DISCARD_DECK, AddCardDiscardDeckHandlerKafka(commandController))
+        .addHandler(AddCardDeckHandlerKafka(commandController))
+        .addHandler(AddCardPlayerHandlerKafka(commandController))
+        .addHandler(AddCardPlayerDeck1HandlerKafka(commandController))
+        .addHandler(AddCardPlayerDeck2HandlerKafka(commandController))
+        .addHandler(AddCardDiscardDeckHandlerKafka(commandController))
 }

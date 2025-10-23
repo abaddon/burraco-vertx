@@ -12,4 +12,5 @@ data class CardDealtToDeckExternalEvent(
     @JsonProperty("cardLabel")
     val cardLabel: String,
 ) : DealerExternalEvent(aggregateIdentity, DealerEventName.CardDealtToDeck) {
+
 }

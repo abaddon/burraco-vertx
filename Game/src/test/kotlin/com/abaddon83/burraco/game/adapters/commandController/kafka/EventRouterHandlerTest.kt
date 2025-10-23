@@ -27,7 +27,7 @@ internal class EventRouterHandlerTest {
         val dummyEventHandler = DummyKafkaEventHandler()
 
         val eventRouterHandler = EventRouterHandler()
-            .addHandler(eventName, dummyEventHandler) //{ counter += 1 }
+            .addHandler(dummyEventHandler) //{ counter += 1 }
 
         val kafkaEvent = KafkaEvent(eventName, "test")
         val record: KafkaConsumerRecord<String, String> =

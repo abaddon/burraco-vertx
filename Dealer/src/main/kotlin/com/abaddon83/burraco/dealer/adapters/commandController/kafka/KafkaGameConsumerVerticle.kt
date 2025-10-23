@@ -12,6 +12,6 @@ class KafkaGameConsumerVerticle(
 ) : KafkaConsumerVerticle(serviceConfig.gameEventConsumer) {
 
     override fun loadHandlers(): EventRouterHandler = EventRouterHandler()
-        .addHandler("CardsRequestedToDealer", CardsRequestedToDealerHandlerKafka(commandController))
+        .addHandler(CardsRequestedToDealerHandlerKafka(commandController))
 
 }

@@ -9,7 +9,7 @@ import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreSubscriptionCon
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Promise
 
-class PlayerViewProjectionVerticle(
+class PlayerViewProjectionEventStoreVerticle(
     private val playerEventStoreSubscriptionConfig: EventStoreSubscriptionConfig,
     private val repository: IProjectionRepository<PlayerView>
 ) : AbstractVerticle() {

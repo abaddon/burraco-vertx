@@ -4,8 +4,8 @@ import com.abaddon83.burraco.player.adapter.commandController.CommandControllerA
 import com.abaddon83.burraco.player.adapter.commandController.kafka.KafkaDealerConsumerVerticle
 import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceVerticle
 import com.abaddon83.burraco.player.adapter.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
-import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionVerticle
-import com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionVerticle
+import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionKafkaVerticle
+import com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionEventStoreVerticle
 import com.abaddon83.burraco.player.adapter.queryController.QueryControllerAdapter
 import com.abaddon83.burraco.player.command.AggregatePlayerCommandHandler
 import com.abaddon83.burraco.player.model.player.Player
@@ -22,8 +22,8 @@ class MainVerticle(
 ) : AbstractVerticle() {
     private lateinit var restHttpServiceVerticle: RestHttpServiceVerticle
     private lateinit var kafkaDealerConsumerVerticle: KafkaDealerConsumerVerticle
-    private lateinit var playerViewProjectionVerticle: PlayerViewProjectionVerticle
-    private lateinit var gameViewProjectionVerticle: GameViewProjectionVerticle
+    private lateinit var playerViewProjectionEventStoreVerticle: PlayerViewProjectionEventStoreVerticle
+    private lateinit var gameViewProjectionKafkaVerticle: GameViewProjectionKafkaVerticle
 
     companion object {
         @JvmStatic
@@ -46,20 +46,25 @@ class MainVerticle(
             val queryControllerAdapter = QueryControllerAdapter(playerViewRepository)
 
             // Initialize PlayerView projection
-            playerViewProjectionVerticle = PlayerViewProjectionVerticle(
+            playerViewProjectionEventStoreVerticle = PlayerViewProjectionEventStoreVerticle(
                 serviceConfig.playerViewProjection.eventStoreSubscriptionConfig(),
                 playerViewRepository
             )
 
             // Initialize GameView projection
-            gameViewProjectionVerticle = GameViewProjectionVerticle(
-                serviceConfig.gameProjection.eventStoreSubscriptionConfig(),
+            gameViewProjectionKafkaVerticle = GameViewProjectionKafkaVerticle(
+                serviceConfig,
                 gameViewRepository
             )
 
             // Initialize RestHttpServiceVerticle
             restHttpServiceVerticle =
-                RestHttpServiceVerticle(serviceConfig, commandControllerAdapter, queryControllerAdapter, gameViewRepository)
+                RestHttpServiceVerticle(
+                    serviceConfig,
+                    commandControllerAdapter,
+                    queryControllerAdapter,
+                    gameViewRepository
+                )
 
             //Initialize Kafka Consumer Verticle
             kafkaDealerConsumerVerticle = KafkaDealerConsumerVerticle(serviceConfig, commandControllerAdapter)
@@ -67,8 +72,8 @@ class MainVerticle(
             val allFutures: List<Future<Any>> = listOf(
                 deploy(restHttpServiceVerticle, serverOpts).future(),
                 deploy(kafkaDealerConsumerVerticle, serverOpts).future(),
-                deploy(gameViewProjectionVerticle, serverOpts).future(),
-                deploy(playerViewProjectionVerticle, serverOpts).future()
+                deploy(gameViewProjectionKafkaVerticle, serverOpts).future(),
+                deploy(playerViewProjectionEventStoreVerticle, serverOpts).future()
             )
 
             Future.all(allFutures).onComplete {

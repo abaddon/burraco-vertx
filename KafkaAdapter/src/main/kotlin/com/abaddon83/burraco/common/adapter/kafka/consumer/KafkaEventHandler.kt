@@ -10,6 +10,8 @@ import kotlinx.coroutines.runBlocking
 
 abstract class KafkaEventHandler(private val expectedEventName: String) : Handler<KafkaEvent> {
 
+    fun getEventName(): String = expectedEventName
+
     override fun handle(event: KafkaEvent?) {
         checkNotNull(event)
         check(event.eventName == expectedEventName)
@@ -19,6 +21,8 @@ abstract class KafkaEventHandler(private val expectedEventName: String) : Handle
         }
         runBlocking { job.join() }
     }
+
+
 
     private fun logOutcome(outcome: Validated<*, *>) {
         when (outcome) {

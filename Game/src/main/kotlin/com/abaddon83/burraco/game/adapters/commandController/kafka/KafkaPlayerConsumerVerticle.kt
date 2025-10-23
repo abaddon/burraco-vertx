@@ -13,5 +13,5 @@ class KafkaPlayerConsumerVerticle(
 ) : KafkaConsumerVerticle(serviceConfig.kafkaPlayerConsumer) {
 
     override fun loadHandlers(): EventRouterHandler = EventRouterHandler()
-        .addHandler(PLAYER_CREATED, AddPlayerHandlerKafka(commandController))
+        .addHandler(AddPlayerHandlerKafka(commandController))
 }

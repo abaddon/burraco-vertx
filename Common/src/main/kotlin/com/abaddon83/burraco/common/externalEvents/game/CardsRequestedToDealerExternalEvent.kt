@@ -1,10 +1,8 @@
 package com.abaddon83.burraco.common.externalEvents.game
 
-import com.abaddon83.burraco.common.externalEvents.KafkaEvent
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.vertx.core.json.Json
 
 data class CardsRequestedToDealerExternalEvent(
     @JsonProperty("aggregateIdentity")
@@ -13,7 +11,12 @@ data class CardsRequestedToDealerExternalEvent(
     val players: List<PlayerIdentity>
 ) : GameExternalEvent(aggregateIdentity, GameEventName.CardsRequestedToDealer) {
 
-//    override fun toKafkaEvent(): KafkaEvent {
-//        return KafkaEvent(eventName, Json.encode(this))
-//    }
+    companion object {
+//        fun fromDomain(domainEvent: CardDealingRequested): CardsRequestedToDealerExternalEvent {
+//            val listPlayerIdentities = (aggregate as GameWaitingDealer).players.map { it.id }
+//            CardsRequestedToDealerExternalEvent(domainEvent.aggregateId, listPlayerIdentities)
+//        }
+
+
+    }
 }

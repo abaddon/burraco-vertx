@@ -9,6 +9,8 @@ import com.abaddon83.burraco.player.DomainResult
 import com.abaddon83.burraco.player.RestApiHttpConfig
 import com.abaddon83.burraco.player.ServiceConfig
 import com.abaddon83.burraco.player.adapter.eventstore.EventStoreConfig
+import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig
+import com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionConfig
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import com.abaddon83.burraco.player.port.CommandControllerPort
@@ -167,8 +169,8 @@ internal class RestHttpServiceVerticleTest {
                 KafkaConsumerConfig.empty(), // dealer consumer
                 KafkaProducerConfig.empty(),
                 EventStoreConfig.empty(),
-                com.abaddon83.burraco.player.adapter.projection.GameViewProjectionConfig.empty(),
-                com.abaddon83.burraco.player.adapter.projection.PlayerViewProjectionConfig.empty()
+                GameViewProjectionConfig.empty(),
+                PlayerViewProjectionConfig.empty()
             )
             val commandControllerAdapter = DummyCommandControllerAdapter(STREAM_NAME)
             val queryControllerAdapter = DummyQueryControllerAdapter()

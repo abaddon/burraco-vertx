@@ -11,8 +11,8 @@ class EventRouterHandler private constructor(
 
     constructor() : this(mapOf<String, KafkaEventHandler>())
 
-    fun addHandler(eventName: String, handler: KafkaEventHandler): EventRouterHandler =
-        EventRouterHandler(eventsHandlers.plus(eventName to handler))
+    fun addHandler(handler: KafkaEventHandler): EventRouterHandler =
+        EventRouterHandler(eventsHandlers.plus(handler.getEventName() to handler))
 
     override fun handle(event: KafkaConsumerRecord<String, String>?) {
         checkNotNull(event) { "received a record null" }
