@@ -48,9 +48,65 @@ class KafkaHelper {
         consumer.close()
     }
 
+    /**
+     * Wait for a specific event to appear in Kafka topic
+     * @param topic The Kafka topic to monitor
+     * @param eventTypePredicate Predicate to match the event type (e.g., checks if JSON contains "GameCreated")
+     * @param maxWaitSeconds Maximum time to wait in seconds (default 3)
+     * @return true if event found, false if timeout
+     */
+    fun waitForEvent(topic: String, eventTypePredicate: (String) -> Boolean, maxWaitSeconds: Long = 3): Boolean {
+        subscribe(topic)
+
+        // Ensure consumer is assigned to partitions before seeking
+        consumer.poll(Duration.ofMillis(100))
+
+        // Seek to beginning to ensure we read all messages
+        consumer.seekToBeginning(consumer.assignment())
+
+        val startTime = System.currentTimeMillis()
+        val maxWaitMillis = maxWaitSeconds * 1000
+
+        while (System.currentTimeMillis() - startTime < maxWaitMillis) {
+            val messages = pollMessages(Duration.ofMillis(500))
+            if (messages.any(eventTypePredicate)) {
+                return true
+            }
+        }
+        return false
+    }
+
     companion object {
         fun create(): KafkaHelper {
             return KafkaHelper()
+        }
+
+        /**
+         * Verify that a GameCreated event for a specific game ID was published to Kafka
+         * @param gameId The game ID to verify
+         * @param maxWaitSeconds Maximum time to wait (default 3 seconds)
+         * @return true if event found, false otherwise
+         */
+        fun verifyGameCreatedEvent(gameId: String, maxWaitSeconds: Long = 3): Boolean {
+            val helper = create()
+            try {
+                // First check if any event with this gameId exists
+                val found = helper.waitForEvent("game", { message ->
+                    message.contains(gameId) && (
+                        message.contains("\"eventName\":\"GameCreated\"") ||
+                        message.contains("GameCreated")
+                    )
+                }, maxWaitSeconds)
+
+                if (!found) {
+                    // Debug: print all messages to see what we're getting
+                    println("DEBUG: No GameCreated event found for gameId=$gameId. Checking all messages...")
+                }
+
+                return found
+            } finally {
+                helper.close()
+            }
         }
     }
 }

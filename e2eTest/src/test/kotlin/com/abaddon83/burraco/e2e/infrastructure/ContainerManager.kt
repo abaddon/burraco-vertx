@@ -51,7 +51,11 @@ object ContainerManager {
 
         println("⏳ Waiting for services to be ready...")
 
-        // Wait for services to be healthy
+        // Wait for infrastructure services first
+        waitForKafka(Duration.ofMinutes(2))
+        waitForEventStore(Duration.ofMinutes(2))
+
+        // Then wait for application services to be healthy
         waitForHealthCheck("http://localhost:$GAME_PORT/health", "Game", Duration.ofMinutes(3))
         waitForHealthCheck("http://localhost:$PLAYER_PORT/health", "Player", Duration.ofMinutes(3))
 
@@ -74,14 +78,16 @@ object ContainerManager {
     }
 
     /**
-     * Stop all containers
+     * Stop all containers and remove volumes.
+     * Removing volumes ensures Kafka consumer group offsets are reset between test runs.
      */
     fun stop() {
         if (started) {
             println("🛑 Stopping Burraco services...")
 
             val projectRoot = File("..").canonicalFile
-            val stopProcess = ProcessBuilder("docker", "compose", "down")
+            // Use -v flag to remove volumes, which resets Kafka consumer group offsets
+            val stopProcess = ProcessBuilder("docker", "compose", "down", "-v")
                 .directory(projectRoot)
                 .redirectErrorStream(true)
                 .start()
@@ -121,5 +127,65 @@ object ContainerManager {
         }
 
         throw IllegalStateException("$serviceName health check failed after ${timeout.toMillis()}ms")
+    }
+
+    /**
+     * Wait for Kafka to be ready by checking if we can connect to broker
+     */
+    private fun waitForKafka(timeout: Duration) {
+        val startTime = System.currentTimeMillis()
+        val timeoutMillis = timeout.toMillis()
+
+        while (System.currentTimeMillis() - startTime < timeoutMillis) {
+            try {
+                val props = java.util.Properties().apply {
+                    put("bootstrap.servers", "localhost:$KAFKA_PORT")
+                    put("request.timeout.ms", "2000")
+                    put("connections.max.idle.ms", "3000")
+                }
+                val adminClient = org.apache.kafka.clients.admin.AdminClient.create(props)
+                adminClient.listTopics().names().get(2, TimeUnit.SECONDS)
+                adminClient.close()
+                println("   ✓ Kafka is ready")
+                return
+            } catch (e: Exception) {
+                // Kafka not ready yet, continue waiting
+            }
+
+            Thread.sleep(1000)
+        }
+
+        throw IllegalStateException("Kafka readiness check failed after ${timeout.toMillis()}ms")
+    }
+
+    /**
+     * Wait for EventStore to be ready
+     */
+    private fun waitForEventStore(timeout: Duration) {
+        val startTime = System.currentTimeMillis()
+        val timeoutMillis = timeout.toMillis()
+
+        while (System.currentTimeMillis() - startTime < timeoutMillis) {
+            try {
+                val connection = URL("http://localhost:$EVENTSTORE_PORT/health/live").openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 2000
+                connection.readTimeout = 2000
+
+                val responseCode = connection.responseCode
+                connection.disconnect()
+
+                if (responseCode == 200 || responseCode == 204) {
+                    println("   ✓ EventStore is ready")
+                    return
+                }
+            } catch (e: Exception) {
+                // EventStore not ready yet, continue waiting
+            }
+
+            Thread.sleep(1000)
+        }
+
+        throw IllegalStateException("EventStore readiness check failed after ${timeout.toMillis()}ms")
     }
 }

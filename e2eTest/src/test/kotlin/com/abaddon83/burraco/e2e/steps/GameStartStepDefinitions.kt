@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.e2e.steps
 
 import com.abaddon83.burraco.e2e.support.HttpClient
+import com.abaddon83.burraco.e2e.support.KafkaHelper
 import com.abaddon83.burraco.e2e.support.TestContext
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -28,6 +29,17 @@ class GameStartStepDefinitions {
         context.lastGameResponse = gameData
 
         println("✅ Game created with ID: ${context.gameId}")
+
+        // Verify GameCreated event was published to Kafka and wait for Player service to process it
+        println("⏳ Verifying GameCreated event published to Kafka...")
+        val eventPublished = KafkaHelper.verifyGameCreatedEvent(context.gameId!!, maxWaitSeconds = 3)
+        if (!eventPublished) {
+            println("⚠️ Warning: GameCreated event not found in Kafka within 3 seconds")
+        } else {
+            println("✅ GameCreated event verified in Kafka")
+            // Give Player service time to process the event and update projection
+            Thread.sleep(2000)
+        }
 
         // Add players to the game
         for (i in 1..playerCount) {

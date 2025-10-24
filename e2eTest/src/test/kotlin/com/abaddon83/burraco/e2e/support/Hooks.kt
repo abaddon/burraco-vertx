@@ -23,6 +23,7 @@ class Hooks {
 @BeforeAll
 fun startContainers() {
     ContainerManager.start()
+    // Kafka and EventStore readiness is now verified in ContainerManager.start()
 }
 
 @AfterAll
