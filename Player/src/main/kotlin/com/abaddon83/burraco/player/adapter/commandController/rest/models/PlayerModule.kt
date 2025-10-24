@@ -21,7 +21,7 @@ data class PlayerModule(
         private fun getStatus(player: Player): String{
             return when(player){
                 is PlayerDraft -> "DRAFT"
-                is DeletedPlayer -> "DELETED"
+                is PlayerNotInGame -> "DELETED"
                 else -> "UNKNOWN"
             }
         }

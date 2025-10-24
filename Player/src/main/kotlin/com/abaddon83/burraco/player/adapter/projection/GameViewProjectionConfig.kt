@@ -4,6 +4,7 @@ import io.github.abaddon.kcqrs.eventstoredb.config.EventStoreDBConfig
 import io.github.abaddon.kcqrs.eventstoredb.eventstore.EventStoreSubscriptionConfig
 import kotlinx.serialization.Serializable
 
+@Deprecated("No more needed")
 @Serializable
 data class GameViewProjectionConfig(
     val streamNames: List<String>,

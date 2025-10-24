@@ -9,6 +9,7 @@ data class PlayerDeleted(
     override val header: EventHeader,
     override val aggregateId: PlayerIdentity
 ) : PlayerEvent() {
+
     companion object Factory {
         fun create(aggregateId: PlayerIdentity): PlayerDeleted =
             PlayerDeleted(

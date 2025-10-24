@@ -16,7 +16,7 @@ private const val VALIDATION_MSG_PLAYER_NOT_EXIST = "Player with id %s does not 
 private const val VALIDATION_MSG_PLAYER_ID_MISMATCH = "Card dealt to player %s but current player is %s"
 private const val VALIDATION_MSG_GAME_ID_MISMATCH = "Card dealt for game %s but current game is %s"
 
-class PlayerDraft(
+data class PlayerDraft(
     override val id: IIdentity,
     override val version: Long,
     override val gameIdentity: GameIdentity,
@@ -33,48 +33,30 @@ class PlayerDraft(
         return raiseEvent(PlayerCreated.create(playerIdentity, gameIdentity, user)) as PlayerDraft
     }
 
-    fun deletePlayer(): DeletedPlayer {
+    fun deletePlayer(): PlayerNotInGame {
         check(this.id != PlayerIdentity.empty()) { String.format(VALIDATION_MSG_PLAYER_NOT_EXIST, this.id) }
-        return raiseEvent(PlayerDeleted.create(this.id as PlayerIdentity)) as DeletedPlayer
+        return raiseEvent(PlayerDeleted.create(this.id as PlayerIdentity)) as PlayerNotInGame
     }
 
     fun addCard(playerId: PlayerIdentity, gameId: GameIdentity, card: Card): PlayerDraft {
         check(this.id == playerId) { String.format(VALIDATION_MSG_PLAYER_ID_MISMATCH, playerId, this.id) }
         check(this.gameIdentity == gameId) { String.format(VALIDATION_MSG_GAME_ID_MISMATCH, gameId, this.gameIdentity) }
-        // Directly return updated state without raising event (event comes from Dealer service)
         return raiseEvent(PlayerCollectedCard.create(playerId, gameId, card)) as PlayerDraft
     }
 
     private fun apply(event: PlayerCreated): PlayerDraft {
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
-        return PlayerDraft(
-            id = event.aggregateId,
-            version = 0,
-            gameIdentity = event.gameIdentity,
-            user = event.user,
-            cards = emptyList()
-        )
+        return copy(id = event.aggregateId, gameIdentity = event.gameIdentity, user = event.user, version = 0)
     }
 
     private fun apply(event: PlayerCollectedCard): PlayerDraft {
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
-        return PlayerDraft(
-            id = this.id,
-            version = version + 1,
-            gameIdentity = this.gameIdentity,
-            user = this.user,
-            cards = this.cards + event.card
-        )
+        return copy(cards = this.cards + event.card, version = version + 1)
     }
 
-    private fun apply(event: PlayerDeleted): DeletedPlayer {
+    private fun apply(event: PlayerDeleted): PlayerNotInGame {
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
-        return DeletedPlayer(
-            id = event.aggregateId,
-            version = version + 1,
-            gameIdentity = this.gameIdentity,
-            user = this.user
-        )
+        return PlayerNotInGame.from(this)
     }
 
 }

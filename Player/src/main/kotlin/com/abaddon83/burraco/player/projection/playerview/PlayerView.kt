@@ -4,6 +4,7 @@ import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.common.models.event.player.PlayerCollectedCard
+import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.core.projections.IProjection
@@ -21,6 +22,7 @@ data class PlayerView(
 
     override fun applyEvent(event: IDomainEvent): IProjection {
         return when (event) {
+            is PlayerCreated -> apply(event)
             is PlayerCollectedCard -> apply(event)
             else -> eventNotSupported(event)
         }
@@ -41,23 +43,31 @@ data class PlayerView(
         return this;
     }
 
-    private fun apply(event: PlayerCollectedCard): PlayerView {
+    private fun apply(event: PlayerCreated): PlayerView {
         // Validate that this event is for this player/game combination
         if (key.playerIdentity != PlayerIdentity.empty()) {
             check(this.key.playerIdentity == event.aggregateId) {
                 "Player ID mismatch: projection key ${key.playerIdentity} vs event ${event.aggregateId}"
             }
-            check(this.key.gameIdentity == event.gameId) {
-                "Game ID mismatch: projection key ${key.gameIdentity} vs event ${event.gameId}"
+            check(this.key.gameIdentity == event.gameIdentity) {
+                "Game ID mismatch: projection key ${key.gameIdentity} vs event ${event.gameIdentity}"
             }
+        }
+        return this.copy(
+            key = PlayerViewKey(event.aggregateId, event.gameIdentity),
+            lastUpdated = Instant.now()
+        )
+    }
+
+    private fun apply(event: PlayerCollectedCard): PlayerView {
+        check(this.key.playerIdentity == event.aggregateId) {
+            "Player ID mismatch: projection key ${key.playerIdentity} vs event ${event.aggregateId}"
+        }
+        check(this.key.gameIdentity == event.gameId) {
+            "Game ID mismatch: projection key ${key.gameIdentity} vs event ${event.gameId}"
         }
 
         return this.copy(
-            key = if (key.playerIdentity == PlayerIdentity.empty()) {
-                PlayerViewKey(event.aggregateId, event.gameId)
-            } else {
-                key
-            },
             cards = this.cards + event.card,
             lastUpdated = Instant.now()
         )

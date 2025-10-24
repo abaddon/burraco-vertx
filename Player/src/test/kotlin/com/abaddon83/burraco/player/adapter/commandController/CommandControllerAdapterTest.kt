@@ -6,7 +6,6 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.player.DomainError
 import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import com.abaddon83.burraco.common.models.event.player.PlayerDeleted
-import com.abaddon83.burraco.player.model.player.DeletedPlayer
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.model.player.PlayerDraft
 import io.github.abaddon.kcqrs.core.IIdentity
@@ -145,11 +144,11 @@ internal class CommandControllerAdapterTest {
         val playerDeletedEvent = domainResult.events.first() as PlayerDeleted
         assertEquals(playerIdentity, playerDeletedEvent.aggregateId)
 
-        assertTrue(domainResult.player is DeletedPlayer)
-        val deletedPlayer = domainResult.player as DeletedPlayer
-        assertEquals(playerIdentity, deletedPlayer.id)
-        assertEquals(gameIdentity, deletedPlayer.gameIdentity)
-        assertEquals(user, deletedPlayer.user)
+        assertTrue(domainResult.player is com.abaddon83.burraco.player.model.player.PlayerNotInGame)
+        val playerNotInGame = domainResult.player as com.abaddon83.burraco.player.model.player.PlayerNotInGame
+        assertEquals(playerIdentity, playerNotInGame.id)
+        assertEquals(gameIdentity, playerNotInGame.gameIdentity)
+        assertEquals(user, playerNotInGame.user)
     }
 
     @Test

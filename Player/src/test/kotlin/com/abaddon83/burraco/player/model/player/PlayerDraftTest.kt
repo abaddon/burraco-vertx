@@ -80,7 +80,7 @@ internal class PlayerDraftTest {
         val result = existingPlayerDraft.deletePlayer()
 
         // Then
-        assertTrue(result is DeletedPlayer)
+        assertTrue(result is com.abaddon83.burraco.player.model.player.PlayerNotInGame)
         assertEquals(playerIdentity, result.id)
         assertEquals(gameIdentity, result.gameIdentity)
         assertEquals(user, result.user)

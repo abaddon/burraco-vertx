@@ -10,7 +10,9 @@ import io.vertx.kafka.client.consumer.KafkaConsumerRecord
 abstract class KafkaConsumerVerticle(
     private val kafkaConfig: KafkaConsumerConfig
 ) : AbstractVerticle() {
+
     private lateinit var consumer: KafkaConsumer<String, String>
+
     abstract fun loadHandlers(): EventRouterHandler
 
     override fun start(startPromise: Promise<Void>) {

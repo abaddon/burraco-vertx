@@ -11,7 +11,7 @@ import io.vertx.core.Promise
 
 class PlayerViewProjectionEventStoreVerticle(
     private val playerEventStoreSubscriptionConfig: EventStoreSubscriptionConfig,
-    private val repository: IProjectionRepository<PlayerView>
+    repository: IProjectionRepository<PlayerView>
 ) : AbstractVerticle() {
 
     private val playerViewProjectionHandler = PlayerViewProjectionHandler(repository)

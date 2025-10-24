@@ -16,13 +16,13 @@ internal class DeletedPlayerTest {
         val version = 2L
 
         // When
-        val deletedPlayer = DeletedPlayer(playerIdentity, version, gameIdentity, user)
+        val playerNotInGame = PlayerNotInGame(playerIdentity, version, gameIdentity, user)
 
         // Then
-        assertEquals(playerIdentity, deletedPlayer.id)
-        assertEquals(version, deletedPlayer.version)
-        assertEquals(gameIdentity, deletedPlayer.gameIdentity)
-        assertEquals(user, deletedPlayer.user)
+        assertEquals(playerIdentity, playerNotInGame.id)
+        assertEquals(version, playerNotInGame.version)
+        assertEquals(gameIdentity, playerNotInGame.gameIdentity)
+        assertEquals(user, playerNotInGame.user)
     }
 
     @Test
@@ -34,10 +34,10 @@ internal class DeletedPlayerTest {
         val version = 2L
 
         // When
-        val deletedPlayer = DeletedPlayer(playerIdentity, version, gameIdentity, user)
+        val playerNotInGame = PlayerNotInGame(playerIdentity, version, gameIdentity, user)
 
         // Then
-        assertTrue(deletedPlayer.uncommittedEvents.isEmpty())
+        assertTrue(playerNotInGame.uncommittedEvents.isEmpty())
     }
 
     @Test
@@ -49,10 +49,10 @@ internal class DeletedPlayerTest {
         val version = 2L
 
         // When
-        val deletedPlayer = DeletedPlayer(playerIdentity, version, gameIdentity, user)
+        val playerNotInGame = PlayerNotInGame(playerIdentity, version, gameIdentity, user)
 
         // Then
-        assertEquals("", deletedPlayer.user)
+        assertEquals("", playerNotInGame.user)
     }
 
     @Test
@@ -64,14 +64,14 @@ internal class DeletedPlayerTest {
         val version = 2L
 
         // When
-        val deletedPlayer1 = DeletedPlayer(playerIdentity, version, gameIdentity, user)
-        val deletedPlayer2 = DeletedPlayer(playerIdentity, version, gameIdentity, user)
+        val playerNotInGame1 = PlayerNotInGame(playerIdentity, version, gameIdentity, user)
+        val playerNotInGame2 = PlayerNotInGame(playerIdentity, version, gameIdentity, user)
 
         // Then
-        assertEquals(deletedPlayer1.id, deletedPlayer2.id)
-        assertEquals(deletedPlayer1.version, deletedPlayer2.version)
-        assertEquals(deletedPlayer1.gameIdentity, deletedPlayer2.gameIdentity)
-        assertEquals(deletedPlayer1.user, deletedPlayer2.user)
+        assertEquals(playerNotInGame1.id, playerNotInGame2.id)
+        assertEquals(playerNotInGame1.version, playerNotInGame2.version)
+        assertEquals(playerNotInGame1.gameIdentity, playerNotInGame2.gameIdentity)
+        assertEquals(playerNotInGame1.user, playerNotInGame2.user)
     }
 
     @Test
@@ -84,13 +84,13 @@ internal class DeletedPlayerTest {
         val version = 2L
 
         // When
-        val deletedPlayer1 = DeletedPlayer(playerIdentity1, version, gameIdentity, user)
-        val deletedPlayer2 = DeletedPlayer(playerIdentity2, version, gameIdentity, user)
+        val playerNotInGame1 = PlayerNotInGame(playerIdentity1, version, gameIdentity, user)
+        val playerNotInGame2 = PlayerNotInGame(playerIdentity2, version, gameIdentity, user)
 
         // Then
-        assertNotEquals(deletedPlayer1.id, deletedPlayer2.id)
-        assertEquals(deletedPlayer1.gameIdentity, deletedPlayer2.gameIdentity)
-        assertEquals(deletedPlayer1.user, deletedPlayer2.user)
+        assertNotEquals(playerNotInGame1.id, playerNotInGame2.id)
+        assertEquals(playerNotInGame1.gameIdentity, playerNotInGame2.gameIdentity)
+        assertEquals(playerNotInGame1.user, playerNotInGame2.user)
     }
 
     @Test
@@ -103,12 +103,12 @@ internal class DeletedPlayerTest {
         val newVersion = 2L
 
         // Simulate the transition that happens in PlayerDraft.apply(PlayerDeleted)
-        val deletedPlayer = DeletedPlayer(playerIdentity, newVersion, gameIdentity, user)
+        val playerNotInGame = PlayerNotInGame(playerIdentity, newVersion, gameIdentity, user)
 
         // Then
-        assertEquals(playerIdentity, deletedPlayer.id)
-        assertEquals(newVersion, deletedPlayer.version)
-        assertEquals(gameIdentity, deletedPlayer.gameIdentity)
-        assertEquals(user, deletedPlayer.user)
+        assertEquals(playerIdentity, playerNotInGame.id)
+        assertEquals(newVersion, playerNotInGame.version)
+        assertEquals(gameIdentity, playerNotInGame.gameIdentity)
+        assertEquals(user, playerNotInGame.user)
     }
 }

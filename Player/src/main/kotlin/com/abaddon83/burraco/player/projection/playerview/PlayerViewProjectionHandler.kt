@@ -1,6 +1,7 @@
 package com.abaddon83.burraco.player.projection.playerview
 
 import com.abaddon83.burraco.common.models.event.player.PlayerCollectedCard
+import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
 import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
 import io.github.abaddon.kcqrs.core.projections.IProjectionKey
@@ -13,6 +14,7 @@ class PlayerViewProjectionHandler(
 ) {
     override fun getProjectionKey(event: IDomainEvent): IProjectionKey {
         return when (event) {
+            is PlayerCreated -> PlayerViewKey(event.aggregateId, event.gameIdentity)
             is PlayerCollectedCard -> PlayerViewKey(event.aggregateId, event.gameId)
             else -> PlayerViewKey.empty()
         }
