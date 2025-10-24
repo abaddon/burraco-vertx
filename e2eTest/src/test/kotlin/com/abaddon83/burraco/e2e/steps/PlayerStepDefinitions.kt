@@ -66,7 +66,7 @@ class PlayerStepDefinitions {
 
     @Then("the new player is not associated to the game because the game is full")
     fun theNewPlayerIsNotAssociatedToTheGameBecauseTheGameIsFull() {
-        assertThat("Response status should be 400 (Bad Request)", context.lastResponse?.statusCode(), equalTo(400))
+        assertThat("Response status should be 409 (Bad Request)", context.lastResponse?.statusCode(), equalTo(409))
         println("✅ Verified: Player association failed as expected - game is full")
     }
 }
