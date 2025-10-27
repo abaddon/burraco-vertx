@@ -1,8 +1,8 @@
 package com.abaddon83.burraco.player.projection.playerview
 
+import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import io.github.abaddon.kcqrs.core.persistence.IProjectionRepository
 import io.github.abaddon.kcqrs.core.projections.IProjectionKey
-import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 import java.util.concurrent.ConcurrentHashMap
 
 class InMemoryPlayerViewRepository : IProjectionRepository<PlayerView> {
@@ -12,8 +12,8 @@ class InMemoryPlayerViewRepository : IProjectionRepository<PlayerView> {
     override suspend fun getByKey(key: IProjectionKey): Result<PlayerView> = runCatching {
         val projectionKey = key.key()
         log.debug("Getting PlayerView projection by key: $projectionKey")
-
-        projections[projectionKey] ?: emptyProjection(key)
+        projections[projectionKey]
+            ?: throw NoSuchElementException("PlayerView projection not found for key: $projectionKey")
     }
 
     override suspend fun save(projection: PlayerView): Result<Unit> = runCatching {
