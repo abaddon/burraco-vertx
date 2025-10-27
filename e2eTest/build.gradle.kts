@@ -151,6 +151,10 @@ tasks.test {
 
     // Set test timeout to allow time for container startup
     timeout.set(Duration.ofMinutes(15))
+
+    // E2E tests should not be cached as they depend on external Docker containers
+    // Always run tests even if inputs haven't changed
+    outputs.upToDateWhen { false }
 }
 
 // Configuration for integration tests

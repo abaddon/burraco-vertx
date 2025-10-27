@@ -34,7 +34,44 @@ object ContainerManager {
 
         println("📁 Using docker-compose file: ${composeFile.absolutePath}")
 
+        // Build base-builder image first (required for service images)
+        println("🔨 Building base-builder image...")
+        val baseBuilderProcess = ProcessBuilder("docker", "compose", "build", "base-builder")
+            .directory(projectRoot)
+            .redirectErrorStream(true)
+            .start()
+
+        val baseBuilderOutput = baseBuilderProcess.inputStream.bufferedReader().readText()
+        val baseBuilderExitCode = baseBuilderProcess.waitFor()
+
+        if (baseBuilderExitCode != 0) {
+            println("❌ Base-builder build failed with exit code $baseBuilderExitCode")
+            println(baseBuilderOutput)
+            throw IllegalStateException("Failed to build base-builder image")
+        }
+
+        println("✅ Base-builder image built successfully")
+
+        // Now build service images
+        println("🔨 Building service images...")
+        val buildProcess = ProcessBuilder("docker", "compose", "build", "game", "player", "dealer")
+            .directory(projectRoot)
+            .redirectErrorStream(true)
+            .start()
+
+        val buildOutput = buildProcess.inputStream.bufferedReader().readText()
+        val buildExitCode = buildProcess.waitFor()
+
+        if (buildExitCode != 0) {
+            println("❌ Service images build failed with exit code $buildExitCode")
+            println(buildOutput)
+            throw IllegalStateException("Failed to build service images")
+        }
+
+        println("✅ All Docker images built successfully")
+
         // Start services using docker compose
+        println("🚀 Starting docker compose services...")
         val startProcess = ProcessBuilder("docker", "compose", "up", "-d")
             .directory(projectRoot)
             .redirectErrorStream(true)
