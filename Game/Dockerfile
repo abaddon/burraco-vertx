@@ -1,6 +1,6 @@
 FROM base-builder AS builder
 
-FROM openjdk:21-slim
+FROM eclipse-temurin:21-jre
 
 ENV VERTICLE_ORIGIN_PATH=/app/Game/build/libs/Game-all.jar
 ENV VERTICLE_FILE=game-service.jar

@@ -1,6 +1,6 @@
 FROM base-builder AS builder
 
-FROM openjdk:21-slim
+FROM eclipse-temurin:21-jre
 
 ENV VERTICLE_ORIGIN_PATH=/app/Dealer/build/libs/Dealer-all.jar
 ENV VERTICLE_FILE=dealer-service.jar

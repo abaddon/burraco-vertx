@@ -140,8 +140,10 @@ services:
       - --advertise-rpc-addr redpanda:33145
       # Mode dev-container uses well-known configuration properties for development in containers.
       - --mode dev-container
-      # Tells Seastar (the framework Redpanda uses under the hood) to use 1 core on the system.
-      - --smp 1
+      # Phase 1 Optimization: Increase cores from 1 to 2 for better throughput
+      - --smp 2
+      # Phase 1 Optimization: Allocate 2GB memory (1GB per core)
+      - --memory 2G
       - --default-log-level=info
     image: docker.redpanda.com/redpandadata/redpanda:v25.1.5
     volumes:
