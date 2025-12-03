@@ -9,4 +9,8 @@ data class PlayerCreated(
     override val aggregateIdentity: PlayerIdentity,
     @JsonProperty("gameIdentity")
     val gameIdentity: GameIdentity
-) : PlayerExternalEvent(aggregateIdentity, PlayerEventName.PlayerCreated)
+) : PlayerExternalEvent(aggregateIdentity, PlayerEventName.PlayerCreated) {
+
+    override fun extractEventKey(): String = gameIdentity.valueAsString()
+
+}

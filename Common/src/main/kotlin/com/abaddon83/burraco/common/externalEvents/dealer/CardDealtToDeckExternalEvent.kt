@@ -13,4 +13,6 @@ data class CardDealtToDeckExternalEvent(
     val cardLabel: String,
 ) : DealerExternalEvent(aggregateIdentity, DealerEventName.CardDealtToDeck) {
 
+    override fun extractEventKey(): String = gameIdentity.valueAsString()
+
 }

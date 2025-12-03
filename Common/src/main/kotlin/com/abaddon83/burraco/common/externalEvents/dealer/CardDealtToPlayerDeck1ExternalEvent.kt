@@ -11,4 +11,7 @@ data class CardDealtToPlayerDeck1ExternalEvent(
     val gameIdentity: GameIdentity,
     @JsonProperty("cardLabel")
     val cardLabel: String,
-) : DealerExternalEvent(aggregateIdentity, DealerEventName.CardDealtToPlayerDeck1)
+) : DealerExternalEvent(aggregateIdentity, DealerEventName.CardDealtToPlayerDeck1){
+
+    override fun extractEventKey(): String = gameIdentity.valueAsString()
+}

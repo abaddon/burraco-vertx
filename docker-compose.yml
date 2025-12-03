@@ -180,6 +180,18 @@ services:
     depends_on:
       - redpanda
 
+  # Phase 3 Optimization: Initialize Kafka topics with 3 partitions for horizontal scaling
+  kafka-init:
+    image: docker.redpanda.com/redpandadata/redpanda:v25.1.5
+    networks:
+      - burraco-net
+    depends_on:
+      - redpanda
+    entrypoint: [ "/bin/sh" ]
+    command: -c "/scripts/init-kafka-topics.sh"
+    volumes:
+      - ./init-kafka-topics.sh:/scripts/init-kafka-topics.sh:ro
+
 #  projection:
 #    build: ./ReadModel
 #    depends_on:

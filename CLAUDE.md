@@ -65,7 +65,7 @@
 | **Vert.x** | 4.5.14 | Reactive application framework with Kotlin coroutines |
 | **KCQRS** | Custom | CQRS/Event Sourcing framework |
 | **KurrentDB** | Latest | Event Store database (EventStore fork) |
-| **Kafka/Redpanda** | 25.1.5 | Event streaming between services |
+| **Kafka/Redpanda** | 25.1.5 | Event streaming (3 partitions/topic, gameId routing) |
 | **Docker** | Latest | Containerization |
 | **Kotlin** | 2.1.0 | Programming language |
 | **Gradle** | 9.1.0 | Build tool |
@@ -101,6 +101,12 @@
 - **Aggregates**: GameAggregate, PlayerAggregate, DealerAggregate
 - **Value objects**: Card, GameIdentity, PlayerIdentity
 - **Domain events**: GameCreated, PlayerAdded, CardDealtToPlayer
+
+#### 5. **Kafka Partitioning Strategy**
+- **Multi-partition Topics**: All topics (game, dealer, player) have 3 partitions
+- **Routing Key**: `gameId` is used as the partition key for all events
+- **Ordering Guarantee**: All events for a specific game go to the same partition, ensuring strict ordering
+- **Scalability**: Enables parallel processing of different games across multiple consumer instances
 
 ---
 

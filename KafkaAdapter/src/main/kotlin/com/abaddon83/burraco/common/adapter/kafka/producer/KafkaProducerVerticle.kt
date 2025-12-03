@@ -20,9 +20,11 @@ abstract class KafkaProducerVerticle<DE : IDomainEvent, AR : AggregateRoot>(
         val externalEvent = chooseExternalEvent(aggregate, domainEvent) ?: return Result.success(Unit)
 
         val kafkaEvent = KafkaEvent.from(externalEvent)
+        // Phase 3 Optimization: Use gameId as partition key for horizontal scaling
+        val partitionKey = externalEvent.extractEventKey()
         val record = KafkaProducerRecord.create(
             topic,
-            externalEvent.aggregateIdentity.valueAsString(),
+            partitionKey,
             kafkaEvent.toJson()
         )
         producer.write(record)
@@ -33,17 +35,21 @@ abstract class KafkaProducerVerticle<DE : IDomainEvent, AR : AggregateRoot>(
 
     /**
      * Phase 2 Optimization: Batch publish multiple events at once.
+     * Phase 3 Enhancement: Uses gameId as partition key for horizontal scaling.
      * With Phase 1 Kafka config (linger.ms=10, batch.size=32KB), messages will be
      * batched by Kafka producer automatically, reducing network calls.
+     * All events for the same game go to the same partition, maintaining ordering.
      */
     suspend fun publishBatchOnKafka(aggregate: AR, domainEvents: List<DE>): Result<Unit> = runCatching {
         // Convert domain events to Kafka records
         val records = domainEvents.mapNotNull { domainEvent ->
             val externalEvent = chooseExternalEvent(aggregate, domainEvent) ?: return@mapNotNull null
             val kafkaEvent = KafkaEvent.from(externalEvent)
+            // Phase 3 Optimization: Use gameId as partition key for horizontal scaling
+            val partitionKey = externalEvent.extractEventKey()
             KafkaProducerRecord.create(
                 topic,
-                externalEvent.aggregateIdentity.valueAsString(),
+                partitionKey,
                 kafkaEvent.toJson()
             ) to Pair(domainEvent, externalEvent)
         }

@@ -55,7 +55,8 @@ The producer architecture simplifies publishing domain events as integration eve
     - Generic types: `DE` (Domain Event), `AR` (Aggregate Root).
     - **`publishOnKafka(aggregate, domainEvent)`**:
         - Converts domain event to `ExternalEvent` (via `chooseExternalEvent`).
-        - Wraps it in a `KafkaEvent` envelope.
+        - **Partitioning**: Uses `externalEvent.extractEventKey()` as the partition key.
+        - Wraps it in a `KafkaProducerRecord` with the partition key.
         - Publishes to the configured topic.
         - Awaits acknowledgement.
 

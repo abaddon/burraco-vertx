@@ -7,4 +7,5 @@ interface ExternalEvent {
     val eventOwner: String
     val aggregateIdentity: IIdentity
 
+    fun extractEventKey(): String;
 }

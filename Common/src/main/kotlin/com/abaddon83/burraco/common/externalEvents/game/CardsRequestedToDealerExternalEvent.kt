@@ -9,14 +9,4 @@ data class CardsRequestedToDealerExternalEvent(
     override val aggregateIdentity: GameIdentity,
     @JsonProperty("players")
     val players: List<PlayerIdentity>
-) : GameExternalEvent(aggregateIdentity, GameEventName.CardsRequestedToDealer) {
-
-    companion object {
-//        fun fromDomain(domainEvent: CardDealingRequested): CardsRequestedToDealerExternalEvent {
-//            val listPlayerIdentities = (aggregate as GameWaitingDealer).players.map { it.id }
-//            CardsRequestedToDealerExternalEvent(domainEvent.aggregateId, listPlayerIdentities)
-//        }
-
-
-    }
-}
+) : GameExternalEvent(aggregateIdentity, GameEventName.CardsRequestedToDealer)

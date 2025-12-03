@@ -10,4 +10,6 @@ abstract class GameExternalEvent(
 ) : ExternalEvent {
     override val eventOwner: String = EventOwner.GAME.name
     override val eventName: String = name.name
+
+    override fun extractEventKey(): String = aggregateIdentity.valueAsString()
 }

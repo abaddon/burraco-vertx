@@ -35,9 +35,8 @@ internal class KafkaEventTest{
         override val aggregateIdentity: GameIdentity,
     ) : ExternalEvent {
         override val eventOwner: String = "Test"
-//        //override fun toKafkaEvent(): KafkaEvent {
-//            return KafkaEvent(eventName, Json.encode(this))
-//        }
+
+        override fun extractEventKey(): String = aggregateIdentity.valueAsString()
 
         override val eventName: String = this::class.java.simpleName
 
