@@ -11,4 +11,12 @@ class DummyExternalEventPublisher : ExternalEventPublisherPort {
         return Result.success(Unit)
     }
 
+    override suspend fun publishBatch(aggregate: Dealer, events: List<DealerEvent>): Result<Unit> {
+        log.info("Publishing batch of ${events.size} events")
+        events.forEach { event ->
+            log.info("  - ${event::class.java.simpleName}")
+        }
+        return Result.success(Unit)
+    }
+
 }

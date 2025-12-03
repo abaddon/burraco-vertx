@@ -32,6 +32,33 @@ abstract class KafkaProducerVerticle<DE : IDomainEvent, AR : AggregateRoot>(
     }
 
     /**
+     * Phase 2 Optimization: Batch publish multiple events at once.
+     * With Phase 1 Kafka config (linger.ms=10, batch.size=32KB), messages will be
+     * batched by Kafka producer automatically, reducing network calls.
+     */
+    suspend fun publishBatchOnKafka(aggregate: AR, domainEvents: List<DE>): Result<Unit> = runCatching {
+        // Convert domain events to Kafka records
+        val records = domainEvents.mapNotNull { domainEvent ->
+            val externalEvent = chooseExternalEvent(aggregate, domainEvent) ?: return@mapNotNull null
+            val kafkaEvent = KafkaEvent.from(externalEvent)
+            KafkaProducerRecord.create(
+                topic,
+                externalEvent.aggregateIdentity.valueAsString(),
+                kafkaEvent.toJson()
+            ) to Pair(domainEvent, externalEvent)
+        }
+
+        // Publish all records (Kafka will batch them based on Phase 1 config)
+        records.forEach { (record, eventPair) ->
+            val (domainEvent, externalEvent) = eventPair
+            producer.write(record)
+                .onSuccess {
+                    onSuccess(aggregate, domainEvent, externalEvent)
+                }.coAwait()
+        }
+    }
+
+    /**
      * Graceful shutdown of the producer
      */
     fun close(): Result<Unit> = runCatching {

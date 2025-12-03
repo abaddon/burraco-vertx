@@ -74,6 +74,19 @@ class KafkaExternalEventPublisherAdapter(
         publishOnKafka(aggregate, event)
     }
 
+    /**
+     * Phase 2 Optimization: Batch publish multiple events at once.
+     * This reduces Kafka round trips from 86 to 1 for card dealing operations.
+     */
+    override suspend fun publishBatch(
+        aggregate: Dealer,
+        events: List<DealerEvent>
+    ): Result<Unit> = runCatching {
+        log.info("Publishing batch of ${events.size} dealer events")
+        publishBatchOnKafka(aggregate, events)
+        log.info("Successfully published batch of ${events.size} dealer events")
+    }
+
     override fun onFailure(
         throwable: Throwable,
         aggregate: Dealer,

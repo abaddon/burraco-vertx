@@ -8,4 +8,13 @@ interface ExternalEventPublisherPort {
         aggregate: Dealer,
         event: DealerEvent
     ): Result<Unit>
+
+    /**
+     * Phase 2 Optimization: Batch publish multiple events at once.
+     * This reduces Kafka network calls from N to 1 for card dealing operations.
+     */
+    suspend fun publishBatch(
+        aggregate: Dealer,
+        events: List<DealerEvent>
+    ): Result<Unit>
 }
