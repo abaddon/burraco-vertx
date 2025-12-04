@@ -13,7 +13,6 @@ import com.abaddon83.burraco.game.models.decks.Deck
 import com.abaddon83.burraco.game.models.decks.DiscardPile
 import com.abaddon83.burraco.game.models.decks.PlayerDeck
 import com.abaddon83.burraco.game.models.player.PlayerInGame
-import com.abaddon83.burraco.game.models.player.WaitingPlayer
 import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
 data class GameExecutionPickUpPhase(
@@ -44,31 +43,26 @@ data class GameExecutionPickUpPhase(
             )
         }
 
-        fun from(game: GameWaitingDealer): GameExecutionPickUpPhase {
+        fun from(
+            game: GameWaitingDealer,
+            playerTurn: PlayerIdentity,
+            teams: List<List<PlayerIdentity>>
+        ): GameExecutionPickUpPhase {
             return GameExecutionPickUpPhase(
                 id = game.id,
                 version = game.version,
                 players = game.players.map { PlayerInGame.from(it) },
-                playerTurn = game.players.first().id,
+                playerTurn = playerTurn,
                 deck = Deck.create(game.deck),
                 playerDeck1 = PlayerDeck.create(game.playerDeck1),
                 playerDeck2 = PlayerDeck.create(game.playerDeck2),
                 discardPile = DiscardPile.create(game.discardDeck),
-                teams = createTeams(game.players)
+                teams = createTeams(teams)
             )
         }
 
-        private fun createTeams(players: List<WaitingPlayer>): List<Team> = when (players.size) {
-            4 -> listOf(
-                Team(listOf(players[0].id, players[2].id)),
-                Team(listOf(players[1].id, players[3].id))
-            )
-            2 -> listOf(
-                Team(listOf(players[0].id)),
-                Team(listOf(players[1].id))
-            )
-            else -> listOf()
-        }
+        private fun createTeams(teams: List<List<PlayerIdentity>>): List<Team> =
+            teams.map { team -> Team(team) }
     }
 
 

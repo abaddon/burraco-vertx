@@ -77,7 +77,9 @@ data class GameWaitingDealer(
             .plus(players.map { it.cards.size })
             .fold(0) { initial, value -> initial + value }
         check(totalCards == GameConfig.TOTAL_CARDS_REQUIRED) { "The dealer has not finished dealing the cards" }
-        return raiseEvent(GameStarted.create(id)) as GameExecutionPickUpPhase
+        val playerTurn = players.first().id;
+        val teams = buildTeams(players)
+        return raiseEvent(GameStarted.create(id, playerTurn, teams)) as GameExecutionPickUpPhase
     }
 
     private fun apply(event: CardAddedPlayer): GameWaitingDealer {
@@ -119,6 +121,26 @@ data class GameWaitingDealer(
 
     private fun apply(event: GameStarted): GameExecutionPickUpPhase {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        return GameExecutionPickUpPhase.from(this)
+        return GameExecutionPickUpPhase.from(this, event.playerTurn, event.teams)
+    }
+
+    private fun buildTeams(players: List<WaitingPlayer>): List<List<PlayerIdentity>> = when (players.size) {
+        4 -> listOf(
+            listOf(players[0].id, players[2].id),
+            listOf(players[1].id, players[3].id)
+        )
+
+        3 -> listOf(
+            listOf(players[0].id),
+            listOf(players[1].id),
+            listOf(players[2].id)
+        )
+
+        2 -> listOf(
+            listOf(players[0].id),
+            listOf(players[1].id)
+        )
+
+        else -> listOf()
     }
 }
