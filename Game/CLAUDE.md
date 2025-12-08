@@ -96,6 +96,11 @@ GameDraft → GameWaitingDealer → GameExecution → GameTerminated
    - Payload: `{ aggregateId: GameIdentity, players: List<PlayerIdentity> }`
    - Consumed by: Dealer service (triggers card dealing)
 
+4. **GameStarted**
+   - Payload: `{ aggregateId: GameIdentity, playerTurn: PlayerIdentity, teams: List<List<PlayerIdentity>> }`
+   - Consumed by: Player service (GameView projection)
+   - Purpose: Signals game has transitioned from waiting to execution phase
+
 ### Consumes
 1. **PlayerCreated** (from Player service, topic: `player-events`)
    - Action: Adds player to GameDraft aggregate
@@ -114,6 +119,11 @@ GameDraft → GameWaitingDealer → GameExecution → GameTerminated
 
 6. **CardDealtToDiscardDeck** (from Dealer service, topic: `dealer-events`)
    - Action: Adds card to discard pile
+
+7. **DealingCompleted** (from Dealer service, topic: `dealer-events`)
+   - Action: Triggers game transition from GameWaitingDealer to GameExecutionPickUpPhase
+   - Executes: StartPlayerTurn command which calls startGame() on GameWaitingDealer aggregate
+   - Result: Game moves from WAITING_DEALER status to STARTED status
 
 ## Build & Test
 

@@ -5,10 +5,12 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealerExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.GameCreatedExternalEvent
+import com.abaddon83.burraco.common.externalEvents.game.GameStartedExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.PlayerAddedExternalEvent
 import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
 import com.abaddon83.burraco.common.models.event.game.GameCreated
 import com.abaddon83.burraco.common.models.event.game.GameEvent
+import com.abaddon83.burraco.common.models.event.game.GameStarted
 import com.abaddon83.burraco.common.models.event.game.PlayerAdded
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.models.game.GameWaitingDealer
@@ -33,6 +35,7 @@ class KafkaExternalEventPublisherAdapter(
             }
             is GameCreated -> GameCreatedExternalEvent.fromDomain(domainEvent)
             is PlayerAdded -> PlayerAddedExternalEvent.fromDomain(domainEvent)
+            is GameStarted -> GameStartedExternalEvent.fromDomain(domainEvent)
             else -> null
         }
     }

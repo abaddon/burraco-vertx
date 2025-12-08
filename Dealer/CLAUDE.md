@@ -21,6 +21,7 @@ None (Event-driven only)
 3. **For pozzetto 2 (11 cards)**: Draw card, Execute `DealCardToPlayerDeck2`, Publish `CardDealtToPlayerDeck2`
 4. **For main deck (remaining cards)**: Draw card, Execute `DealCardToDeck`, Publish `CardDealtToDeck`
 5. **For discard pile (1 card)**: Draw card, Execute `DealCardToDiscardDeck`, Publish `CardDealtToDiscardDeck`
+6. **Complete dealing**: Execute `CompleteDealingCards`, Publish `DealingCompleted`
 
 ## Events
 
@@ -45,9 +46,14 @@ None (Event-driven only)
    - Payload: `{ aggregateId: DealerId, gameId: GameIdentity, card: String }`
    - Consumed by: Game service
 
+6. **DealingCompleted**
+   - Payload: `{ aggregateId: DealerId, gameId: GameIdentity }`
+   - Consumed by: Game service
+   - Purpose: Signals completion of card dealing phase, triggers game to transition to execution phase
+
 ### Consumes
 1. **CardsRequestedToDealer** (from Game service, topic: `game-events`)
-   - Action: Creates DealerAggregate and deals all cards
+   - Action: Creates DealerAggregate and deals all cards, then publishes DealingCompleted
 
 ## Build & Test
 

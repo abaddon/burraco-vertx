@@ -8,11 +8,13 @@ import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToDiscardDeck
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerDeck1ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerDeck2ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.dealer.CardDealtToPlayerExternalEvent
+import com.abaddon83.burraco.common.externalEvents.dealer.DealingCompletedExternalEvent
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDeck
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDiscardDeck
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayer
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck1
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck2
+import com.abaddon83.burraco.common.models.event.dealer.DealingCompleted
 import com.abaddon83.burraco.common.models.event.dealer.DealerEvent
 import com.abaddon83.burraco.dealer.models.Dealer
 import com.abaddon83.burraco.dealer.ports.ExternalEventPublisherPort
@@ -61,6 +63,11 @@ class KafkaExternalEventPublisherAdapter(
                 domainEvent.aggregateId,
                 domainEvent.gameId,
                 domainEvent.card.label
+            )
+
+            is DealingCompleted -> DealingCompletedExternalEvent(
+                domainEvent.aggregateId,
+                domainEvent.gameId
             )
 
             else -> null

@@ -11,4 +11,9 @@ class DummyExternalEventPublisherAdapter : ExternalEventPublisherPort {
         log.debug("event published: $event")
         return Result.success(Unit)
     }
+
+    override suspend fun publishBatch(aggregate: Dealer, events: List<DealerEvent>): Result<Unit> {
+        log.debug("batch events published: ${events.size} events")
+        return Result.success(Unit)
+    }
 }

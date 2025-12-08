@@ -33,4 +33,6 @@ interface CommandControllerPort {
 
     suspend fun startPlayerTurn(gameIdentity: GameIdentity): Outcome
 
+    suspend fun startGame(gameIdentity: GameIdentity): Outcome
+
 }

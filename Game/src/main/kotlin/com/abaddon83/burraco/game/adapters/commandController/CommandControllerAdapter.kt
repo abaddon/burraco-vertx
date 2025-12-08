@@ -68,6 +68,11 @@ class CommandControllerAdapter(override val gameCommandHandler: IAggregateComman
         return executeCommand(cmd)
     }
 
+    override suspend fun startGame(gameIdentity: GameIdentity): Outcome {
+        val cmd = StartPlayerTurn(gameIdentity)
+        return executeCommand(cmd)
+    }
+
     private suspend fun executeCommand(command: ICommand<Game>): Outcome {
         val result = gameCommandHandler.handle(command)
         return when {

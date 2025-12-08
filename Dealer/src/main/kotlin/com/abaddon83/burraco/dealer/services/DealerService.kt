@@ -7,6 +7,7 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.dealer.DomainError
 import com.abaddon83.burraco.dealer.DomainResult
 import com.abaddon83.burraco.dealer.ExceptionError
+import com.abaddon83.burraco.dealer.commands.CompleteDealingCards
 import com.abaddon83.burraco.dealer.commands.CreateDecks
 import com.abaddon83.burraco.dealer.commands.DealCardToDeck
 import com.abaddon83.burraco.dealer.commands.DealCardToDiscardDeck
@@ -71,7 +72,12 @@ class DealerService(
                 dealDeck(dealer.id, dealer.gameIdentity)
             }
             .flatMap { dealer ->
-                log.info("dealer dealt  remaining cards to deck: {}", dealer)
+                log.info("dealer dealt remaining cards to deck: {}", dealer)
+                // Trigger DealingCompleted event
+                completeDealingCards(dealer.id, dealer.gameIdentity)
+            }
+            .flatMap { dealer ->
+                log.info("dealing completed for game: {}", dealer.gameIdentity)
                 Result.success(dealer)
             }
             .fold(
@@ -220,6 +226,14 @@ class DealerService(
                     updatedDealer
                 )
             }
+    }
+
+    private suspend fun completeDealingCards(
+        dealerIdentity: DealerIdentity,
+        gameIdentity: GameIdentity
+    ): Result<Dealer> {
+        log.debug("service.completeDealingCards: dealerIdentity: {}, gameIdentity: {}", dealerIdentity, gameIdentity)
+        return handle(CompleteDealingCards(dealerIdentity, gameIdentity))
     }
 
     private suspend fun handle(cmd: ICommand<Dealer>): Result<Dealer> {

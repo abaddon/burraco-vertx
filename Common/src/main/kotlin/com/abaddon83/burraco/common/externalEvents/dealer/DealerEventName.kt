@@ -5,5 +5,6 @@ enum class DealerEventName {
     CardDealtToDiscardDeck,
     CardDealtToPlayerDeck1,
     CardDealtToPlayerDeck2,
-    CardDealtToPlayer
+    CardDealtToPlayer,
+    DealingCompleted
 }

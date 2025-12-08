@@ -10,6 +10,7 @@ import com.abaddon83.burraco.common.models.event.dealer.CardDealtToDiscardDeck
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayer
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck1
 import com.abaddon83.burraco.common.models.event.dealer.CardDealtToPlayerDeck2
+import com.abaddon83.burraco.common.models.event.dealer.DealingCompleted
 import com.abaddon83.burraco.common.models.event.dealer.DeckCreated
 import com.abaddon83.burraco.dealer.helpers.CardsHelper
 import com.abaddon83.burraco.dealer.helpers.contains
@@ -98,6 +99,14 @@ data class Dealer(
         return raiseEvent(CardDealtToDeck.create(id, gameId, cardsAvailable.first())) as Dealer
     }
 
+    fun completeDealingCards(gameId: GameIdentity): Dealer {
+        check(this.id != DealerIdentity.empty()) { "Current dealer with id ${this.id.valueAsString()} is not yet created" }
+        require(this.gameIdentity == gameId) { "Game ${gameId.valueAsString()} is different" }
+        check(cardsAvailable.isEmpty()) { "Cards still available, dealing not completed" }
+
+        return raiseEvent(DealingCompleted.create(id, gameId)) as Dealer
+    }
+
 
     private fun apply(event: DeckCreated): Dealer {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
@@ -171,6 +180,12 @@ data class Dealer(
         )
         log.debug("Card dealt to Discard deck, now there are ${newDealer.cardsAvailable.size} cards and Deck has ${newDealer.deckNumCards} cards")
         return newDealer
+    }
+
+    private fun apply(event: DealingCompleted): Dealer {
+        log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
+        log.info("Dealing completed for game ${event.gameId.valueAsString()}")
+        return copy(version = this.version + 1)
     }
 
 }
