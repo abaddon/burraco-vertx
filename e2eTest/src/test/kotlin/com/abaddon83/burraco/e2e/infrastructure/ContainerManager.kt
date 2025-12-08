@@ -112,6 +112,12 @@ object ContainerManager {
         println("   Player Service: ${endpoints.playerServiceUrl}")
         println("   Kafka Broker: ${endpoints.kafkaBroker}")
         println("   EventStore: ${endpoints.eventStoreUrl}")
+
+        // Additional wait for Kafka consumers to fully subscribe and start polling
+        // This ensures Player service's GameViewProjectionKafkaVerticle is ready
+        println("⏳ Waiting 10 seconds for Kafka consumers to fully initialize...")
+        Thread.sleep(10000)
+        println("✅ Kafka consumers should be ready")
     }
 
     /**

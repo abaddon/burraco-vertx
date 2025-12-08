@@ -12,8 +12,8 @@ class InMemoryPlayerViewRepository : IProjectionRepository<PlayerView> {
     override suspend fun getByKey(key: IProjectionKey): Result<PlayerView> = runCatching {
         val projectionKey = key.key()
         log.debug("Getting PlayerView projection by key: $projectionKey")
-        projections[projectionKey]
-            ?: throw NoSuchElementException("PlayerView projection not found for key: $projectionKey")
+
+        projections[projectionKey] ?: emptyProjection(key)
     }
 
     override suspend fun save(projection: PlayerView): Result<Unit> = runCatching {

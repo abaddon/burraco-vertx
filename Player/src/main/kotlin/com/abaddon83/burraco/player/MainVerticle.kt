@@ -2,6 +2,7 @@ package com.abaddon83.burraco.player
 
 import com.abaddon83.burraco.player.adapter.commandController.CommandControllerAdapter
 import com.abaddon83.burraco.player.adapter.commandController.kafka.KafkaDealerConsumerVerticle
+import com.abaddon83.burraco.player.adapter.commandController.kafka.KafkaGameConsumerVerticle
 import com.abaddon83.burraco.player.adapter.commandController.rest.RestHttpServiceVerticle
 import com.abaddon83.burraco.player.adapter.externalEventPublisher.kafka.KafkaExternalEventPublisherAdapter
 import com.abaddon83.burraco.player.adapter.projection.GameViewProjectionKafkaVerticle
@@ -22,6 +23,7 @@ class MainVerticle(
 ) : AbstractVerticle() {
     private lateinit var restHttpServiceVerticle: RestHttpServiceVerticle
     private lateinit var kafkaDealerConsumerVerticle: KafkaDealerConsumerVerticle
+    private lateinit var kafkaGameConsumerVerticle: KafkaGameConsumerVerticle
     private lateinit var playerViewProjectionEventStoreVerticle: PlayerViewProjectionEventStoreVerticle
     private lateinit var gameViewProjectionKafkaVerticle: GameViewProjectionKafkaVerticle
 
@@ -66,12 +68,14 @@ class MainVerticle(
                     gameViewRepository
                 )
 
-            //Initialize Kafka Consumer Verticle
+            //Initialize Kafka Consumer Verticles
             kafkaDealerConsumerVerticle = KafkaDealerConsumerVerticle(serviceConfig, commandControllerAdapter)
+            kafkaGameConsumerVerticle = KafkaGameConsumerVerticle(serviceConfig, commandControllerAdapter)
 
             val allFutures: List<Future<Any>> = listOf(
                 deploy(restHttpServiceVerticle, serverOpts).future(),
                 deploy(kafkaDealerConsumerVerticle, serverOpts).future(),
+                deploy(kafkaGameConsumerVerticle, serverOpts).future(),
                 deploy(gameViewProjectionKafkaVerticle, serverOpts).future(),
                 deploy(playerViewProjectionEventStoreVerticle, serverOpts).future()
             )

@@ -44,6 +44,8 @@ internal class PlayerViewTest {
             listOf(existingCard),
             emptyList(),
             emptyList(),
+            false,
+            null,
             java.util.concurrent.ConcurrentHashMap(),
             java.time.Instant.now()
         )
@@ -71,6 +73,8 @@ internal class PlayerViewTest {
             emptyList(),
             emptyList(),
             emptyList(),
+            false,
+            null,
             java.util.concurrent.ConcurrentHashMap(),
             java.time.Instant.now()
         )
@@ -95,6 +99,8 @@ internal class PlayerViewTest {
             emptyList(),
             emptyList(),
             emptyList(),
+            false,
+            null,
             java.util.concurrent.ConcurrentHashMap(),
             java.time.Instant.now()
         )

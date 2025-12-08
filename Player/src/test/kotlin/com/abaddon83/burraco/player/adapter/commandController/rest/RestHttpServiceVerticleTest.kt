@@ -210,6 +210,18 @@ internal class RestHttpServiceVerticleTest {
                 .addCard(playerIdentity, gameIdentity, card)
             return Validated.Valid(DomainResult(listOf(), player))
         }
+
+        override suspend fun activatePlayer(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity, teamMateId: PlayerIdentity?): Outcome {
+            val player = PlayerDraft(playerIdentity, 1, gameIdentity, "testUser", emptyList())
+                .activatePlayer(teamMateId)
+            return Validated.Valid(DomainResult(listOf(), player))
+        }
+
+        override suspend fun setPlayerWaiting(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity, teamMateId: PlayerIdentity?): Outcome {
+            val player = PlayerDraft(playerIdentity, 1, gameIdentity, "testUser", emptyList())
+                .setWaiting(teamMateId)
+            return Validated.Valid(DomainResult(listOf(), player))
+        }
     }
 
     class DummyQueryControllerAdapter : QueryControllerPort {

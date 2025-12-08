@@ -3,6 +3,7 @@ package com.abaddon83.burraco.player.projection.gameview
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.event.game.GameCreated
+import com.abaddon83.burraco.common.models.event.game.GameStarted
 import com.abaddon83.burraco.common.models.event.game.PlayerAdded
 import com.abaddon83.burraco.player.projection.GameState
 import io.github.abaddon.kcqrs.core.domain.messages.events.IDomainEvent
@@ -38,6 +39,7 @@ data class GameView(
         return when (event) {
             is GameCreated -> apply(event)
             is PlayerAdded -> apply(event)
+            is GameStarted -> apply(event)
             else -> eventNotSupported(event)
         }
     }
@@ -79,6 +81,19 @@ data class GameView(
 
         return this.copy(
             players = players + event.playerIdentity,
+            lastUpdated = Instant.now()
+        )
+    }
+
+    private fun apply(event: GameStarted): GameView {
+        log.debug("Applying GameStarted event to GameView: game {} transitioning to PLAYING", event.aggregateId)
+
+        check(this.key.gameIdentity == event.aggregateId) {
+            "Game ID mismatch: projection key ${key.gameIdentity} vs event ${event.aggregateId}"
+        }
+
+        return this.copy(
+            state = GameState.PLAYING,
             lastUpdated = Instant.now()
         )
     }

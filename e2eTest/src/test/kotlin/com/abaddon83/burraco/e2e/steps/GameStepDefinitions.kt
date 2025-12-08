@@ -42,8 +42,11 @@ class GameStepDefinitions {
                 println("⚠️ Warning: GameCreated event not found in Kafka within 3 seconds")
             } else {
                 println("✅ GameCreated event verified in Kafka")
-                // Give Player service time to process the event and update projection
-                Thread.sleep(2000)
+                // Give Player service time to process the event and update GameView projection
+                // Increased to 5 seconds to account for Kafka poll interval + projection update
+                println("⏳ Waiting 5 seconds for Player service to update GameView projection...")
+                Thread.sleep(5000)
+                println("✅ GameView projection should be updated")
             }
         }
     }

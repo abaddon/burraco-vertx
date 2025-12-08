@@ -3,9 +3,11 @@ package com.abaddon83.burraco.player.model.player
 import com.abaddon83.burraco.common.models.GameIdentity
 import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Card
+import com.abaddon83.burraco.common.models.event.player.PlayerActivated
 import com.abaddon83.burraco.common.models.event.player.PlayerCollectedCard
 import com.abaddon83.burraco.common.models.event.player.PlayerCreated
 import com.abaddon83.burraco.common.models.event.player.PlayerDeleted
+import com.abaddon83.burraco.common.models.event.player.PlayerWaitingTurn
 import io.github.abaddon.kcqrs.core.IIdentity
 import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
 
@@ -44,6 +46,16 @@ data class PlayerDraft(
         return raiseEvent(PlayerCollectedCard.create(playerId, gameId, card)) as PlayerDraft
     }
 
+    fun activatePlayer(teamMateId: PlayerIdentity?): PlayerActive {
+        check(this.id != PlayerIdentity.empty()) { String.format(VALIDATION_MSG_PLAYER_NOT_EXIST, this.id) }
+        return raiseEvent(PlayerActivated.create(this.id as PlayerIdentity, this.gameIdentity, teamMateId)) as PlayerActive
+    }
+
+    fun setWaiting(teamMateId: PlayerIdentity?): PlayerWaiting {
+        check(this.id != PlayerIdentity.empty()) { String.format(VALIDATION_MSG_PLAYER_NOT_EXIST, this.id) }
+        return raiseEvent(PlayerWaitingTurn.create(this.id as PlayerIdentity, this.gameIdentity, teamMateId)) as PlayerWaiting
+    }
+
     private fun apply(event: PlayerCreated): PlayerDraft {
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
         return copy(id = event.aggregateId, gameIdentity = event.gameIdentity, user = event.user, version = 0)
@@ -57,6 +69,30 @@ data class PlayerDraft(
     private fun apply(event: PlayerDeleted): PlayerNotInGame {
         log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
         return PlayerNotInGame.from(this)
+    }
+
+    private fun apply(event: PlayerActivated): PlayerActive {
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
+        return PlayerActive(
+            id = this.id,
+            version = this.version + 1,
+            gameIdentity = this.gameIdentity,
+            user = this.user,
+            cards = this.cards,
+            teamMateId = event.teamMateId
+        )
+    }
+
+    private fun apply(event: PlayerWaitingTurn): PlayerWaiting {
+        log.debug(AGGREGATE_APPLY_EVENT_MSG, event::class.java.simpleName, event.messageId, this.id)
+        return PlayerWaiting(
+            id = this.id,
+            version = this.version + 1,
+            gameIdentity = this.gameIdentity,
+            user = this.user,
+            cards = this.cards,
+            teamMateId = event.teamMateId
+        )
     }
 
 }

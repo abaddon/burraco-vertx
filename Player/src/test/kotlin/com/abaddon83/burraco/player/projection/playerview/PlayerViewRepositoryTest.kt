@@ -51,6 +51,8 @@ internal class PlayerViewRepositoryTest {
             listOf(card),
             emptyList(),
             emptyList(),
+            false,
+            null,
             ConcurrentHashMap(),
             Instant.now()
         )
@@ -79,6 +81,8 @@ internal class PlayerViewRepositoryTest {
             listOf(Card(Suit.Heart, Rank.Ace)),
             emptyList(),
             emptyList(),
+            false,
+            null,
             ConcurrentHashMap(),
             Instant.now()
         )
@@ -87,6 +91,8 @@ internal class PlayerViewRepositoryTest {
             listOf(Card(Suit.Pike, Rank.King)),
             emptyList(),
             emptyList(),
+            false,
+            null,
             ConcurrentHashMap(),
             Instant.now()
         )
@@ -113,6 +119,8 @@ internal class PlayerViewRepositoryTest {
             listOf(Card(Suit.Heart, Rank.Ace)),
             emptyList(),
             emptyList(),
+            false,
+            null,
             ConcurrentHashMap(),
             Instant.now()
         )

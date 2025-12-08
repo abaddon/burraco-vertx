@@ -21,4 +21,8 @@ interface CommandControllerPort {
 
     suspend fun addCardToPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity, card: Card): Outcome
 
+    suspend fun activatePlayer(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity, teamMateId: PlayerIdentity?): Outcome
+
+    suspend fun setPlayerWaiting(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity, teamMateId: PlayerIdentity?): Outcome
+
 }

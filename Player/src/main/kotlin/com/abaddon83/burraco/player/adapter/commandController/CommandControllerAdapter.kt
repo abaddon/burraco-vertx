@@ -6,9 +6,11 @@ import com.abaddon83.burraco.common.models.PlayerIdentity
 import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.player.DomainError
 import com.abaddon83.burraco.player.DomainResult
+import com.abaddon83.burraco.player.command.playerDraft.ActivatePlayer
 import com.abaddon83.burraco.player.command.playerDraft.AddCardToPlayer
 import com.abaddon83.burraco.player.command.playerDraft.CreatePlayer
 import com.abaddon83.burraco.player.command.playerDraft.DeletePlayer
+import com.abaddon83.burraco.player.command.playerDraft.SetPlayerWaiting
 import com.abaddon83.burraco.player.model.player.Player
 import com.abaddon83.burraco.player.port.CommandControllerPort
 import com.abaddon83.burraco.player.port.Outcome
@@ -30,6 +32,16 @@ class CommandControllerAdapter(override val playerCommandHandler: IAggregateComm
 
     override suspend fun addCardToPlayer(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity, card: Card): Outcome {
         val cmd = AddCardToPlayer(playerIdentity, gameIdentity, card)
+        return executeCommand(cmd)
+    }
+
+    override suspend fun activatePlayer(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity, teamMateId: PlayerIdentity?): Outcome {
+        val cmd = ActivatePlayer(playerIdentity, gameIdentity, teamMateId)
+        return executeCommand(cmd)
+    }
+
+    override suspend fun setPlayerWaiting(playerIdentity: PlayerIdentity, gameIdentity: GameIdentity, teamMateId: PlayerIdentity?): Outcome {
+        val cmd = SetPlayerWaiting(playerIdentity, gameIdentity, teamMateId)
         return executeCommand(cmd)
     }
 
