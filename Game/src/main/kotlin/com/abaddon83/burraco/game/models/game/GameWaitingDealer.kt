@@ -121,7 +121,7 @@ data class GameWaitingDealer(
 
     private fun apply(event: GameStarted): GameExecutionPickUpPhase {
         log.debug("The aggregate is applying the event ${event::class.simpleName} with id ${event.messageId}")
-        return GameExecutionPickUpPhase.from(this, event.playerTurn, event.teams)
+        return GameExecutionPickUpPhase.from(this.copy(version = version + 1), event.playerTurn, event.teams)
     }
 
     private fun buildTeams(players: List<WaitingPlayer>): List<List<PlayerIdentity>> = when (players.size) {

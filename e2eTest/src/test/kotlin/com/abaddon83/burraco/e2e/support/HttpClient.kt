@@ -54,6 +54,12 @@ object HttpClient {
             .get("/health")
     }
 
+    fun pickUpCard(gameId: String, playerId: String): Response {
+        return gameService()
+            .body(mapOf("playerId" to playerId))
+            .post("/games/$gameId/pick-up-card")
+    }
+
     // Player Service API calls
     fun createPlayer(gameId: String, user: String): Response {
         return playerService()

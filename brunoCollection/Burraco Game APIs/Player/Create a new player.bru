@@ -19,5 +19,5 @@ body:json {
 
 script:post-response {
   let data =res.getBody() ;
-  bru.setEnvVar("playerId",data.playerId);
+  bru.setVar("playerId",data.playerId);
 }

@@ -229,6 +229,14 @@ internal class RestHttpServiceVerticleTest {
         override suspend fun startPlayerTurn(gameIdentity: GameIdentity): Outcome {
             TODO("Not yet implemented")
         }
+
+        override suspend fun startGame(gameIdentity: GameIdentity): Outcome {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun pickUpCard(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
+            TODO("Not yet implemented")
+        }
     }
 }
 

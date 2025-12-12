@@ -5,6 +5,7 @@ import com.abaddon83.burraco.game.HealthCheck
 import com.abaddon83.burraco.game.ServiceConfig
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.AddPlayerRoutingHandler
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.NewGameRoutingHandler
+import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.PickUpCardRoutingHandler
 import com.abaddon83.burraco.game.adapters.commandController.rest.handlers.RequestDealCardsRoutingHandler
 import com.abaddon83.burraco.game.ports.CommandControllerPort
 import io.github.abaddon.kcqrs.core.helpers.KcqrsLoggerFactory.log
@@ -39,6 +40,7 @@ class RestHttpServiceVerticle(
                 routerBuilder.operation("newGame").handler(NewGameRoutingHandler(commandController))
                 routerBuilder.operation("addPlayer").handler(AddPlayerRoutingHandler(commandController))
                 routerBuilder.operation("requestDealCards").handler(RequestDealCardsRoutingHandler(commandController))
+                routerBuilder.operation("pickUpCard").handler(PickUpCardRoutingHandler(commandController))
 //                routerBuilder.operation("startGame").handler(StartGameRoutingHandler(controllerAdapter))
 
                 //generate the router

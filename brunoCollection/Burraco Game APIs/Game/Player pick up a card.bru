@@ -1,0 +1,17 @@
+meta {
+  name: Player pick up a card
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{gameUrl}}/games/{{gameId}}/pick-up-card
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "playerId": "{{playerId}}"
+  }
+}

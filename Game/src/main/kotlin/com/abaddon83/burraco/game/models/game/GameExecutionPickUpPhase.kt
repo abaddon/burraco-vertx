@@ -94,7 +94,7 @@ data class GameExecutionPickUpPhase(
             player.copy(cards = player.cards.plus(event.card))
         }
         val updatedDeck = deck.removeFirstCard(event.card)
-        val updatedAggregate = copy(deck = updatedDeck, players = updatedPlayers)
+
         log.debug(
             "Desk has ${updatedDeck.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${
                 updatedPlayers.playerCards(
@@ -102,7 +102,13 @@ data class GameExecutionPickUpPhase(
                 )?.size
             } cards"
         )
-        return GameExecutionPlayPhase.from(updatedAggregate)
+        return GameExecutionPlayPhase.from(
+            copy(
+                deck = updatedDeck,
+                players = updatedPlayers,
+                version = version + 1
+            )
+        )
     }
 
     private fun apply(event: CardsPickedFromDiscardPile): GameExecutionPlayPhase {
@@ -113,7 +119,6 @@ data class GameExecutionPickUpPhase(
         }
         val updatedDiscardPile = discardPile.removeAllCards(event.cards)
 
-        val updatedAggregate = copy(discardPile = updatedDiscardPile, players = updatedPlayers)
         log.debug(
             "Discard Pile has ${updatedDiscardPile.numCards()} cards and Player ${event.playerIdentity.valueAsString()} has ${
                 updatedPlayers.playerCards(
@@ -121,6 +126,12 @@ data class GameExecutionPickUpPhase(
                 )?.size
             } cards"
         )
-        return GameExecutionPlayPhase.from(updatedAggregate)
+        return GameExecutionPlayPhase.from(
+            copy(
+                discardPile = updatedDiscardPile,
+                players = updatedPlayers,
+                version = version + 1
+            )
+        )
     }
 }

@@ -108,6 +108,34 @@ paths:
         '200':
           $ref: '#/components/responses/GameResponse'
 
+  /games/{gameId}/pick-up-card:
+    post:
+      operationId: 'pickUpCard'
+      summary: 'Pick up a card from the deck'
+      description: 'Public API for a player to pick up a card from the deck during their turn'
+      tags:
+        - Game
+        - Public
+      parameters:
+        - name: 'gameId'
+          description: 'Game identifier'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        $ref: '#/components/requestBodies/PickUpCardRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/CardResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '409':
+          $ref: '#/components/responses/ErrorResponse'
+
 
 components:
   schemas:
@@ -151,6 +179,38 @@ components:
     PlayerId:
       type: string
       format: uuid
+    Card:
+      type: object
+      properties:
+        cardId:
+          type: string
+          description: 'Card identifier in format Suit-Rank (e.g., Heart-A, Pike-K)'
+        suit:
+          type: string
+          description: 'Card suit'
+          enum:
+            - Heart
+            - Tile
+            - Clover
+            - Pike
+            - Jolly
+        rank:
+          type: string
+          description: 'Card rank'
+        cardType:
+          type: string
+          enum:
+            - STANDARD
+            - JOKER
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        errorMessages:
+          type: array
+          items:
+            type: object
 
   requestBodies:
     NewGameRequest:
@@ -191,6 +251,18 @@ components:
               playerId:
                 $ref: "#/components/schemas/PlayerId"
 
+    PickUpCardRequest:
+      description: 'Pick up card request.'
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - playerId
+            properties:
+              playerId:
+                $ref: "#/components/schemas/PlayerId"
+
   responses:
     HealthCheckResponse:
       description: 'Health Check response'
@@ -210,3 +282,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Game'
+    CardResponse:
+      description: 'Card response'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Card'
+    ErrorResponse:
+      description: 'Error response'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

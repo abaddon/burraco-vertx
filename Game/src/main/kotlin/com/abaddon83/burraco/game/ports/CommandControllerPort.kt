@@ -35,4 +35,6 @@ interface CommandControllerPort {
 
     suspend fun startGame(gameIdentity: GameIdentity): Outcome
 
+    suspend fun pickUpCard(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome
+
 }

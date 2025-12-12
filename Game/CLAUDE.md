@@ -14,10 +14,44 @@
 **Port**: 8081
 
 ```
-POST   /game                      - Create new game
-POST   /game/{gameId}/start       - Request card dealing
-GET    /health                    - Health check
+POST   /game                          - Create new game
+POST   /game/{gameId}/start           - Request card dealing
+POST   /games/{gameId}/pick-up-card   - Pick up a card from the deck
+GET    /health                        - Health check
 ```
+
+### Pick-Up Card Endpoint
+**POST** `/games/{gameId}/pick-up-card`
+
+Allows a player to pick up one card from the deck during their turn in the PickUp phase.
+
+**Request Body:**
+```json
+{
+  "playerId": "string (UUID)"
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "cardId": "Heart-A",
+  "suit": "Heart",
+  "rank": "A",
+  "cardType": "STANDARD"
+}
+```
+
+**Error Responses:**
+- **400 Bad Request**: Invalid player ID or malformed request
+- **403 Forbidden**: Not the player's turn
+- **409 Conflict**: Deck is empty or game state conflict
+
+**Business Rules:**
+- Player must be a valid player in the game
+- Must be the player's turn
+- Game must be in GameExecutionPickUpPhase state
+- Deck must have at least one card remaining
 
 ## Game State Machine
 
@@ -100,6 +134,12 @@ GameDraft → GameWaitingDealer → GameExecution → GameTerminated
    - Payload: `{ aggregateId: GameIdentity, playerTurn: PlayerIdentity, teams: List<List<PlayerIdentity>> }`
    - Consumed by: Player service (GameView projection)
    - Purpose: Signals game has transitioned from waiting to execution phase
+
+5. **CardPickedFromDeck**
+   - Payload: `{ aggregateId: GameIdentity, playerIdentity: PlayerIdentity, card: Card }`
+   - Consumed by: (Future) Player service or other services tracking game state
+   - Purpose: Notifies that a player has picked up a card from the deck
+   - Triggered by: PickUpACardFromDeck command via /games/{gameId}/pick-up-card endpoint
 
 ### Consumes
 1. **PlayerCreated** (from Player service, topic: `player-events`)

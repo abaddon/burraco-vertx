@@ -747,7 +747,7 @@ This example shows how the **card dealing workflow** is implemented as a distrib
 
 | Service | Aggregate | REST API | Publishes Events | Consumes Events | Projections | Event Store |
 |---------|-----------|----------|------------------|-----------------|-------------|-------------|
-| **Game** | GameAggregate | ✅ Create/Start game (8081) | GameCreated, PlayerAdded, CardsRequestedToDealer | PlayerCreated, CardDealt* (5 types) | None | KurrentDB: game-{id} |
+| **Game** | GameAggregate | ✅ Create/Start/PickUp (8081) | GameCreated, PlayerAdded, CardsRequestedToDealer, CardPickedFromDeck | PlayerCreated, CardDealt* (5 types) | None | KurrentDB: game-{id} |
 | **Player** | PlayerAggregate | ✅ Create/Query player (8082) | PlayerCreated | CardDealtToPlayer, GameCreated (proj), PlayerAdded (proj) | GameView, PlayerView | KurrentDB: player-{id} |
 | **Dealer** | DealerAggregate | ❌ Event-driven only | CardDealtToPlayer, CardDealtToDeck, CardDealtToPlayerDeck1/2, CardDealtToDiscardDeck | CardsRequestedToDealer | None | KurrentDB: dealer-{gameId} |
 
