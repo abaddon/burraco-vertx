@@ -136,6 +136,34 @@ paths:
         '409':
           $ref: '#/components/responses/ErrorResponse'
 
+  /games/{gameId}/pick-card-from-discard-deck:
+    post:
+      operationId: 'pickUpCardsFromDiscardPile'
+      summary: 'Pick up cards from the discard pile'
+      description: 'Public API for a player to pick up all cards from the discard pile during their turn'
+      tags:
+        - Game
+        - Public
+      parameters:
+        - name: 'gameId'
+          description: 'Game identifier'
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        $ref: '#/components/requestBodies/PickUpCardsFromDiscardPileRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/CardsResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '409':
+          $ref: '#/components/responses/ErrorResponse'
+
 
 components:
   schemas:
@@ -202,6 +230,13 @@ components:
           enum:
             - STANDARD
             - JOKER
+    Cards:
+      type: object
+      properties:
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
     Error:
       type: object
       properties:
@@ -263,6 +298,18 @@ components:
               playerId:
                 $ref: "#/components/schemas/PlayerId"
 
+    PickUpCardsFromDiscardPileRequest:
+      description: 'Pick up cards from discard pile request.'
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - playerId
+            properties:
+              playerId:
+                $ref: "#/components/schemas/PlayerId"
+
   responses:
     HealthCheckResponse:
       description: 'Health Check response'
@@ -288,6 +335,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Card'
+    CardsResponse:
+      description: 'Cards response'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Cards'
     ErrorResponse:
       description: 'Error response'
       content:

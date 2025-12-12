@@ -60,6 +60,12 @@ object HttpClient {
             .post("/games/$gameId/pick-up-card")
     }
 
+    fun pickUpCardsFromDiscardPile(gameId: String, playerId: String): Response {
+        return gameService()
+            .body(mapOf("playerId" to playerId))
+            .post("/games/$gameId/pick-card-from-discard-deck")
+    }
+
     // Player Service API calls
     fun createPlayer(gameId: String, user: String): Response {
         return playerService()

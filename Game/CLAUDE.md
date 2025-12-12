@@ -14,10 +14,11 @@
 **Port**: 8081
 
 ```
-POST   /game                          - Create new game
-POST   /game/{gameId}/start           - Request card dealing
-POST   /games/{gameId}/pick-up-card   - Pick up a card from the deck
-GET    /health                        - Health check
+POST   /game                                        - Create new game
+POST   /game/{gameId}/start                         - Request card dealing
+POST   /games/{gameId}/pick-up-card                 - Pick up a card from the deck
+POST   /games/{gameId}/pick-card-from-discard-deck  - Pick up cards from discard pile
+GET    /health                                      - Health check
 ```
 
 ### Pick-Up Card Endpoint
@@ -52,6 +53,50 @@ Allows a player to pick up one card from the deck during their turn in the PickU
 - Must be the player's turn
 - Game must be in GameExecutionPickUpPhase state
 - Deck must have at least one card remaining
+
+### Pick-Up Cards from Discard Pile Endpoint
+**POST** `/games/{gameId}/pick-card-from-discard-deck`
+
+Allows a player to pick up all cards from the discard pile during their turn in the PickUp phase.
+
+**Request Body:**
+```json
+{
+  "playerId": "string (UUID)"
+}
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "cards": [
+    {
+      "cardId": "Hearts-Ace",
+      "suit": "Hearts",
+      "rank": "Ace",
+      "cardType": "STANDARD"
+    },
+    {
+      "cardId": "Spades-King",
+      "suit": "Spades",
+      "rank": "King",
+      "cardType": "STANDARD"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- **400 Bad Request**: Invalid player ID or malformed request
+- **403 Forbidden**: Not the player's turn
+- **409 Conflict**: Discard pile is empty or game state conflict
+
+**Business Rules:**
+- Player must be a valid player in the game
+- Must be the player's turn
+- Game must be in GameExecutionPickUpPhase state
+- Discard pile must have at least one card
+- Player receives ALL cards from the discard pile
 
 ## Game State Machine
 
@@ -140,6 +185,12 @@ GameDraft → GameWaitingDealer → GameExecution → GameTerminated
    - Consumed by: (Future) Player service or other services tracking game state
    - Purpose: Notifies that a player has picked up a card from the deck
    - Triggered by: PickUpACardFromDeck command via /games/{gameId}/pick-up-card endpoint
+
+6. **CardsPickedFromDiscardPile**
+   - Payload: `{ aggregateId: GameIdentity, playerIdentity: PlayerIdentity, cards: List<Card> }`
+   - Consumed by: (Future) Player service or other services tracking game state
+   - Purpose: Notifies that a player has picked up all cards from the discard pile
+   - Triggered by: PickUpCardsFromDiscardPile command via /games/{gameId}/pick-card-from-discard-deck endpoint
 
 ### Consumes
 1. **PlayerCreated** (from Player service, topic: `player-events`)

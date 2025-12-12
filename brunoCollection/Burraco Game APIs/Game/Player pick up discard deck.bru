@@ -1,0 +1,17 @@
+meta {
+  name: Player pick up discard deck
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{gameUrl}}/games/{{gameId}}/pick-card-from-discard-deck
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "playerId": "{{playerId}}"
+  }
+}

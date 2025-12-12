@@ -4,12 +4,14 @@ import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerConfig
 import com.abaddon83.burraco.common.adapter.kafka.producer.KafkaProducerVerticle
 import com.abaddon83.burraco.common.externalEvents.ExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.CardPickedFromDeckExternalEvent
+import com.abaddon83.burraco.common.externalEvents.game.CardsPickedFromDiscardPileExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.CardsRequestedToDealerExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.GameCreatedExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.GameStartedExternalEvent
 import com.abaddon83.burraco.common.externalEvents.game.PlayerAddedExternalEvent
 import com.abaddon83.burraco.common.models.event.game.CardDealingRequested
 import com.abaddon83.burraco.common.models.event.game.CardPickedFromDeck
+import com.abaddon83.burraco.common.models.event.game.CardsPickedFromDiscardPile
 import com.abaddon83.burraco.common.models.event.game.GameCreated
 import com.abaddon83.burraco.common.models.event.game.GameEvent
 import com.abaddon83.burraco.common.models.event.game.GameStarted
@@ -39,6 +41,7 @@ class KafkaExternalEventPublisherAdapter(
             is PlayerAdded -> PlayerAddedExternalEvent.fromDomain(domainEvent)
             is GameStarted -> GameStartedExternalEvent.fromDomain(domainEvent)
             is CardPickedFromDeck -> CardPickedFromDeckExternalEvent.fromDomain(domainEvent)
+            is CardsPickedFromDiscardPile -> CardsPickedFromDiscardPileExternalEvent.fromDomain(domainEvent)
             else -> null
         }
     }

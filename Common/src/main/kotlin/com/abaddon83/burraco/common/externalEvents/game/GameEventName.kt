@@ -5,5 +5,6 @@ enum class GameEventName {
     PlayerAdded,
     CardsRequestedToDealer,
     GameStarted,
-    CardPickedFromDeck
+    CardPickedFromDeck,
+    CardsPickedFromDiscardPile
 }

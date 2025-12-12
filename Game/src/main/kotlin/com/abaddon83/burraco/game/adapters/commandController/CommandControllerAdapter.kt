@@ -10,6 +10,7 @@ import com.abaddon83.burraco.game.commands.gameDraft.CreateGame
 import com.abaddon83.burraco.game.commands.gameDraft.RequestDealCards
 import com.abaddon83.burraco.game.commands.gameWaitingDealer.*
 import com.abaddon83.burraco.game.commands.gameExecutionPickUpPhase.PickUpACardFromDeck
+import com.abaddon83.burraco.game.commands.gameExecutionPickUpPhase.PickUpCardsFromDiscardPile
 import com.abaddon83.burraco.common.models.card.Card
 import com.abaddon83.burraco.game.models.game.Game
 import com.abaddon83.burraco.game.ports.CommandControllerPort
@@ -76,6 +77,11 @@ class CommandControllerAdapter(override val gameCommandHandler: IAggregateComman
 
     override suspend fun pickUpCard(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
         val cmd = PickUpACardFromDeck(gameIdentity, playerIdentity)
+        return executeCommand(cmd)
+    }
+
+    override suspend fun pickUpCardsFromDiscardPile(gameIdentity: GameIdentity, playerIdentity: PlayerIdentity): Outcome {
+        val cmd = PickUpCardsFromDiscardPile(gameIdentity, playerIdentity)
         return executeCommand(cmd)
     }
 
