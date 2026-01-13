@@ -6,5 +6,10 @@ build
 .idea
 out
 .kotlin
-/.claude
+note.txt
+
+# Claude Code configuration - track skills directory
+/.claude/*
+!/.claude/skills/
+
 /Game/brunoCollection/Burraco Game APIs/environments/local.bru
