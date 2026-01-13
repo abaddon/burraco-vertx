@@ -1,7 +1,11 @@
+---
+name: feature-discovery
+description: Phase 1 of feature development - Analyze feature requirements and assess impact on the distributed Burraco system. Use this to understand what services are affected and identify risks before designing.
+---
+
 # Feature Discovery Skill
 
-**Skill**: `/feature-discovery`
-**Purpose**: Phase 1 - Analyze feature requirements and assess impact on the distributed system
+This skill performs comprehensive analysis of a feature request to understand its impact on the distributed system.
 
 ## Usage
 
@@ -132,7 +136,6 @@ Output a complete discovery report:
 - Acceptance Criteria:
   1. [Criterion 1]
   2. [Criterion 2]
-  3. [Criterion 3]
 
 ## 3. Related Game Rules
 [Reference specific rules from CLAUDE.md]

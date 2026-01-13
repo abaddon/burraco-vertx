@@ -1,7 +1,11 @@
+---
+name: feature-workflow
+description: Main workflow orchestrator for adding new features to the distributed Burraco card game system. Use this when implementing new game features across Game, Player, and Dealer services following CQRS, Event Sourcing, and Hexagonal Architecture patterns.
+---
+
 # Feature Workflow Orchestrator
 
-**Skill**: `/feature-workflow`
-**Purpose**: Main orchestrator for adding new features to the Burraco distributed system
+This skill orchestrates the full feature development workflow for the Burraco distributed system.
 
 ## Usage
 

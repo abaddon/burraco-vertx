@@ -48,15 +48,16 @@ This workflow is implemented as **executable Claude Code skills**. Use these sla
 
 ### Skill Files Location
 
-All skills are defined in `.claude/skills/`:
-- `.claude/settings.json` - Skill configuration
-- `.claude/skills/feature-workflow.md` - Main orchestrator
-- `.claude/skills/feature-discovery.md` - Phase 1
-- `.claude/skills/feature-design.md` - Phase 2
-- `.claude/skills/domain-modeling.md` - Phase 3
-- `.claude/skills/kotlin-implement.md` - Phase 4
-- `.claude/skills/bdd-test.md` - Phase 5
-- `.claude/skills/integration-docs.md` - Phase 6
+All skills are defined in `.claude/skills/` as directories containing `SKILL.md` files:
+- `.claude/skills/feature-workflow/SKILL.md` - Main orchestrator
+- `.claude/skills/feature-discovery/SKILL.md` - Phase 1
+- `.claude/skills/feature-design/SKILL.md` - Phase 2
+- `.claude/skills/domain-modeling/SKILL.md` - Phase 3
+- `.claude/skills/kotlin-implement/SKILL.md` - Phase 4
+- `.claude/skills/bdd-test/SKILL.md` - Phase 5
+- `.claude/skills/integration-docs/SKILL.md` - Phase 6
+
+Each skill directory can also contain supporting files (scripts, templates, references).
 
 ---
 
