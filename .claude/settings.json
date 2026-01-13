@@ -28,11 +28,5 @@
       "description": "Phase 6: Update documentation and verify integration",
       "path": ".claude/skills/integration-docs.md"
     }
-  },
-  "hooks": {
-    "pre-commit": {
-      "command": "./gradlew spotlessCheck 2>/dev/null || true",
-      "description": "Check code formatting before commit"
-    }
   }
 }
