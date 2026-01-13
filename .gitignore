@@ -6,6 +6,7 @@ build
 .idea
 out
 .kotlin
+note.txt
 
 # Claude Code configuration - track skills directory
 /.claude/*
