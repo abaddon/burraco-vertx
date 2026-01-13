@@ -6,5 +6,10 @@ build
 .idea
 out
 .kotlin
-/.claude
+
+# Claude Code configuration - track skills but ignore user-specific settings
+/.claude/*
+!/.claude/skills/
+!/.claude/settings.json
+
 /Game/brunoCollection/Burraco Game APIs/environments/local.bru

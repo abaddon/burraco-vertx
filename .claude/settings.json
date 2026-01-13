@@ -1,0 +1,38 @@
+{
+  "skills": {
+    "feature-workflow": {
+      "description": "Main workflow orchestrator for adding new features to the distributed Burraco system",
+      "path": ".claude/skills/feature-workflow.md"
+    },
+    "feature-discovery": {
+      "description": "Phase 1: Analyze feature requirements and assess impact on the distributed system",
+      "path": ".claude/skills/feature-discovery.md"
+    },
+    "feature-design": {
+      "description": "Phase 2: Design architecture, events, and service interactions",
+      "path": ".claude/skills/feature-design.md"
+    },
+    "domain-modeling": {
+      "description": "Phase 3: Create domain events, value objects, and aggregate changes",
+      "path": ".claude/skills/domain-modeling.md"
+    },
+    "kotlin-implement": {
+      "description": "Phase 4: Implement commands, handlers, and Kafka integration in Kotlin",
+      "path": ".claude/skills/kotlin-implement.md"
+    },
+    "bdd-test": {
+      "description": "Phase 5: Create BDD tests with Cucumber/Gherkin and unit tests",
+      "path": ".claude/skills/bdd-test.md"
+    },
+    "integration-docs": {
+      "description": "Phase 6: Update documentation and verify integration",
+      "path": ".claude/skills/integration-docs.md"
+    }
+  },
+  "hooks": {
+    "pre-commit": {
+      "command": "./gradlew spotlessCheck 2>/dev/null || true",
+      "description": "Check code formatting before commit"
+    }
+  }
+}

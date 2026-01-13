@@ -1,11 +1,67 @@
 # Feature Development Workflow for Burraco-Vertx
 
-**Version**: 1.0
+**Version**: 2.0
 **Last Updated**: 2025-01-13
 
 ---
 
+## Quick Start - Claude Code Skills
+
+This workflow is implemented as **executable Claude Code skills**. Use these slash commands to run each phase:
+
+### Available Skills
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| **Main Workflow** | `/feature-workflow` | Full workflow orchestrator - start here |
+| **Phase 1** | `/feature-discovery` | Analyze requirements and assess impact |
+| **Phase 2** | `/feature-design` | Design events, commands, and service interactions |
+| **Phase 3** | `/domain-modeling` | Create domain events, value objects, aggregates |
+| **Phase 4** | `/kotlin-implement` | Implement commands, handlers, Kafka integration |
+| **Phase 5** | `/bdd-test` | Create BDD/Cucumber tests and unit tests |
+| **Phase 6** | `/integration-docs` | Update documentation and verify integration |
+
+### Usage Examples
+
+```bash
+# Start the full workflow for a new feature
+/feature-workflow Add ability for players to place melds on the table
+
+# Run individual phases
+/feature-discovery Place Meld feature
+/feature-design Place Meld
+/domain-modeling Place Meld
+/kotlin-implement Place Meld
+/bdd-test Place Meld
+/integration-docs Place Meld
+```
+
+### Recommended Flow
+
+1. **Start with `/feature-workflow`** - This will analyze your feature and guide you through all phases
+2. **Or run phases individually** - For more control, run each phase skill separately
+3. **Each skill provides**:
+   - Detailed instructions
+   - Code templates
+   - Checklists
+   - Reference examples from the codebase
+
+### Skill Files Location
+
+All skills are defined in `.claude/skills/`:
+- `.claude/settings.json` - Skill configuration
+- `.claude/skills/feature-workflow.md` - Main orchestrator
+- `.claude/skills/feature-discovery.md` - Phase 1
+- `.claude/skills/feature-design.md` - Phase 2
+- `.claude/skills/domain-modeling.md` - Phase 3
+- `.claude/skills/kotlin-implement.md` - Phase 4
+- `.claude/skills/bdd-test.md` - Phase 5
+- `.claude/skills/integration-docs.md` - Phase 6
+
+---
+
 ## Table of Contents
+- [Quick Start](#quick-start---claude-code-skills)
 - [Overview](#overview)
 - [Agent Architecture](#agent-architecture)
 - [Workflow Phases](#workflow-phases)
